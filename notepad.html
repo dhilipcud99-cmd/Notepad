@@ -89,6 +89,12 @@
     font-size:19px;
     letter-spacing:-0.01em;
     color:var(--ink);
+    cursor:pointer;
+    user-select:none;
+    transition:opacity .15s ease;
+  }
+  .brand-mark:hover{
+    opacity:0.75;
   }
   .icon-btn{
     width:30px; height:30px;
@@ -743,7 +749,7 @@
 
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <span class="brand-mark">Notepad.</span>
+      <span class="brand-mark" id="brandMark" title="Reset view">Notepad.</span>
       <div class="brand-actions">
         <button class="icon-btn accent-swatch-btn" id="accentBtn" title="Accent color (double-click to reset)">
           <span class="accent-swatch" id="accentSwatch"></span>
@@ -2256,6 +2262,23 @@
   }
 
   // ---------- Wiring ----------
+  const brandMark = $('#brandMark');
+  if (brandMark) {
+    brandMark.addEventListener('click', () => {
+      searchInput.value = '';
+      activeTagFilter = null;
+      setFilter('all');
+      if (notes.length > 0) {
+        activeId = notes[0].id;
+      } else {
+        activeId = null;
+      }
+      renderSidebar();
+      renderEditor();
+      showToast('View reset');
+    });
+  }
+
   $('#newNoteBtn').addEventListener('click', createNote);
   $('#deleteBtn').addEventListener('click', deleteActive);
   $('#duplicateBtn').addEventListener('click', duplicateActive);
