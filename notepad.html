@@ -2277,11 +2277,7 @@
       searchInput.value = '';
       activeTagFilter = null;
       setFilter('all');
-      if (notes.length > 0) {
-        activeId = notes[0].id;
-      } else {
-        activeId = null;
-      }
+      activeId = null;
       renderSidebar();
       renderEditor();
       showToast('View reset');
