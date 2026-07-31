@@ -1273,36 +1273,9 @@
   }
 
   function seedSampleNotes(){
-    const now = Date.now();
-    notes = [
-      {
-        id: uid(), type:'note', title:'Welcome to Notepad',
-        content:'This is a calm place to write.\n\nUse the sidebar to create new notes, switch between note types, and search across everything you keep here. Everything saves automatically as you type.\n\nTry the four note types: plain notes, code snippets, to-do lists, and journal entries. Pin the ones you use most, tag them to keep things organized, and export any note as a PDF when you need to share it.',
-        todos: [], tags:['guide'], pinned:true, createdAt: now-50000, updatedAt: now-50000
-      },
-      {
-        id: uid(), type:'todo', title:'Launch checklist',
-        content:'', todos:[
-          {id:uid(), text:'Sketch the layout', done:true},
-          {id:uid(), text:'Write the first draft', done:true},
-          {id:uid(), text:'Review with the team', done:false},
-          {id:uid(), text:'Ship it', done:false}
-        ], tags:['work'], pinned:true, createdAt: now-40000, updatedAt: now-40000
-      },
-      {
-        id: uid(), type:'code', title:'Debounce helper',
-        content:'function debounce(fn, wait) {\n  let t;\n  return (...args) => {\n    clearTimeout(t);\n    t = setTimeout(() => fn(...args), wait);\n  };\n}',
-        todos: [], tags:['snippets','work'], pinned:false, createdAt: now-30000, updatedAt: now-30000
-      },
-      {
-        id: uid(), type:'journal', title:'July 31',
-        content:'Quiet morning. Started building something new — a place to keep notes that feels less like software and more like a good notebook.',
-        todos: [], tags:['personal'], pinned:false, createdAt: now-20000, updatedAt: now-20000
-      }
-    ];
-    activeId = notes[0].id;
+    notes = [];
+    activeId = null;
     persistIndex();
-    notes.forEach(persistNote);
   }
 
   // ---------- Derived helpers ----------
