@@ -837,6 +837,22 @@
 (function(){
   "use strict";
 
+  // Fallback for standard browser environments (like GitHub Pages)
+  if(!window.storage){
+    window.storage = {
+      async get(key){
+        const val = localStorage.getItem(key);
+        return val !== null ? { value: val } : null;
+      },
+      async set(key, value){
+        localStorage.setItem(key, value);
+      },
+      async delete(key){
+        localStorage.removeItem(key);
+      }
+    };
+  }
+
   const ICONS = {
     bold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z"/></svg>',
     italic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4h-9M15 20H6M14.5 4 9.5 20"/></svg>',
