@@ -1524,16 +1524,6 @@
           <option value="Verdana">Verdana</option>
           <option value="'Trebuchet MS'">Trebuchet MS</option>
         </select>
-        <select class="rt-select rt-select-sm" id="fontSizeSelect" title="Font size">
-          <option value="13">13</option>
-          <option value="14">14</option>
-          <option value="16" selected>16</option>
-          <option value="18">18</option>
-          <option value="20">20</option>
-          <option value="24">24</option>
-          <option value="28">28</option>
-          <option value="32">32</option>
-        </select>
         <span class="rt-sep"></span>
         <button class="rt-btn" data-cmd="bold" title="Bold"><b>B</b></button>
         <button class="rt-btn" data-cmd="italic" title="Italic"><i>I</i></button>
@@ -1799,31 +1789,7 @@
       if(!found) famSelect.value = '';
     }
 
-    // Update font size dropdown
-    const sizeSelect = $('#fontSizeSelect');
-    if(sizeSelect){
-      let activeSize = '';
-      const sel = window.getSelection();
-      if(sel && sel.rangeCount > 0){
-        let node = sel.anchorNode;
-        if(node && node.nodeType === Node.TEXT_NODE) node = node.parentElement;
-        if(node){
-          let current = node;
-          while(current && current !== editable){
-            if(current.style && current.style.fontSize){
-              activeSize = current.style.fontSize.replace('px', '');
-              break;
-            }
-            current = current.parentElement;
-          }
-        }
-      }
-      if(activeSize){
-        sizeSelect.value = activeSize;
-      } else {
-        sizeSelect.value = '16'; // default
-      }
-    }
+
   }
 
   function bindRichEvents(note){
@@ -1886,46 +1852,6 @@
       }, 0);
     });
 
-    const size = $('#fontSizeSelect');
-    size.addEventListener('mousedown', trackRichSelection);
-    size.addEventListener('change', () => {
-      setTimeout(() => {
-        restoreRichSelection();
-        const sel = window.getSelection();
-        if (!sel || sel.rangeCount === 0) return;
-        
-        const range = sel.getRangeAt(0);
-        if (range.collapsed) {
-          const el = document.createElement('span');
-          el.style.fontSize = size.value + 'px';
-          el.innerHTML = '&#8203;';
-          range.insertNode(el);
-          
-          const newRange = document.createRange();
-          newRange.setStart(el.firstChild, 1);
-          newRange.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(newRange);
-        } else {
-          document.execCommand('styleWithCSS', false, false);
-          document.execCommand('fontSize', false, '7');
-          editable.querySelectorAll('font[size="7"]').forEach(f => {
-            f.removeAttribute('size');
-            f.style.fontSize = size.value + 'px';
-            
-            f.querySelectorAll('font, span').forEach(child => {
-              if (child.style.fontSize) {
-                child.style.fontSize = '';
-                if (!child.style.cssText.trim() && child.tagName === 'FONT') {
-                  child.outerHTML = child.innerHTML;
-                }
-              }
-            });
-          });
-        }
-        sync();
-      }, 0);
-    });
 
     const textColorInput = $('#textColorInput');
     textColorInput.addEventListener('mousedown', trackRichSelection);
