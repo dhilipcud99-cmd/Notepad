@@ -695,9 +695,50 @@
   }
   [data-theme="dark"] .toast{ background:var(--bg-surface); color:var(--ink); border:1px solid var(--border); }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ---------- Storage health warning ---------- */
+  .storage-banner{
+    position:fixed; top:0; left:0; right:0;
+    z-index:300;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px 16px;
+    padding:10px 18px;
+    background:var(--danger);
+    color:#fff;
+    font-size:12.5px;
+    font-weight:500;
+    box-shadow:0 2px 10px rgba(0,0,0,0.18);
+  }
+  .storage-banner.show{ display:flex; }
+  .storage-banner-msg{ max-width:640px; line-height:1.4; }
+  .storage-banner-actions{ display:flex; gap:8px; flex-shrink:0; }
+  .storage-banner button{
+    border:1px solid rgba(255,255,255,0.55);
+    background:rgba(255,255,255,0.12);
+    color:#fff;
+    padding:5px 11px;
+    border-radius:6px;
+    font-size:11.5px;
+    font-weight:600;
+    white-space:nowrap;
+    transition:background .15s ease;
+  }
+  .storage-banner button:hover{ background:rgba(255,255,255,0.24); }
+
 </style>
 </head>
 <body>
+<div class="storage-banner" id="storageBanner">
+  <span class="storage-banner-msg">⚠️ Notes storage isn't working right now — anything you type may not actually be saved. Back up now to be safe.</span>
+  <div class="storage-banner-actions">
+    <button id="storageBannerBackup">Back up now</button>
+    <button id="storageBannerRetry">Retry</button>
+    <button id="storageBannerDismiss">Dismiss</button>
+  </div>
+</div>
 <div class="app" id="app">
 
   <aside class="sidebar" id="sidebar">
@@ -756,6 +797,13 @@
     <div class="sidebar-footer">
       <span id="noteCountLabel">0 notes</span>
       <div style="display:flex; align-items:center; gap:2px;">
+        <button class="icon-btn" id="backupBtn" title="Download a backup of all notes (.json)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="5" rx="1"/><path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/><path d="M10 13h4"/></svg>
+        </button>
+        <button class="icon-btn" id="restoreBtn" title="Restore notes from a backup file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </button>
+        <input type="file" id="restoreFileInput" accept="application/json" style="display:none;">
         <button class="icon-btn" id="selectModeBtn" title="Select multiple notes">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         </button>
@@ -1003,6 +1051,11 @@
       return;
     }
 
+    if(state === 'error'){
+      saveStatus.innerHTML = '<span class="dot" style="background:var(--danger)"></span>Save failed';
+      return;
+    }
+
     const active = note || getActive();
     if(!active){
       saveStatus.innerHTML = '<span class="dot"></span>Saved';
@@ -1019,7 +1072,38 @@
   }
 
   // ---------- Storage ----------
+  let storageHealthy = true;
+
+  // Writes a throwaway key and reads it back to confirm storage is
+  // actually persisting, rather than trusting that set()/get() not
+  // throwing means the write really landed (e.g. blocked storage in
+  // an iframe, or a quota error some browsers swallow silently).
+  async function checkStorageHealth(){
+    const testKey = '__health_check__';
+    const testVal = String(Date.now());
+    try{
+      const setRes = await storage.set(testKey, testVal);
+      if(!setRes) throw new Error('storage.set returned no result');
+      const getRes = await storage.get(testKey);
+      if(!getRes || getRes.value !== testVal) throw new Error('readback did not match what was written');
+      await storage.delete(testKey);
+      storageHealthy = true;
+    }catch(e){
+      storageHealthy = false;
+      console.error('Storage health check failed:', e);
+    }
+    updateStorageBanner();
+    return storageHealthy;
+  }
+
+  function updateStorageBanner(){
+    const banner = document.getElementById('storageBanner');
+    if(banner) banner.classList.toggle('show', !storageHealthy);
+  }
+
   async function loadAll(){
+    await checkStorageHealth();
+
     try{
       const idx = await storage.get('note-index');
       const ids = idx ? JSON.parse(idx.value) : [];
@@ -1061,20 +1145,40 @@
 
   async function persistIndex(){
     try{
-      await storage.set('note-index', JSON.stringify(notes.map(n => n.id)));
-    }catch(e){ console.error('index save failed', e); }
+      const res = await storage.set('note-index', JSON.stringify(notes.map(n => n.id)));
+      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
+      return true;
+    }catch(e){
+      console.error('index save failed', e);
+      storageHealthy = false;
+      updateStorageBanner();
+      return false;
+    }
   }
 
   async function persistNote(note){
     try{
-      await storage.set('note:' + note.id, JSON.stringify(note));
-    }catch(e){ console.error('note save failed', e); }
+      const res = await storage.set('note:' + note.id, JSON.stringify(note));
+      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
+      return true;
+    }catch(e){
+      console.error('note save failed', e);
+      storageHealthy = false;
+      updateStorageBanner();
+      return false;
+    }
   }
 
   async function persistSettings(){
     try{
-      await storage.set('app-settings', JSON.stringify({ theme, rulesOn, accentColor }));
-    }catch(e){ /* ignore */ }
+      const res = await storage.set('app-settings', JSON.stringify({ theme, rulesOn, accentColor }));
+      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
+      return true;
+    }catch(e){
+      storageHealthy = false;
+      updateStorageBanner();
+      return false;
+    }
   }
 
   async function deleteNoteStorage(id){
@@ -1086,11 +1190,86 @@
     clearTimeout(saveTimer);
     saveTimer = setTimeout(async () => {
       note.updatedAt = Date.now();
-      await persistNote(note);
-      await persistIndex();
-      setSaveStatus('saved', note);
+      const okNote = await persistNote(note);
+      const okIndex = await persistIndex();
+      if(okNote && okIndex){
+        setSaveStatus('saved', note);
+      } else {
+        setSaveStatus('error');
+        showToast('Save failed — your notes may not be persisting. Back up now from the sidebar.');
+      }
       renderSidebarCardOnly(note);
     }, 450);
+  }
+
+  // ---------- Backup & restore ----------
+  function downloadBackup(){
+    try{
+      const payload = {
+        app: 'notepad-backup',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        notes: notes,
+        settings: { theme, rulesOn, accentColor }
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `notepad-backup-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('Backup downloaded');
+    }catch(e){
+      console.error('Backup failed', e);
+      showToast('Backup failed — check the console');
+    }
+  }
+
+  function restoreFromFile(file){
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      let payload;
+      try{
+        payload = JSON.parse(e.target.result);
+      }catch(err){
+        alert('That file is not valid JSON. Make sure it is a backup exported from this Notepad.');
+        return;
+      }
+      const restoredNotes = Array.isArray(payload.notes) ? payload.notes : (Array.isArray(payload) ? payload : null);
+      if(!restoredNotes){
+        alert('Could not find any notes in that file. Make sure it is a backup exported from this Notepad.');
+        return;
+      }
+      const proceed = confirm(`Restore ${restoredNotes.length} note(s) from this backup? This replaces the notes currently shown in the app.`);
+      if(!proceed) return;
+
+      notes = restoredNotes;
+      activeId = notes.length ? notes[0].id : null;
+
+      if(payload.settings){
+        theme = payload.settings.theme || theme;
+        rulesOn = payload.settings.rulesOn !== undefined ? payload.settings.rulesOn : rulesOn;
+        accentColor = payload.settings.accentColor || accentColor;
+        applyTheme(theme, false);
+        if(accentColor) applyAccent(accentColor, false);
+        updateRulesIcon();
+      }
+
+      renderSidebar();
+      renderEditor();
+      showToast('Notes restored from backup');
+
+      // Best-effort: write the restored notes back to storage too,
+      // so the restore survives the next refresh if storage is healthy.
+      for(const n of notes){ await persistNote(n); }
+      await persistIndex();
+      await persistSettings();
+    };
+    reader.onerror = () => alert('Could not read that file.');
+    reader.readAsText(file);
   }
 
   function seedSampleNotes(){
@@ -2086,6 +2265,27 @@
   $('#duplicateBtn').addEventListener('click', duplicateActive);
   $('#pinToggle').addEventListener('click', togglePin);
   $('#rulesToggle').addEventListener('click', toggleRules);
+
+  $('#backupBtn').addEventListener('click', downloadBackup);
+  $('#restoreBtn').addEventListener('click', () => $('#restoreFileInput').click());
+  $('#restoreFileInput').addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if(file) restoreFromFile(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('storageBannerBackup').addEventListener('click', downloadBackup);
+  document.getElementById('storageBannerRetry').addEventListener('click', async () => {
+    showToast('Checking storage…');
+    const ok = await checkStorageHealth();
+    showToast(ok ? 'Storage is working again' : 'Still not working — try backing up');
+  });
+  document.getElementById('storageBannerDismiss').addEventListener('click', () => {
+    document.getElementById('storageBanner').classList.remove('show');
+  });
+  // Re-check periodically in case storage breaks mid-session (e.g. quota
+  // hit after many notes, or a browser privacy setting kicking in).
+  setInterval(checkStorageHealth, 60000);
 
   $('#selectModeBtn').addEventListener('click', toggleSelectMode);
   $('#bulkCancelBtn').addEventListener('click', toggleSelectMode);
