@@ -786,6 +786,268 @@
     stroke-width: 2.3px !important;
   }
 
+  /* --- Code Simulator Styling --- */
+  .ide-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    overflow: hidden;
+    height: 580px;
+    margin-top: 12px;
+    box-shadow: var(--shadow);
+    transition: background-color .15s ease, border-color .15s ease;
+  }
+
+  .ide-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    gap: 10px;
+  }
+
+  .ide-toolbar-left, .ide-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ide-select {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 24px 5px 10px;
+    border-radius: 7px;
+    outline: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="%236A6A6A" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    cursor: pointer;
+    transition: border-color .15s ease;
+  }
+  
+  [data-theme="dark"] .ide-select {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="%23A3A3A3" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+  }
+
+  .ide-select:focus, .ide-select:hover {
+    border-color: var(--accent);
+  }
+
+  .ide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+
+  .ide-btn:hover {
+    background: var(--bg-sidebar);
+    color: var(--ink);
+    border-color: var(--border);
+  }
+
+  .ide-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.3px !important;
+  }
+
+  .ide-btn.run-btn {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+  .ide-btn.run-btn:hover {
+    opacity: 0.9;
+    color: #ffffff;
+  }
+
+  .ide-btn.stop-btn {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: transparent;
+  }
+  .ide-btn.stop-btn:hover {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+
+  .ide-split-pane {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+  }
+
+  .ide-editor-wrapper {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    position: relative;
+  }
+
+  .ide-preview-wrapper {
+    flex: 1;
+    min-width: 0;
+    border-left: 1px solid var(--border);
+    height: 100%;
+    background: #ffffff;
+  }
+
+  .ide-preview-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background: #ffffff;
+  }
+
+  /* Console panel styling */
+  .ide-console-panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    position: relative;
+    flex-shrink: 0;
+    min-height: 80px;
+    max-height: 500px;
+  }
+
+  .ide-console-resizer {
+    position: absolute;
+    top: -4px;
+    left: 0;
+    right: 0;
+    height: 8px;
+    cursor: ns-resize;
+    background: transparent;
+    z-index: 100;
+  }
+  .ide-console-resizer:hover {
+    background: var(--accent);
+    opacity: 0.25;
+  }
+
+  .ide-console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border);
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .ide-console-header-left, .ide-console-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ide-console-status {
+    text-transform: none;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+
+  .ide-console-clear {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--ink-soft);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    cursor: pointer;
+    text-transform: none;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+
+  .ide-console-clear:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: var(--danger-soft);
+  }
+
+  .ide-console-logs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg-surface);
+  }
+
+  .ide-console-line {
+    padding: 3px 0;
+    border-bottom: 1px solid var(--rule-line);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .ide-console-line:last-child {
+    border-bottom: none;
+  }
+  .ide-console-line.is-error {
+    color: var(--danger);
+  }
+  .ide-console-line.is-warn {
+    color: #B58A2E;
+  }
+  .ide-console-line.is-info {
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    .ide-container {
+      height: 750px;
+    }
+    .ide-split-pane {
+      flex-direction: column;
+    }
+    .ide-preview-wrapper {
+      border-left: none;
+      border-top: 1px solid var(--border);
+    }
+    .ide-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 10px;
+    }
+    .ide-toolbar-left, .ide-toolbar-right {
+      justify-content: space-between;
+    }
+  }
+
+
 </style>
 </head>
 <body>
@@ -1039,6 +1301,508 @@
 
   function getCodeView(id){ return codeViewByNote[id] || 'code'; }
   function setCodeView(id, v){ codeViewByNote[id] = v; }
+
+  let monacoEditorInstance = null;
+  let pyodideInstance = null;
+  let pyodideLoadingPromise = null;
+  let monacoLoadingPromise = null;
+  let isExecuting = false;
+  let previewDebounceTimer = null;
+
+  function loadMonaco() {
+    if (window.monaco) return Promise.resolve(window.monaco);
+    if (monacoLoadingPromise) return monacoLoadingPromise;
+    monacoLoadingPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.js';
+      script.onload = () => {
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+        require(['vs/editor/editor.main'], () => {
+          resolve(window.monaco);
+        }, (err) => {
+          reject(err);
+        });
+      };
+      script.onerror = (err) => {
+        monacoLoadingPromise = null;
+        reject(err);
+      };
+      document.head.appendChild(script);
+    });
+    return monacoLoadingPromise;
+  }
+
+  function loadPyodideInstance(onStdout, onStderr) {
+    if (pyodideInstance) return Promise.resolve(pyodideInstance);
+    if (pyodideLoadingPromise) return pyodideLoadingPromise;
+    pyodideLoadingPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js';
+      script.onload = async () => {
+        try {
+          pyodideInstance = await loadPyodide({
+            stdout: onStdout,
+            stderr: onStderr
+          });
+          resolve(pyodideInstance);
+        } catch (err) {
+          pyodideLoadingPromise = null;
+          reject(err);
+        }
+      };
+      script.onerror = (err) => {
+        pyodideLoadingPromise = null;
+        reject(err);
+      };
+      document.head.appendChild(script);
+    });
+    return pyodideLoadingPromise;
+  }
+
+  // --- Code Simulator Helpers ---
+  function appendConsoleLog(message, type = 'log') {
+    const logsEl = document.getElementById('ideConsoleLogs');
+    if (!logsEl) return;
+    const line = document.createElement('div');
+    line.className = 'ide-console-line ' + (type === 'error' ? 'is-error' : type === 'warn' ? 'is-warn' : type === 'info' ? 'is-info' : '');
+    line.textContent = message;
+    logsEl.appendChild(line);
+    logsEl.scrollTop = logsEl.scrollHeight;
+  }
+
+  function clearConsole() {
+    const logsEl = document.getElementById('ideConsoleLogs');
+    if (logsEl) logsEl.innerHTML = '';
+    const statusEl = document.getElementById('ideConsoleStatus');
+    if (statusEl) statusEl.textContent = '';
+    const timeEl = document.getElementById('ideConsoleTime');
+    if (timeEl) timeEl.textContent = '';
+  }
+
+  function updateConsoleStatus(text, isError = false) {
+    const statusEl = document.getElementById('ideConsoleStatus');
+    if (statusEl) {
+      statusEl.textContent = text;
+      statusEl.style.color = isError ? 'var(--danger)' : '';
+    }
+  }
+
+  function updateConsoleTime(durationMs) {
+    const timeEl = document.getElementById('ideConsoleTime');
+    if (timeEl) {
+      timeEl.textContent = `${durationMs}ms`;
+    }
+  }
+
+  function stopExecution() {
+    isExecuting = false;
+    updateConsoleStatus('Stopped', false);
+    const runnerFrame = document.getElementById('jsRunnerFrame');
+    if (runnerFrame) {
+      runnerFrame.srcdoc = '';
+      runnerFrame.remove();
+    }
+    appendConsoleLog('Execution stopped.', 'info');
+  }
+
+  function updatePreview(code) {
+    const frame = document.getElementById('idePreviewFrame');
+    if (!frame) return;
+    
+    const consoleScript = `
+      <script>
+        (function(){
+          function send(type, args){
+            try{
+              var msg = Array.prototype.map.call(args, function(a){
+                try {
+                  if (a === undefined) return 'undefined';
+                  if (a === null) return 'null';
+                  return typeof a === 'object' ? JSON.stringify(a) : String(a);
+                } catch(e) { return String(a); }
+              }).join(' ');
+              window.parent.postMessage({type: 'js-console', logType: type, message: msg}, '*');
+            }catch(e){}
+          }
+          window.console.log = function(){ send('log', arguments); };
+          window.console.error = function(){ send('error', arguments); };
+          window.console.warn = function(){ send('warn', arguments); };
+          window.console.info = function(){ send('info', arguments); };
+          window.onerror = function(msg, url, line){ send('error', [msg + " (line " + line + ")"]); return true; };
+        })();
+      <\/script>
+    `;
+    
+    let htmlContent = code;
+    const isFullDoc = /^<!DOCTYPE|<html[\s>]/i.test(code.trim());
+    
+    if (isFullDoc) {
+      if (/<head[\s>]/i.test(htmlContent)) {
+        htmlContent = htmlContent.replace(/<head([^>]*)>/i, `<head$1>${consoleScript}`);
+      } else {
+        htmlContent = consoleScript + htmlContent;
+      }
+    } else {
+      htmlContent = `<!DOCTYPE html><html><head><meta charset="utf-8">${consoleScript}</head><body>${code}</body></html>`;
+    }
+    frame.srcdoc = htmlContent;
+  }
+
+  function debounceUpdatePreview(note) {
+    clearTimeout(previewDebounceTimer);
+    previewDebounceTimer = setTimeout(() => {
+      const active = getActive();
+      if (active && active.id === note.id && active.language === 'html' && monacoEditorInstance) {
+        updatePreview(monacoEditorInstance.getValue());
+      }
+    }, 500);
+  }
+
+  function formatCode() {
+    if (monacoEditorInstance) {
+      monacoEditorInstance.trigger('editor', 'editor.action.formatDocument', null);
+      showToast('Formatted code');
+    }
+  }
+
+  function copyCode() {
+    if (monacoEditorInstance) {
+      const value = monacoEditorInstance.getValue();
+      navigator.clipboard.writeText(value).then(() => {
+        showToast('Copied code to clipboard');
+      }).catch(() => {
+        showToast('Failed to copy code');
+      });
+    }
+  }
+
+  function downloadCodeFile() {
+    const note = getActive();
+    if (!note) return;
+    const value = monacoEditorInstance ? monacoEditorInstance.getValue() : note.content;
+    const extMap = { 
+      javascript: 'js', 
+      html: 'html', 
+      python: 'py',
+      typescript: 'ts',
+      cpp: 'cpp',
+      java: 'java',
+      csharp: 'cs',
+      go: 'go',
+      rust: 'rs',
+      php: 'php',
+      ruby: 'rb',
+      sql: 'sql',
+      shell: 'sh',
+      css: 'css',
+      json: 'json',
+      markdown: 'md'
+    };
+    const ext = extMap[note.language || 'javascript'] || 'txt';
+    const filename = `${(note.title || 'untitled').replace(/[^\w\- ]/g,'').trim() || 'untitled'}.${ext}`;
+    
+    const blob = new Blob([value], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`Downloaded ${filename}`);
+  }
+
+  function getMonacoTheme(note) {
+    if (!note || !note.ideTheme || note.ideTheme === 'sync') {
+      return theme === 'dark' ? 'vs-dark' : 'vs';
+    }
+    return note.ideTheme;
+  }
+
+  function applyMonacoThemeForActiveNote() {
+    if (window.monaco && monacoEditorInstance) {
+      const note = getActive();
+      const mTheme = getMonacoTheme(note);
+      window.monaco.editor.setTheme(mTheme);
+    }
+  }
+
+  async function runCode() {
+    const note = getActive();
+    if (!note || note.type !== 'code') return;
+    
+    const code = monacoEditorInstance ? monacoEditorInstance.getValue() : note.content;
+    const language = note.language || 'javascript';
+    
+    clearConsole();
+    isExecuting = true;
+    updateConsoleStatus('Running...');
+    
+    if (language === 'javascript') {
+      const startTime = performance.now();
+      window.lastJsExecutionStart = startTime;
+      
+      let runnerFrame = document.getElementById('jsRunnerFrame');
+      if (runnerFrame) runnerFrame.remove();
+      
+      runnerFrame = document.createElement('iframe');
+      runnerFrame.id = 'jsRunnerFrame';
+      runnerFrame.style.display = 'none';
+      document.body.appendChild(runnerFrame);
+      
+      const consoleScript = `
+        <script>
+          (function(){
+            function send(type, args){
+              try{
+                var msg = Array.prototype.map.call(args, function(a){
+                  try {
+                    if (a === undefined) return 'undefined';
+                    if (a === null) return 'null';
+                    return typeof a === 'object' ? JSON.stringify(a) : String(a);
+                  } catch(e) { return String(a); }
+                }).join(' ');
+                window.parent.postMessage({type: 'js-console', logType: type, message: msg}, '*');
+              }catch(e){}
+            }
+            window.console.log = function(){ send('log', arguments); };
+            window.console.error = function(){ send('error', arguments); };
+            window.console.warn = function(){ send('warn', arguments); };
+            window.console.info = function(){ send('info', arguments); };
+            window.onerror = function(msg, url, line){ send('error', [msg + " (line " + line + ")"]); return true; };
+          })();
+        <\/script>
+      `;
+      
+      const htmlContent = `<!DOCTYPE html><html><head>${consoleScript}</head><body><script>${code}<\/script></body></html>`;
+      runnerFrame.srcdoc = htmlContent;
+      
+      setTimeout(() => {
+        if (isExecuting) {
+          isExecuting = false;
+          const duration = (performance.now() - startTime).toFixed(0);
+          updateConsoleTime(duration);
+          const statusEl = document.getElementById('ideConsoleStatus');
+          if (statusEl && statusEl.textContent === 'Running...') {
+            updateConsoleStatus('Finished');
+          }
+        }
+      }, 100);
+      
+    } else if (language === 'html') {
+      const startTime = performance.now();
+      updatePreview(code);
+      const duration = (performance.now() - startTime).toFixed(0);
+      updateConsoleTime(duration);
+      updateConsoleStatus('Preview Updated');
+      isExecuting = false;
+      
+    } else if (language === 'python') {
+      const startTime = performance.now();
+      try {
+        updateConsoleStatus('Loading Pyodide...');
+        const pyodide = await loadPyodideInstance(
+          (text) => {
+            if (text) appendConsoleLog(text, 'log');
+          },
+          (text) => {
+            if (text) appendConsoleLog(text, 'error');
+          }
+        );
+        updateConsoleStatus('Running...');
+        const result = await pyodide.runPythonAsync(code);
+        
+        isExecuting = false;
+        const duration = (performance.now() - startTime).toFixed(0);
+        updateConsoleTime(duration);
+        updateConsoleStatus('Finished');
+        
+        if (result !== undefined && result !== null && String(result) !== 'None') {
+          appendConsoleLog(String(result), 'log');
+        }
+      } catch (err) {
+        isExecuting = false;
+        const duration = (performance.now() - startTime).toFixed(0);
+        updateConsoleTime(duration);
+        updateConsoleStatus('Failed', true);
+        appendConsoleLog(String(err), 'error');
+      }
+    } else {
+      isExecuting = false;
+      const langNames = {
+        typescript: 'TypeScript',
+        cpp: 'C++',
+        java: 'Java',
+        csharp: 'C#',
+        go: 'Go',
+        rust: 'Rust',
+        php: 'PHP',
+        ruby: 'Ruby',
+        sql: 'SQL',
+        shell: 'Shell (Bash)',
+        css: 'CSS',
+        json: 'JSON',
+        markdown: 'Markdown'
+      };
+      const name = langNames[language] || language;
+      updateConsoleStatus('Simulation Not Supported');
+      appendConsoleLog(`Direct browser simulation is not supported for ${name}.`, 'info');
+      appendConsoleLog("You can write, format, copy, and download your code using the IDE controls.", 'info');
+    }
+  }
+  }
+
+  function initializeCodeSimulator(note) {
+    if (monacoEditorInstance) {
+      monacoEditorInstance.dispose();
+      monacoEditorInstance = null;
+    }
+    
+    loadMonaco().then(monaco => {
+      const container = document.getElementById('monacoEditorContainer');
+      if (!container) return;
+      
+      const active = getActive();
+      if (!active || active.id !== note.id) return;
+      
+      const language = note.language || 'javascript';
+      const mTheme = getMonacoTheme(note);
+      
+      monacoEditorInstance = monaco.editor.create(container, {
+        value: note.content || '',
+        language: language,
+        theme: mTheme,
+        automaticLayout: true,
+        lineNumbers: 'on',
+        minimap: { enabled: true },
+        folding: true,
+        bracketPairColorization: { enabled: true },
+        autoClosingBrackets: 'always',
+        suggestOnTriggerCharacters: true,
+        wordBasedSuggestions: 'allDocuments',
+        fontSize: 14,
+        fontFamily: "'JetBrains Mono', Consolas, monospace",
+        roundedSelection: true,
+        scrollBeyondLastLine: false,
+        cursorBlinking: 'smooth',
+        cursorSmoothCaretAnimation: 'on',
+        padding: { top: 10, bottom: 10 }
+      });
+      
+      if (language === 'html') {
+        updatePreview(note.content || '');
+      }
+      
+      monacoEditorInstance.onDidChangeModelContent(() => {
+        const val = monacoEditorInstance.getValue();
+        note.content = val;
+        queueSave(note);
+        updateMetaRow(note);
+        
+        if (note.language === 'html') {
+          debounceUpdatePreview(note);
+        }
+      });
+      
+      monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+        runCode();
+      });
+      
+      monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.S, () => {
+        clearTimeout(saveTimer);
+        note.updatedAt = Date.now();
+        persistNote(note);
+        persistIndex();
+        setSaveStatus('saved', note);
+        renderSidebarCardOnly(note);
+        showToast('Saved note');
+      });
+      
+      monacoEditorInstance.focus();
+      bindIDEControls(note);
+    }).catch(err => {
+      console.error("Monaco Editor failed to load:", err);
+      const container = document.getElementById('monacoEditorContainer');
+      if (container) {
+        container.innerHTML = `<div style="padding:20px;color:var(--danger)">Error loading code editor. Please check your internet connection.</div>`;
+      }
+    });
+  }
+
+  function bindIDEControls(note) {
+    const langSelect = document.getElementById('ideLanguageSelect');
+    const runBtn = document.getElementById('ideRunBtn');
+    const stopBtn = document.getElementById('ideStopBtn');
+    const formatBtn = document.getElementById('ideFormatBtn');
+    const copyBtn = document.getElementById('ideCopyBtn');
+    const downloadBtn = document.getElementById('ideDownloadBtn');
+    const themeSelect = document.getElementById('ideThemeSelect');
+    const clearBtn = document.getElementById('ideConsoleClearBtn');
+    const consoleResizer = document.getElementById('ideConsoleResizer');
+    const consolePanel = document.getElementById('ideConsolePanel');
+    
+    if (langSelect) {
+      langSelect.addEventListener('change', (e) => {
+        const newLang = e.target.value;
+        note.language = newLang;
+        queueSave(note);
+        
+        if (window.monaco && monacoEditorInstance) {
+          window.monaco.editor.setModelLanguage(monacoEditorInstance.getModel(), newLang);
+        }
+        
+        const previewWrap = document.getElementById('idePreviewWrapper');
+        if (previewWrap) {
+          previewWrap.style.display = newLang === 'html' ? 'block' : 'none';
+        }
+        
+        if (newLang === 'html') {
+          updatePreview(monacoEditorInstance ? monacoEditorInstance.getValue() : note.content);
+        }
+        
+        if (monacoEditorInstance) monacoEditorInstance.layout();
+      });
+    }
+    
+    if (runBtn) runBtn.addEventListener('click', runCode);
+    if (stopBtn) stopBtn.addEventListener('click', stopExecution);
+    if (formatBtn) formatBtn.addEventListener('click', formatCode);
+    if (copyBtn) copyBtn.addEventListener('click', copyCode);
+    if (downloadBtn) downloadBtn.addEventListener('click', downloadCodeFile);
+    
+    if (themeSelect) {
+      themeSelect.addEventListener('change', (e) => {
+        note.ideTheme = e.target.value;
+        queueSave(note);
+        applyMonacoThemeForActiveNote();
+      });
+    }
+    
+    if (clearBtn) clearBtn.addEventListener('click', clearConsole);
+    
+    if (consoleResizer && consolePanel) {
+      consoleResizer.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const startY = e.clientY;
+        const startHeight = parseInt(document.defaultView.getComputedStyle(consolePanel).height, 10);
+        
+        function doDrag(ev) {
+          const newHeight = startHeight - (ev.clientY - startY);
+          if (newHeight >= 80 && newHeight <= 500) {
+            consolePanel.style.height = `${newHeight}px`;
+            if (monacoEditorInstance) monacoEditorInstance.layout();
+          }
+        }
+        
+        function stopDrag() {
+          document.documentElement.removeEventListener('mousemove', doDrag, false);
+          document.documentElement.removeEventListener('mouseup', stopDrag, false);
+        }
+        
+        document.documentElement.addEventListener('mousemove', doDrag, false);
+        document.documentElement.addEventListener('mouseup', stopDrag, false);
+      });
+    }
+  }
 
   // Wraps arbitrary note code into a full HTML document that can be run
   // inside a sandboxed iframe (srcdoc), the way a live code preview works.
@@ -1559,6 +2323,10 @@
 
   // ---------- Rendering: editor ----------
   function renderEditor(){
+    if (monacoEditorInstance) {
+      monacoEditorInstance.dispose();
+      monacoEditorInstance = null;
+    }
     const note = getActive();
     $('#typeSelect').style.visibility = note ? 'visible' : 'hidden';
     $('#duplicateBtn').style.visibility = note ? 'visible' : 'hidden';
@@ -1650,24 +2418,95 @@
         <div class="todo-progress" id="todoProgress"></div>
       `;
     } else if(note.type === 'code'){
-      if(getCodeView(note.id) === 'preview'){
-        const trimmed = (note.content || '').trim();
-        if(!trimmed){
-          bodyHtml = `<div class="content-area code-mode code-preview-empty" id="codePreview">Nothing to run yet — switch to Code and write something.</div>`;
+      if (!note.language) {
+        if (note.content && (note.content.includes('import ') || note.content.includes('def '))) {
+          note.language = 'python';
+        } else if (note.content && note.content.includes('<html')) {
+          note.language = 'html';
         } else {
-          const doc = buildPreviewDoc(note.content);
-          bodyHtml = `
-            <div class="code-preview-wrap">
-              <iframe class="code-preview-frame" id="codePreviewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups" srcdoc="${escapeHtml(doc)}"></iframe>
-            </div>
-            <div class="code-console-wrap" id="codeConsoleWrap">
-              <div class="code-console-head">Console</div>
-              <div class="code-console-log" id="codeConsoleLog"></div>
-            </div>`;
+          note.language = 'javascript';
         }
-      } else {
-        bodyHtml = `<textarea class="content-area code-mode" id="contentArea" spellcheck="false" placeholder="// start typing code…">${escapeHtml(note.content)}</textarea>`;
       }
+      
+      const isHtml = note.language === 'html';
+      
+      bodyHtml = `
+        <div class="ide-container">
+          <div class="ide-toolbar">
+            <div class="ide-toolbar-left">
+              <select class="ide-select" id="ideLanguageSelect" title="Select language">
+                <option value="javascript" ${note.language === 'javascript' ? 'selected' : ''}>JavaScript</option>
+                <option value="html" ${note.language === 'html' ? 'selected' : ''}>HTML/CSS/JS (Live Preview)</option>
+                <option value="python" ${note.language === 'python' ? 'selected' : ''}>Python</option>
+                <option value="typescript" ${note.language === 'typescript' ? 'selected' : ''}>TypeScript</option>
+                <option value="cpp" ${note.language === 'cpp' ? 'selected' : ''}>C++</option>
+                <option value="java" ${note.language === 'java' ? 'selected' : ''}>Java</option>
+                <option value="csharp" ${note.language === 'csharp' ? 'selected' : ''}>C#</option>
+                <option value="go" ${note.language === 'go' ? 'selected' : ''}>Go</option>
+                <option value="rust" ${note.language === 'rust' ? 'selected' : ''}>Rust</option>
+                <option value="php" ${note.language === 'php' ? 'selected' : ''}>PHP</option>
+                <option value="ruby" ${note.language === 'ruby' ? 'selected' : ''}>Ruby</option>
+                <option value="sql" ${note.language === 'sql' ? 'selected' : ''}>SQL</option>
+                <option value="shell" ${note.language === 'shell' ? 'selected' : ''}>Shell (Bash)</option>
+                <option value="css" ${note.language === 'css' ? 'selected' : ''}>CSS</option>
+                <option value="json" ${note.language === 'json' ? 'selected' : ''}>JSON</option>
+                <option value="markdown" ${note.language === 'markdown' ? 'selected' : ''}>Markdown</option>
+              </select>
+              <button class="ide-btn run-btn" id="ideRunBtn" title="Run (Ctrl+Enter)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Run</span>
+              </button>
+              <button class="ide-btn stop-btn" id="ideStopBtn" title="Stop">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                <span>Stop</span>
+              </button>
+              <button class="ide-btn" id="ideFormatBtn" title="Format code">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM12 6v12M3 12h18"/></svg>
+                <span>Format</span>
+              </button>
+            </div>
+            <div class="ide-toolbar-right">
+              <button class="ide-btn" id="ideCopyBtn" title="Copy code">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>Copy</span>
+              </button>
+              <button class="ide-btn" id="ideDownloadBtn" title="Download file">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <span>Download</span>
+              </button>
+              <select class="ide-select" id="ideThemeSelect" title="Editor Theme">
+                <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
+                <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
+                <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="ide-split-pane">
+            <div class="ide-editor-wrapper">
+              <div id="monacoEditorContainer" style="width:100%; height:100%;"></div>
+            </div>
+            <div class="ide-preview-wrapper" id="idePreviewWrapper" style="display: ${isHtml ? 'block' : 'none'};">
+              <iframe id="idePreviewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
+            </div>
+          </div>
+          
+          <div class="ide-console-panel" id="ideConsolePanel" style="height: 180px;">
+            <div class="ide-console-resizer" id="ideConsoleResizer"></div>
+            <div class="ide-console-header">
+              <div class="ide-console-header-left">
+                <span>Console Output</span>
+                <span class="ide-console-status" id="ideConsoleStatus"></span>
+              </div>
+              <div class="ide-console-header-right">
+                <span class="ide-console-status" id="ideConsoleTime"></span>
+                <button class="ide-console-clear" id="ideConsoleClearBtn">Clear Console</button>
+              </div>
+            </div>
+            <div class="ide-console-logs" id="ideConsoleLogs"></div>
+          </div>
+        </div>
+      `;
     } else {
       toolbarHtml = richToolbarHtml;
       bodyHtml = `<div class="content-area rich ${rulesOn ? 'ruled' : ''}" id="richArea" contenteditable="true" data-placeholder="Start writing…">${note.content || ''}</div>`;
@@ -1758,14 +2597,7 @@
     if(note.type === 'todo'){
       bindTodoEvents(note);
     } else if(note.type === 'code'){
-      const ta = $('#contentArea');
-      autoResize(ta);
-      ta.addEventListener('input', () => {
-        note.content = ta.value;
-        queueSave(note);
-        updateMetaRow(note);
-        autoResize(ta);
-      });
+      initializeCodeSimulator(note);
     } else {
       bindRichEvents(note);
     }
@@ -2277,6 +3109,7 @@
     // color, so a custom accent needs recomputing whenever the
     // theme switches, or light/dark would show a stale blend.
     if(accentColor) applyAccent(accentColor, false);
+    applyMonacoThemeForActiveNote();
     if(persist) await persistSettings();
   }
 
@@ -2440,16 +3273,28 @@
   });
 
   window.addEventListener('message', (e) => {
-    if(!e.data || !e.data.__notepadConsole) return;
-    const log = document.getElementById('codeConsoleLog');
-    const wrap = document.getElementById('codeConsoleWrap');
-    if(!log || !wrap) return;
-    const line = document.createElement('div');
-    line.className = 'code-console-line' + (e.data.type === 'error' ? ' is-error' : e.data.type === 'warn' ? ' is-warn' : '');
-    line.textContent = e.data.message;
-    log.appendChild(line);
-    log.scrollTop = log.scrollHeight;
-    wrap.classList.add('show');
+    if(e.data && e.data.__notepadConsole) {
+      const log = document.getElementById('codeConsoleLog');
+      const wrap = document.getElementById('codeConsoleWrap');
+      if(!log || !wrap) return;
+      const line = document.createElement('div');
+      line.className = 'code-console-line' + (e.data.type === 'error' ? ' is-error' : e.data.type === 'warn' ? ' is-warn' : '');
+      line.textContent = e.data.message;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+      wrap.classList.add('show');
+    }
+
+    if (e.data && e.data.type === 'js-console') {
+      appendConsoleLog(e.data.message, e.data.logType);
+      if (e.data.logType === 'error') {
+        updateConsoleStatus('Failed with errors', true);
+      }
+      if (window.lastJsExecutionStart) {
+        const duration = (performance.now() - window.lastJsExecutionStart).toFixed(0);
+        updateConsoleTime(duration);
+      }
+    }
   });
   $('#searchInput').addEventListener('input', renderSidebar);
 
@@ -2461,10 +3306,18 @@
   $('#borderColorInput').addEventListener('input', (e) => applyBorderColor(e.target.value, true));
   $('#borderBtn').addEventListener('dblclick', (e) => { e.preventDefault(); resetBorderColor(true); });
 
-  $('#focusToggle').addEventListener('click', () => app.classList.toggle('focus-mode'));
+  $('#focusToggle').addEventListener('click', () => {
+    app.classList.toggle('focus-mode');
+    setTimeout(() => { if (monacoEditorInstance) monacoEditorInstance.layout(); }, 350);
+  });
   $('#sidebarToggle').addEventListener('click', () => {
     if(window.innerWidth <= 760){ app.classList.toggle('sidebar-open'); }
     else{ app.classList.toggle('focus-mode'); }
+    setTimeout(() => { if (monacoEditorInstance) monacoEditorInstance.layout(); }, 350);
+  });
+
+  window.addEventListener('resize', () => {
+    if (monacoEditorInstance) monacoEditorInstance.layout();
   });
 
   function setFilter(next){
