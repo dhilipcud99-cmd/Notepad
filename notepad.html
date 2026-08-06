@@ -440,6 +440,23 @@
     flex:1;
     overflow-y:auto;
   }
+  .editor-scroll.project-mode {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .editor-scroll.project-mode .editor-inner {
+    flex: 1;
+    min-height: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
   .editor-scroll::-webkit-scrollbar{ width:8px; }
   .editor-scroll::-webkit-scrollbar-thumb{ background:var(--border); border-radius:4px; }
 
@@ -1124,7 +1141,6 @@
   .project-ide {
     display: flex;
     flex: 1;
-    height: 100%;
     min-height: 0;
     background: var(--bg);
     overflow: hidden;
@@ -1268,8 +1284,10 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    min-height: 0;
     height: 100%;
     position: relative;
+    overflow: hidden;
   }
 
   .project-tabs-bar {
@@ -1355,12 +1373,14 @@
     flex-direction: column;
     min-height: 0;
     position: relative;
+    overflow: hidden;
   }
 
   .project-editor-container {
     flex: 1;
     min-height: 0;
     position: relative;
+    overflow: hidden;
   }
 
   /* Bottom Console Panel */
@@ -1473,6 +1493,20 @@
     height: 48px;
     stroke-width: 1.5;
   }
+
+  .project-menu-btn .project-count {
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    display: inline-block;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -1579,7 +1613,6 @@
         <select class="type-select" id="typeSelect">
           <option value="note">Note</option>
           <option value="code">Code</option>
-          <option value="project">Project (Multi-file)</option>
           <option value="todo">To-do</option>
           <option value="journal">Journal</option>
         </select>
@@ -1593,6 +1626,24 @@
         </div>
       </div>
       <div class="topbar-right">
+        <div class="projects-menu" id="projectsMenu">
+          <button class="project-menu-btn icon-btn" id="projectMenuBtn" aria-haspopup="true" aria-expanded="false" title="Projects">
+            <span class="project-count" id="projectCount">0</span>
+          </button>
+          <div class="project-panel" id="projectPanel">
+            <div class="project-panel-header">
+              <div class="search-wrap project-search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                <input id="projectSearchInput" type="text" placeholder="Search projects…">
+              </div>
+              <button class="new-note-btn project-new-btn" id="newProjectBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                New project
+              </button>
+            </div>
+            <div class="project-list" id="projectList"></div>
+          </div>
+        </div>
         <span class="save-status" id="saveStatus"><span class="dot"></span>Saved</span>
         <button class="icon-btn" id="pinToggle" title="Pin note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M8 3h8l-1 7 3 3H6l3-3-1-7Z"/></svg>
@@ -1735,7 +1786,8 @@
   function getCodeView(id){ return codeViewByNote[id] || 'code'; }
   function setCodeView(id, v){ codeViewByNote[id] = v; }
 
-  let monacoEditorInstance = null;
+  let monacoEditorInstance = null;  // used by single-file code notes
+  let projectMonacoInstance = null; // used by project IDE
   let pyodideInstance = null;
   let pyodideLoadingPromise = null;
   let monacoLoadingPromise = null;
@@ -2008,11 +2060,10 @@
   }
 
   function applyMonacoThemeForActiveNote() {
-    if (window.monaco && monacoEditorInstance) {
-      const note = getActive();
-      const mTheme = getMonacoTheme(note);
-      window.monaco.editor.setTheme(mTheme);
-    }
+    if (!window.monaco) return;
+    const note = getActive();
+    const mTheme = getMonacoTheme(note);
+    window.monaco.editor.setTheme(mTheme);
   }
 
   async function runCode() {
@@ -2314,9 +2365,9 @@
   }
 
   function initializeProjectIDE(note) {
-    if (monacoEditorInstance) {
-      monacoEditorInstance.dispose();
-      monacoEditorInstance = null;
+    if (projectMonacoInstance) {
+      projectMonacoInstance.dispose();
+      projectMonacoInstance = null;
     }
 
     const treeEl = document.getElementById('projectExplorerTree');
@@ -2491,18 +2542,16 @@
       renderTabs();
       renderExplorer();
 
-      if (emptyState && editorContainer) {
-        emptyState.style.display = 'none';
-        editorContainer.style.display = 'block';
-      }
+      if (emptyState) emptyState.style.display = 'none';
+      if (editorContainer) editorContainer.style.display = 'flex';
 
       loadMonaco().then(monaco => {
         const monacoContainer = document.getElementById('projectMonacoContainer');
         if (!monacoContainer) return;
 
-        if (!monacoEditorInstance) {
+        if (!projectMonacoInstance) {
           const mTheme = getMonacoTheme(note);
-          monacoEditorInstance = monaco.editor.create(monacoContainer, {
+          projectMonacoInstance = monaco.editor.create(monacoContainer, {
             theme: mTheme,
             automaticLayout: true,
             lineNumbers: 'on',
@@ -2521,10 +2570,10 @@
             padding: { top: 10, bottom: 10 }
           });
 
-          monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+          projectMonacoInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
             runProject();
           });
-          monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.S, () => {
+          projectMonacoInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.S, () => {
             clearTimeout(saveTimer);
             note.updatedAt = Date.now();
             persistNote(note);
@@ -2550,8 +2599,9 @@
             model.setValue(note.files[path].content);
           }
         }
-        monacoEditorInstance.setModel(model);
-        monacoEditorInstance.focus();
+        projectMonacoInstance.setModel(model);
+        projectMonacoInstance.focus();
+        setTimeout(() => { if (projectMonacoInstance) projectMonacoInstance.layout(); }, 50);
       });
     }
 
@@ -2565,13 +2615,9 @@
       renderExplorer();
 
       if (!note.activeFile) {
-        if (emptyState && editorContainer) {
-          emptyState.style.display = 'flex';
-          editorContainer.style.display = 'none';
-        }
-        if (monacoEditorInstance) {
-          monacoEditorInstance.setModel(null);
-        }
+        if (emptyState) emptyState.style.display = 'flex';
+        if (editorContainer) editorContainer.style.display = 'none';
+        if (projectMonacoInstance) projectMonacoInstance.setModel(null);
       } else {
         openFile(note.activeFile);
       }
@@ -2697,10 +2743,8 @@
       if (note.activeFile) {
         openFile(note.activeFile);
       } else {
-        if (emptyState && editorContainer) {
-          emptyState.style.display = 'flex';
-          editorContainer.style.display = 'none';
-        }
+        if (emptyState) emptyState.style.display = 'flex';
+        if (editorContainer) editorContainer.style.display = 'none';
       }
       showToast(`Deleted ${isFolder ? 'folder' : 'file'}`);
     }
@@ -2722,8 +2766,8 @@
     if (runBtn) runBtn.onclick = runProject;
     if (stopBtn) stopBtn.onclick = stopExecution;
     if (formatBtn) formatBtn.onclick = () => {
-      if (monacoEditorInstance) {
-        monacoEditorInstance.trigger('editor', 'editor.action.formatDocument', null);
+      if (projectMonacoInstance) {
+        projectMonacoInstance.trigger('editor', 'editor.action.formatDocument', null);
         showToast('Formatted file');
       }
     };
@@ -2756,7 +2800,7 @@
           const newHeight = startHeight - (ev.clientY - startY);
           if (newHeight >= 60 && newHeight <= 500) {
             consolePanel.style.height = `${newHeight}px`;
-            if (monacoEditorInstance) monacoEditorInstance.layout();
+            if (projectMonacoInstance) projectMonacoInstance.layout();
           }
         }
         function stopDrag() {
@@ -2793,10 +2837,8 @@
     if (note.activeFile) {
       openFile(note.activeFile);
     } else {
-      if (emptyState && editorContainer) {
-        emptyState.style.display = 'flex';
-        editorContainer.style.display = 'none';
-      }
+      if (emptyState) emptyState.style.display = 'flex';
+      if (editorContainer) editorContainer.style.display = 'none';
     }
   }
 
@@ -3574,7 +3616,13 @@
       monacoEditorInstance.dispose();
       monacoEditorInstance = null;
     }
+    if (projectMonacoInstance) {
+      projectMonacoInstance.dispose();
+      projectMonacoInstance = null;
+    }
     const note = getActive();
+    const editorScroll = $('#editorScroll');
+    if (editorScroll) editorScroll.classList.toggle('project-mode', !!(note && note.type === 'project'));
     $('#typeSelect').style.visibility = note ? 'visible' : 'hidden';
     $('#duplicateBtn').style.visibility = note ? 'visible' : 'hidden';
     $('#deleteBtn').style.visibility = note ? 'visible' : 'hidden';
@@ -3836,10 +3884,10 @@
             <div class="project-tabs-bar" id="projectTabsBar"></div>
             
             <div class="project-main-area">
-              <div class="project-editor-container" id="projectEditorContainer" style="display: block; width:100%; height:100%;">
-                <div id="projectMonacoContainer" style="width:100%; height:100%;"></div>
+              <div class="project-editor-container" id="projectEditorContainer" style="display:flex;">
+                <div id="projectMonacoContainer" style="width:100%; height:100%; position:absolute; top:0; left:0; right:0; bottom:0;"></div>
               </div>
-              <div class="project-empty-state" id="projectEmptyState" style="display: none;">
+              <div class="project-empty-state" id="projectEmptyState" style="display:none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
                 <span>No active file open. Select a file from the explorer to edit.</span>
               </div>
@@ -3884,13 +3932,17 @@
         <input type="text" class="tag-add-input" id="tagAddInput" placeholder="+ add tag">
       </div>`;
 
-    editorInner.innerHTML = `
-      ${toolbarHtml}
-      <input type="text" class="title-input" id="titleInput" placeholder="Untitled" value="${escapeHtml(note.title)}">
-      <div class="meta-row" id="metaRow"></div>
-      ${tagRowHtml}
-      ${bodyHtml}
-    `;
+    if (note && note.type === 'project') {
+      editorInner.innerHTML = bodyHtml;
+    } else {
+      editorInner.innerHTML = `
+        ${toolbarHtml}
+        <input type="text" class="title-input" id="titleInput" placeholder="Untitled" value="${escapeHtml(note.title)}">
+        <div class="meta-row" id="metaRow"></div>
+        ${tagRowHtml}
+        ${bodyHtml}
+      `;
+    }
 
     updateMetaRow(note);
     bindEditorEvents(note);
@@ -3950,10 +4002,12 @@
 
   function bindEditorEvents(note){
     const titleInput = $('#titleInput');
-    titleInput.addEventListener('input', () => {
-      note.title = titleInput.value;
-      queueSave(note);
-    });
+    if (titleInput) {
+      titleInput.addEventListener('input', () => {
+        note.title = titleInput.value;
+        queueSave(note);
+      });
+    }
 
     if(note.type === 'todo'){
       bindTodoEvents(note);
@@ -4594,6 +4648,42 @@
   $('#pinToggle').addEventListener('click', togglePin);
   $('#rulesToggle').addEventListener('click', toggleRules);
 
+  const projectMenuBtn = $('#projectMenuBtn');
+  const projectPanel = $('#projectPanel');
+  const projectSearchInput = $('#projectSearchInput');
+  const newProjectBtn = $('#newProjectBtn');
+
+  if (projectMenuBtn) {
+    projectMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleProjectPanel();
+    });
+  }
+
+  if (projectPanel) {
+    projectPanel.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  document.addEventListener('click', () => {
+    closeProjectPanel();
+  });
+
+  if (projectSearchInput) {
+    projectSearchInput.addEventListener('input', () => {
+      renderProjectsPanel();
+    });
+  }
+
+  if (newProjectBtn) {
+    newProjectBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      createProject();
+      closeProjectPanel();
+    });
+  }
+
   $('#backupBtn').addEventListener('click', downloadBackup);
   $('#restoreBtn').addEventListener('click', () => $('#restoreFileInput').click());
   $('#restoreFileInput').addEventListener('change', (e) => {
@@ -4695,16 +4785,23 @@
 
   $('#focusToggle').addEventListener('click', () => {
     app.classList.toggle('focus-mode');
-    setTimeout(() => { if (monacoEditorInstance) monacoEditorInstance.layout(); }, 350);
+    setTimeout(() => {
+      if (monacoEditorInstance) monacoEditorInstance.layout();
+      if (projectMonacoInstance) projectMonacoInstance.layout();
+    }, 350);
   });
   $('#sidebarToggle').addEventListener('click', () => {
     if(window.innerWidth <= 760){ app.classList.toggle('sidebar-open'); }
     else{ app.classList.toggle('focus-mode'); }
-    setTimeout(() => { if (monacoEditorInstance) monacoEditorInstance.layout(); }, 350);
+    setTimeout(() => {
+      if (monacoEditorInstance) monacoEditorInstance.layout();
+      if (projectMonacoInstance) projectMonacoInstance.layout();
+    }, 350);
   });
 
   window.addEventListener('resize', () => {
     if (monacoEditorInstance) monacoEditorInstance.layout();
+    if (projectMonacoInstance) projectMonacoInstance.layout();
   });
 
   function setFilter(next){

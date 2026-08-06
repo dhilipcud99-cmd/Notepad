@@ -422,6 +422,101 @@
   .view-toggle button.active{ background:var(--ink); color:var(--bg); }
   [data-theme="dark"] .view-toggle button.active{ background:var(--ink); color:var(--bg); }
 
+  .projects-menu{ position:relative; }
+  .project-menu-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 12px;
+    border-radius:9px;
+    border:1px solid var(--border);
+    background:var(--bg-surface);
+    color:var(--ink);
+    font-size:12px;
+    font-weight:600;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .project-menu-btn:hover{ border-color:var(--accent); }
+  .project-count{
+    display:inline-flex;
+    min-width:24px;
+    height:24px;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-size:11px;
+    font-weight:700;
+    padding:0 8px;
+  }
+  .project-panel{
+    position:absolute;
+    right:0;
+    top:calc(100% + 8px);
+    width:320px;
+    max-height:420px;
+    background:var(--bg-surface);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    padding:14px;
+    display:none;
+    z-index:50;
+  }
+  .project-panel.open{ display:block; }
+  .project-panel-header{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .project-search-wrap{
+    flex:1;
+    min-width:160px;
+    position:relative;
+  }
+  .project-search-wrap svg{
+    position:absolute;
+    left:10px;
+    top:50%;
+    transform:translateY(-50%);
+    width:14px;
+    height:14px;
+    color:var(--ink-faint);
+    pointer-events:none;
+  }
+  .project-search-wrap input{
+    width:100%;
+    padding:8px 10px 8px 30px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--ink);
+    font-size:13px;
+    outline:none;
+  }
+  .project-new-btn{ white-space:nowrap; }
+  .project-list{
+    max-height:296px;
+    overflow-y:auto;
+    display:grid;
+    gap:8px;
+  }
+  .project-card{
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--bg-surface);
+    cursor:pointer;
+    transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+  }
+  .project-card:hover{ border-color:var(--accent); transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,0.08); }
+  .project-card.active{ border-color:var(--accent); background:var(--accent-soft); }
+  .project-card-title{ font-size:14px; font-weight:700; color:var(--ink); }
+  .project-card-meta{ margin-top:4px; font-size:12px; color:var(--ink-soft); }
+
   .type-select{
     appearance:none;
     border:1px solid var(--border);
@@ -449,6 +544,9 @@
     margin: 0 auto;
     padding: 44px 16px 120px;
     transition: width .3s ease, max-width .3s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
   }
   .app.focus-mode .editor-inner{ width: 90%; max-width: 1500px; }
 
@@ -1268,8 +1366,23 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    min-height: 0;
     height: 100%;
     position: relative;
+  }
+
+  .project-main-area {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .project-editor-container {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   .project-tabs-bar {
@@ -1361,6 +1474,9 @@
     flex: 1;
     min-height: 0;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   /* Bottom Console Panel */
@@ -1579,7 +1695,6 @@
         <select class="type-select" id="typeSelect">
           <option value="note">Note</option>
           <option value="code">Code</option>
-          <option value="project">Project (Multi-file)</option>
           <option value="todo">To-do</option>
           <option value="journal">Journal</option>
         </select>
@@ -1593,6 +1708,24 @@
         </div>
       </div>
       <div class="topbar-right">
+        <div class="projects-menu" id="projectsMenu">
+          <button class="project-menu-btn" id="projectMenuBtn" aria-haspopup="true" aria-expanded="false">
+            Projects <span class="project-count" id="projectCount">0</span>
+          </button>
+          <div class="project-panel" id="projectPanel">
+            <div class="project-panel-header">
+              <div class="search-wrap project-search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                <input id="projectSearchInput" type="text" placeholder="Search projects…">
+              </div>
+              <button class="new-note-btn project-new-btn" id="newProjectBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                New project
+              </button>
+            </div>
+            <div class="project-list" id="projectList"></div>
+          </div>
+        </div>
         <span class="save-status" id="saveStatus"><span class="dot"></span>Saved</span>
         <button class="icon-btn" id="pinToggle" title="Pin note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M8 3h8l-1 7 3 3H6l3-3-1-7Z"/></svg>
@@ -3426,7 +3559,7 @@
   }
 
   function filteredNotes(){
-    let list = notes.slice().sort((a,b)=> {
+    let list = notes.slice().filter(n => n.type !== 'project').sort((a,b)=> {
       if(!!b.pinned !== !!a.pinned) return (b.pinned?1:0) - (a.pinned?1:0);
       return b.updatedAt - a.updatedAt;
     });
@@ -3443,6 +3576,74 @@
       });
     }
     return list;
+  }
+
+  function filteredProjects(){
+    const q = $('#projectSearchInput') ? $('#projectSearchInput').value.trim().toLowerCase() : '';
+    let list = notes.slice().filter(n => n.type === 'project').sort((a,b)=> {
+      if(!!b.pinned !== !!a.pinned) return (b.pinned?1:0) - (a.pinned?1:0);
+      return b.updatedAt - a.updatedAt;
+    });
+    if(q){
+      list = list.filter(n => {
+        const inTitle = n.title.toLowerCase().includes(q);
+        const inFiles = Object.keys(n.files || {}).some(path => path.toLowerCase().includes(q));
+        return inTitle || inFiles;
+      });
+    }
+    return list;
+  }
+
+  function projectCardHtml(p){
+    return `
+      <div class="project-card ${p.id===activeId?'active':''}" data-id="${p.id}">
+        <div class="project-card-title">${escapeHtml(p.title || 'Untitled project')}</div>
+        <div class="project-card-meta">${TYPE_LABEL[p.type]} · ${fmtDate(p.updatedAt)}</div>
+      </div>
+    `;
+  }
+
+  function renderProjectsPanel(){
+    const list = filteredProjects();
+    const count = notes.filter(n => n.type === 'project').length;
+    const projectCount = $('#projectCount');
+    if(projectCount) projectCount.textContent = count;
+    const container = $('#projectList');
+    if(!container) return;
+    if(list.length === 0){
+      container.innerHTML = `<div class="empty-list">No projects yet.<br>Create a new project from the header.</div>`;
+      return;
+    }
+    container.innerHTML = list.map(projectCardHtml).join('');
+    container.querySelectorAll('.project-card').forEach(el => {
+      el.addEventListener('click', () => {
+        activeId = el.getAttribute('data-id');
+        renderSidebar();
+        renderEditor();
+        closeProjectPanel();
+      });
+    });
+  }
+
+  function closeProjectPanel(){
+    const panel = $('#projectPanel');
+    const button = $('#projectMenuBtn');
+    if(panel) panel.classList.remove('open');
+    if(button) button.setAttribute('aria-expanded','false');
+  }
+
+  function toggleProjectPanel(){
+    const panel = $('#projectPanel');
+    const button = $('#projectMenuBtn');
+    if(!panel || !button) return;
+    const isOpen = panel.classList.contains('open');
+    if(isOpen){
+      panel.classList.remove('open');
+      button.setAttribute('aria-expanded','false');
+    } else {
+      panel.classList.add('open');
+      button.setAttribute('aria-expanded','true');
+    }
   }
 
   // ---------- Rendering: sidebar ----------
@@ -3493,10 +3694,11 @@
   function renderSidebar(){
     renderTagFilterRow();
     const list = filteredNotes();
-    $('#noteCountLabel').textContent = `${notes.length} note${notes.length===1?'':'s'}`;
+    $('#noteCountLabel').textContent = `${notes.filter(n => n.type !== 'project').length} note${notes.filter(n => n.type !== 'project').length===1?'':'s'}`;
 
     if(list.length === 0){
       noteList.innerHTML = `<div class="empty-list">Nothing here yet.<br>Try a new search, or start a new note.</div>`;
+      renderProjectsPanel();
       return;
     }
 
@@ -3549,6 +3751,7 @@
     });
 
     renderBulkBar();
+    renderProjectsPanel();
   }
 
   function toggleSelected(id){
@@ -3592,7 +3795,9 @@
       monacoEditorInstance = null;
     }
     const note = getActive();
-    $('#typeSelect').style.visibility = note ? 'visible' : 'hidden';
+    const typeSelect = $('#typeSelect');
+    const isProject = note && note.type === 'project';
+    if(typeSelect) typeSelect.style.visibility = note && !isProject ? 'visible' : 'hidden';
     $('#duplicateBtn').style.visibility = note ? 'visible' : 'hidden';
     $('#deleteBtn').style.visibility = note ? 'visible' : 'hidden';
     $('#pinToggle').style.visibility = note ? 'visible' : 'hidden';
@@ -3613,7 +3818,9 @@
       return;
     }
 
-    $('#typeSelect').value = note.type;
+    if(note.type !== 'project' && $('#typeSelect')){
+      $('#typeSelect').value = note.type;
+    }
 
     const codeToggle = $('#codeViewToggle');
     codeToggle.classList.toggle('show', note.type === 'code');
@@ -4222,6 +4429,30 @@
     }, 0);
   }
 
+  async function createProject(){
+    const note = {
+      id: uid(), type:'project', title:'', tags:[], pinned:false,
+      createdAt: Date.now(), updatedAt: Date.now(),
+      files: {
+        'index.html': { content: '<!DOCTYPE html>\n<html>\n<head>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <h1>Hello, World!</h1>\n  <script src="app.js"><\/script>\n</body>\n</html>' },
+        'style.css': { content: 'body {\n  font-family: sans-serif;\n  background: #f4f4f9;\n  color: #333;\n  text-align: center;\n  padding-top: 50px;\n}' },
+        'app.js': { content: 'console.log("Hello from app.js!");' }
+      },
+      openTabs: ['index.html', 'style.css', 'app.js'],
+      activeFile: 'index.html'
+    };
+    notes.unshift(note);
+    activeId = note.id;
+    await persistNote(note);
+    await persistIndex();
+    renderSidebar();
+    renderEditor();
+    setTimeout(()=>{
+      const t = $('#titleInput');
+      if(t) t.focus();
+    }, 0);
+  }
+
   async function deleteActive(){
     const note = getActive();
     if(!note) return;
@@ -4610,6 +4841,42 @@
   $('#duplicateBtn').addEventListener('click', duplicateActive);
   $('#pinToggle').addEventListener('click', togglePin);
   $('#rulesToggle').addEventListener('click', toggleRules);
+
+  const projectMenuBtn = $('#projectMenuBtn');
+  const projectPanel = $('#projectPanel');
+  const projectSearchInput = $('#projectSearchInput');
+  const newProjectBtn = $('#newProjectBtn');
+
+  if (projectMenuBtn) {
+    projectMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleProjectPanel();
+    });
+  }
+
+  if (projectPanel) {
+    projectPanel.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  document.addEventListener('click', () => {
+    closeProjectPanel();
+  });
+
+  if (projectSearchInput) {
+    projectSearchInput.addEventListener('input', () => {
+      renderProjectsPanel();
+    });
+  }
+
+  if (newProjectBtn) {
+    newProjectBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      createProject();
+      closeProjectPanel();
+    });
+  }
 
   $('#backupBtn').addEventListener('click', downloadBackup);
   $('#restoreBtn').addEventListener('click', () => $('#restoreFileInput').click());
