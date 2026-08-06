@@ -1487,6 +1487,20 @@
     background: #ffffff;
   }
 
+  .run-btn .spinner {
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+    display: none;
+    flex-shrink: 0;
+  }
+  .run-btn.running .spinner { display: block; }
+  .run-btn.running .run-icon { display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   .project-empty-state {
     display: flex;
     flex-direction: column;
@@ -1623,9 +1637,20 @@
         </div>
       </div>
       <div class="topbar-right">
-        <button class="icon-btn" id="projectMenuBtn" title="New project">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        </button>
+        <div style="position:relative;" id="projectsMenuWrap">
+          <button class="icon-btn" id="projectMenuBtn" title="Projects">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </button>
+          <div id="projectDropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; width:240px; background:var(--bg-surface); border:1px solid var(--border); border-radius:9px; box-shadow:var(--shadow); z-index:50; padding:5px; display:none; flex-direction:column; gap:1px;">
+            <div id="projectDropdownList"></div>
+            <div style="border-top:1px solid var(--border); margin-top:4px; padding-top:4px;">
+              <button id="projectDropdownNew" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:transparent; color:var(--ink); font-size:12.5px; font-weight:600; cursor:pointer;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M12 5v14M5 12h14"/></svg>
+                New project
+              </button>
+            </div>
+          </div>
+        </div>
         <span class="save-status" id="saveStatus"><span class="dot"></span>Saved</span>
         <button class="icon-btn" id="pinToggle" title="Pin note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M8 3h8l-1 7 3 3H6l3-3-1-7Z"/></svg>
@@ -3819,7 +3844,8 @@
       toolbarHtml = `
         <div class="rich-toolbar project-toolbar" id="projectToolbar">
           <button class="ide-btn run-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg class="run-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span class="spinner"></span>
             <span>Run</span>
           </button>
           <button class="ide-btn stop-btn" id="projectStopBtn" title="Stop">
@@ -4648,9 +4674,64 @@
   $('#rulesToggle').addEventListener('click', toggleRules);
 
   const projectMenuBtn = $('#projectMenuBtn');
-  if (projectMenuBtn) {
-    projectMenuBtn.addEventListener('click', createProject);
+  const projectDropdown = $('#projectDropdown');
+  const projectDropdownNew = $('#projectDropdownNew');
+
+  function renderProjectDropdown() {
+    const list = $('#projectDropdownList');
+    if (!list) return;
+    const projects = notes.filter(n => n.type === 'project');
+    if (projects.length === 0) {
+      list.innerHTML = '<div style="padding:8px 9px; font-size:12px; color:var(--ink-faint);">No projects yet</div>';
+      return;
+    }
+    list.innerHTML = projects.map(p => `
+      <button data-id="${p.id}" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:${p.id === activeId ? 'var(--accent-soft)' : 'transparent'}; color:${p.id === activeId ? 'var(--accent)' : 'var(--ink)'}; font-size:12.5px; font-weight:500; cursor:pointer;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(p.title || 'Untitled Project')}</span>
+      </button>
+    `).join('');
+    list.querySelectorAll('button[data-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeId = btn.getAttribute('data-id');
+        closeProjectDropdown();
+        renderSidebar();
+        renderEditor();
+      });
+    });
   }
+
+  function openProjectDropdown() {
+    renderProjectDropdown();
+    projectDropdown.style.display = 'flex';
+    projectMenuBtn.classList.add('on');
+  }
+
+  function closeProjectDropdown() {
+    projectDropdown.style.display = 'none';
+    projectMenuBtn.classList.remove('on');
+  }
+
+  if (projectMenuBtn) {
+    projectMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      projectDropdown.style.display === 'none' ? openProjectDropdown() : closeProjectDropdown();
+    });
+  }
+
+  if (projectDropdown) {
+    projectDropdown.addEventListener('click', (e) => e.stopPropagation());
+  }
+
+  if (projectDropdownNew) {
+    projectDropdownNew.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeProjectDropdown();
+      createProject();
+    });
+  }
+
+  document.addEventListener('click', closeProjectDropdown);
 
   $('#backupBtn').addEventListener('click', downloadBackup);
   $('#restoreBtn').addEventListener('click', () => $('#restoreFileInput').click());
