@@ -1462,6 +1462,28 @@
     logsEl.scrollTop = logsEl.scrollHeight;
   }
 
+  function formatQueryResult(columns, values) {
+    if (!columns || columns.length === 0) return "(No columns)";
+    const colWidths = columns.map(col => col.length);
+    values.forEach(row => {
+      row.forEach((val, idx) => {
+        const valStr = val === null ? "NULL" : String(val);
+        if (valStr.length > colWidths[idx]) {
+          colWidths[idx] = valStr.length;
+        }
+      });
+    });
+    const header = columns.map((col, idx) => col.padEnd(colWidths[idx])).join(" | ");
+    const divider = colWidths.map(w => "-".repeat(w)).join("-+-");
+    const rows = values.map(row => {
+      return row.map((val, idx) => {
+        const valStr = val === null ? "NULL" : String(val);
+        return valStr.padEnd(colWidths[idx]);
+      }).join(" | ");
+    });
+    return [header, divider, ...rows].join("\n");
+  }
+
   function clearConsole() {
     const logsEl = document.getElementById('ideConsoleLogs');
     if (logsEl) logsEl.innerHTML = '';
@@ -1703,6 +1725,49 @@
       updateConsoleStatus('Preview Updated');
       isExecuting = false;
       
+    } else if (language === 'sql') {
+      const startTime = performance.now();
+      try {
+        updateConsoleStatus('Initializing SQLite...');
+        if (!window.initSqlJs) {
+          appendConsoleLog('Loading sql.js from jsDelivr CDN...', 'info');
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/sql-wasm.js';
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error("Failed to load sql.js. Please check your internet connection."));
+            document.head.appendChild(script);
+          });
+        }
+        updateConsoleStatus('Running SQL...');
+        const SQL = await window.initSqlJs({
+          locateFile: file => `https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/${file}`
+        });
+        const db = new SQL.Database();
+        const results = db.exec(code);
+        const duration = (performance.now() - startTime).toFixed(0);
+        updateConsoleTime(duration);
+        if (results.length === 0) {
+          appendConsoleLog('Query executed successfully. (No results returned)', 'info');
+        } else {
+          results.forEach((res, idx) => {
+            if (results.length > 1) {
+              appendConsoleLog(`--- Result Set ${idx + 1} ---`, 'info');
+            }
+            const tableStr = formatQueryResult(res.columns, res.values);
+            appendConsoleLog(tableStr, 'log');
+            appendConsoleLog(`(${res.values.length} rows)`, 'info');
+          });
+        }
+        updateConsoleStatus('Finished');
+        isExecuting = false;
+      } catch (err) {
+        const duration = (performance.now() - startTime).toFixed(0);
+        updateConsoleTime(duration);
+        updateConsoleStatus('Failed', true);
+        appendConsoleLog(`Error: ${err.message}`, 'error');
+        isExecuting = false;
+      }
     } else if (['java', 'cpp', 'c', 'csharp', 'go', 'rust', 'kotlin', 'python'].includes(language)) {
       let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
