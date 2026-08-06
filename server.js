@@ -182,8 +182,10 @@ function runProcess(command, args, input, timeoutMs, maxOutputBytes, cwd, compil
 
     if (input) {
       child.stdin.write(input);
-      child.stdin.end();
     }
+    try {
+      child.stdin.end();
+    } catch (e) {}
 
     child.stdout.on('data', (data) => {
       if (stdoutBytes >= maxOutputBytes) {
