@@ -1623,24 +1623,9 @@
         </div>
       </div>
       <div class="topbar-right">
-        <div class="projects-menu" id="projectsMenu">
-          <button class="project-menu-btn icon-btn" id="projectMenuBtn" aria-haspopup="true" aria-expanded="false" title="Projects">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-          </button>
-          <div class="project-panel" id="projectPanel">
-            <div class="project-panel-header">
-              <div class="search-wrap project-search-wrap">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-                <input id="projectSearchInput" type="text" placeholder="Search projects…">
-              </div>
-              <button class="new-note-btn project-new-btn" id="newProjectBtn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-                New project
-              </button>
-            </div>
-            <div class="project-list" id="projectList"></div>
-          </div>
-        </div>
+        <button class="icon-btn" id="projectMenuBtn" title="New project">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </button>
         <span class="save-status" id="saveStatus"><span class="dot"></span>Saved</span>
         <button class="icon-btn" id="pinToggle" title="Pin note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M8 3h8l-1 7 3 3H6l3-3-1-7Z"/></svg>
@@ -4241,6 +4226,21 @@
   }
 
   // ---------- Actions ----------
+  async function createProject(){
+    const note = {
+      id: uid(), type:'project', title:'Untitled Project', content:'', todos:[], tags:[], pinned:false,
+      files:{}, openTabs:[], activeFile:null,
+      createdAt: Date.now(), updatedAt: Date.now()
+    };
+    notes.unshift(note);
+    activeId = note.id;
+    await persistNote(note);
+    await persistIndex();
+    renderSidebar();
+    renderEditor();
+    showToast('New project created');
+  }
+
   async function createNote(){
     const note = {
       id: uid(), type:'note', title:'', content:'', todos:[], tags:[], pinned:false,
@@ -4648,39 +4648,8 @@
   $('#rulesToggle').addEventListener('click', toggleRules);
 
   const projectMenuBtn = $('#projectMenuBtn');
-  const projectPanel = $('#projectPanel');
-  const projectSearchInput = $('#projectSearchInput');
-  const newProjectBtn = $('#newProjectBtn');
-
   if (projectMenuBtn) {
-    projectMenuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleProjectPanel();
-    });
-  }
-
-  if (projectPanel) {
-    projectPanel.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
-  }
-
-  document.addEventListener('click', () => {
-    closeProjectPanel();
-  });
-
-  if (projectSearchInput) {
-    projectSearchInput.addEventListener('input', () => {
-      renderProjectsPanel();
-    });
-  }
-
-  if (newProjectBtn) {
-    newProjectBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      createProject();
-      closeProjectPanel();
-    });
+    projectMenuBtn.addEventListener('click', createProject);
   }
 
   $('#backupBtn').addEventListener('click', downloadBackup);
