@@ -1121,6 +1121,359 @@
   }
 
 
+  /* ---------- Project IDE Workspace ---------- */
+  .project-ide {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    min-height: 0;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .project-explorer {
+    width: 240px;
+    border-right: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .project-explorer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+
+  .project-explorer-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .project-explorer-action-btn {
+    background: transparent;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    color: var(--ink-faint);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .project-explorer-action-btn:hover {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .project-explorer-action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .project-explorer-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+
+  .explorer-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ink-soft);
+    gap: 8px;
+    transition: background 0.1s;
+    position: relative;
+    border-left: 2px solid transparent;
+  }
+
+  .explorer-item:hover {
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+
+  .explorer-item.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 500;
+    border-left-color: var(--accent);
+  }
+
+  .explorer-item-actions {
+    margin-left: auto;
+    display: none;
+    gap: 4px;
+  }
+
+  .explorer-item:hover .explorer-item-actions {
+    display: flex;
+  }
+
+  .explorer-item-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-faint);
+    padding: 2px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .explorer-item-btn:hover {
+    background: rgba(0,0,0,0.05);
+    color: var(--danger);
+  }
+
+  [data-theme="dark"] .explorer-item-btn:hover {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .explorer-item-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .explorer-indent {
+    width: 12px;
+    flex-shrink: 0;
+  }
+
+  .explorer-item svg.icon {
+    width: 14px;
+    height: 14px;
+    color: var(--ink-faint);
+    flex-shrink: 0;
+  }
+
+  .explorer-item.active svg.icon {
+    color: var(--accent);
+  }
+
+  /* Right Editor Pane */
+  .project-editor-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+    position: relative;
+  }
+
+  .project-tabs-bar {
+    height: 36px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+
+  .project-tabs-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .project-tab {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--ink-soft);
+    gap: 8px;
+    height: 100%;
+    background: var(--bg-sidebar);
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+    position: relative;
+  }
+
+  .project-tab:hover {
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  .project-tab.active {
+    background: var(--bg);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .project-tab.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .project-tab-close {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .project-tab-close:hover {
+    background: rgba(0,0,0,0.1);
+    color: var(--ink);
+  }
+
+  [data-theme="dark"] .project-tab-close:hover {
+    background: rgba(255,255,255,0.15);
+  }
+
+  .project-tab-close svg {
+    width: 10px;
+    height: 10px;
+    stroke-width: 3px;
+  }
+
+  .project-main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+  }
+
+  .project-editor-container {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Bottom Console Panel */
+  .project-console-panel {
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-surface);
+    position: relative;
+    flex-shrink: 0;
+    height: 200px;
+    min-height: 80px;
+    max-height: 600px;
+  }
+
+  .project-console-header {
+    height: 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    background: var(--bg-sidebar);
+    flex-shrink: 0;
+  }
+
+  .project-console-tabs {
+    display: flex;
+    gap: 16px;
+    height: 100%;
+  }
+
+  .project-console-tab {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    height: 100%;
+    user-select: none;
+    transition: color 0.15s;
+  }
+
+  .project-console-tab:hover {
+    color: var(--ink);
+  }
+
+  .project-console-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .project-console-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .project-console-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .project-terminal {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg-surface);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .project-preview-wrapper {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+  }
+
+  .project-preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #ffffff;
+  }
+
+  .project-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--ink-faint);
+    gap: 12px;
+    font-size: 14px;
+    user-select: none;
+  }
+
+  .project-empty-state svg {
+    width: 48px;
+    height: 48px;
+    stroke-width: 1.5;
+  }
 </style>
 </head>
 <body>
@@ -1227,6 +1580,7 @@
         <select class="type-select" id="typeSelect">
           <option value="note">Note</option>
           <option value="code">Code</option>
+          <option value="project">Project (Multi-file)</option>
           <option value="todo">To-do</option>
           <option value="journal">Journal</option>
         </select>
@@ -1355,10 +1709,17 @@
     alignRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M10 12h10M6 18h14"/></svg>',
     alignJustify: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>',
     eraser: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m20 20-9-9 6.5-6.5a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8L15 19"/><path d="M9 12 4 17v3h3l5-5"/></svg>',
-    highlighter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11-6 6v3h3l6-6"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-3.2-3.2a2 2 0 0 1 0-2.8L16 6"/></svg>'
+    highlighter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11-6 6v3h3l6-6"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-3.2-3.2a2 2 0 0 1 0-2.8L16 6"/></svg>',
+    folderClosed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
+    folderOpen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M2 10h20"/></svg>',
+    fileCode: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m8 13-2 2 2 2m8-4 2 2-2 2m-3-6-2 8"/></svg>',
+    rename: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
+    folderPlus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>',
+    filePlus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>'
   };
 
-  const TYPE_LABEL = { note: 'Note', code: 'Code', todo: 'To-do', journal: 'Journal' };
+  const TYPE_LABEL = { note: 'Note', code: 'Code', project: 'Project', todo: 'To-do', journal: 'Journal' };
 
   let notes = [];        // array of note objects, in list order
   let activeId = null;
@@ -1920,6 +2281,695 @@
         container.innerHTML = `<div style="padding:20px;color:var(--danger)">Error loading code editor. Please check your internet connection.</div>`;
       }
     });
+  }
+
+  const collapsedFolders = new Set();
+  
+  function getFileLanguage(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    const map = {
+      js: 'javascript',
+      html: 'html',
+      css: 'css',
+      py: 'python',
+      ts: 'typescript',
+      cpp: 'cpp',
+      cc: 'cpp',
+      c: 'c',
+      cs: 'csharp',
+      go: 'go',
+      rs: 'rust',
+      kt: 'kotlin',
+      php: 'php',
+      rb: 'ruby',
+      sql: 'sql',
+      sh: 'shell',
+      json: 'json',
+      md: 'markdown'
+    };
+    return map[ext] || 'plaintext';
+  }
+
+  function getFileIcon(filename) {
+    return ICONS.fileCode || ICONS.code;
+  }
+
+  function initializeProjectIDE(note) {
+    if (monacoEditorInstance) {
+      monacoEditorInstance.dispose();
+      monacoEditorInstance = null;
+    }
+
+    const treeEl = document.getElementById('projectExplorerTree');
+    const tabsBar = document.getElementById('projectTabsBar');
+    const emptyState = document.getElementById('projectEmptyState');
+    const editorContainer = document.getElementById('projectEditorContainer');
+
+    function saveProjectState() {
+      queueSave(note);
+    }
+
+    function renderTabs() {
+      if (!tabsBar) return;
+      const tabs = note.openTabs || [];
+      const active = note.activeFile;
+      
+      tabsBar.innerHTML = tabs.map(tab => {
+        const isActive = tab === active;
+        const filename = tab.split('/').pop();
+        return `
+          <div class="project-tab ${isActive ? 'active' : ''}" data-path="${tab}">
+            <span>${escapeHtml(filename)}</span>
+            <span class="project-tab-close" data-path="${tab}">${ICONS.x}</span>
+          </div>
+        `;
+      }).join('');
+
+      // Add click listeners to tabs
+      tabsBar.querySelectorAll('.project-tab').forEach(el => {
+        el.addEventListener('click', (e) => {
+          if (e.target.closest('.project-tab-close')) return;
+          const path = el.getAttribute('data-path');
+          openFile(path);
+        });
+      });
+
+      // Add click listeners to close buttons
+      tabsBar.querySelectorAll('.project-tab-close').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const path = el.getAttribute('data-path');
+          closeTab(path);
+        });
+      });
+    }
+
+    function renderExplorer() {
+      if (!treeEl) return;
+      const files = note.files || {};
+      const paths = Object.keys(files).sort();
+
+      const tree = { name: "", isFolder: true, children: {} };
+
+      paths.forEach(p => {
+        const parts = p.split('/').filter(x => x);
+        let current = tree;
+        for (let i = 0; i < parts.length; i++) {
+          const part = parts[i];
+          const isLast = i === parts.length - 1;
+          const isFolder = !isLast || p.endsWith('/') || files[p].isFolder;
+
+          if (!current.children[part]) {
+            current.children[part] = {
+              name: part,
+              path: parts.slice(0, i + 1).join('/') + (isFolder ? '/' : ''),
+              isFolder: isFolder,
+              children: {}
+            };
+          }
+          current = current.children[part];
+        }
+      });
+
+      function renderNode(node, depth) {
+        if (node.name === "" && depth === 0) {
+          return Object.values(node.children)
+            .sort((a, b) => {
+              if (a.isFolder && !b.isFolder) return -1;
+              if (!a.isFolder && b.isFolder) return 1;
+              return a.name.localeCompare(b.name);
+            })
+            .map(child => renderNode(child, depth + 1))
+            .join('');
+        }
+
+        const indent = `<span class="explorer-indent" style="width: ${depth * 12}px"></span>`;
+        const isFolder = node.isFolder;
+        const path = node.path;
+        const isActive = note.activeFile === path;
+        const isCollapsed = collapsedFolders.has(path);
+
+        const folderIcon = isCollapsed ? ICONS.folderClosed : ICONS.folderOpen;
+        const fileIcon = getFileIcon(node.name);
+
+        const icon = isFolder ? folderIcon : fileIcon;
+        const itemClass = `explorer-item ${isFolder ? 'is-dir' : 'is-file'} ${isActive ? 'active' : ''}`;
+
+        let childrenHtml = '';
+        if (isFolder && !isCollapsed) {
+          childrenHtml = Object.values(node.children)
+            .sort((a, b) => {
+              if (a.isFolder && !b.isFolder) return -1;
+              if (!a.isFolder && b.isFolder) return 1;
+              return a.name.localeCompare(b.name);
+            })
+            .map(child => renderNode(child, depth + 1))
+            .join('');
+        }
+
+        const actionButtons = `
+          <span class="explorer-item-actions">
+            <button class="explorer-item-btn" data-action="rename" data-path="${path}" title="Rename">${ICONS.rename}</button>
+            <button class="explorer-item-btn" data-action="delete" data-path="${path}" title="Delete">${ICONS.trash}</button>
+          </span>
+        `;
+
+        return `
+          <div class="${itemClass}" data-path="${path}">
+            ${indent}
+            <span class="icon">${icon}</span>
+            <span class="name">${escapeHtml(node.name)}</span>
+            ${actionButtons}
+          </div>
+          ${childrenHtml}
+        `;
+      }
+
+      treeEl.innerHTML = renderNode(tree, 0);
+
+      // Add click listeners to explorer items
+      treeEl.querySelectorAll('.explorer-item').forEach(el => {
+        el.addEventListener('click', (e) => {
+          if (e.target.closest('.explorer-item-btn')) return;
+          const path = el.getAttribute('data-path');
+          const isDir = el.classList.contains('is-dir');
+          
+          if (isDir) {
+            if (collapsedFolders.has(path)) {
+              collapsedFolders.delete(path);
+            } else {
+              collapsedFolders.add(path);
+            }
+            renderExplorer();
+          } else {
+            openFile(path);
+          }
+        });
+      });
+
+      // Add explorer action listeners
+      treeEl.querySelectorAll('.explorer-item-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const action = btn.getAttribute('data-action');
+          const path = btn.getAttribute('data-path');
+          if (action === 'rename') {
+            renamePath(path);
+          } else if (action === 'delete') {
+            deletePath(path);
+          }
+        });
+      });
+    }
+
+    function openFile(path) {
+      if (!note.files[path]) return;
+      note.activeFile = path;
+      if (!note.openTabs.includes(path)) {
+        note.openTabs.push(path);
+      }
+      saveProjectState();
+      renderTabs();
+      renderExplorer();
+
+      if (emptyState && editorContainer) {
+        emptyState.style.display = 'none';
+        editorContainer.style.display = 'block';
+      }
+
+      loadMonaco().then(monaco => {
+        const monacoContainer = document.getElementById('projectMonacoContainer');
+        if (!monacoContainer) return;
+
+        if (!monacoEditorInstance) {
+          const mTheme = getMonacoTheme(note);
+          monacoEditorInstance = monaco.editor.create(monacoContainer, {
+            theme: mTheme,
+            automaticLayout: true,
+            lineNumbers: 'on',
+            minimap: { enabled: true },
+            folding: true,
+            bracketPairColorization: { enabled: true },
+            autoClosingBrackets: 'always',
+            suggestOnTriggerCharacters: true,
+            wordBasedSuggestions: 'allDocuments',
+            fontSize: 14,
+            fontFamily: "'JetBrains Mono', Consolas, monospace",
+            roundedSelection: true,
+            scrollBeyondLastLine: false,
+            cursorBlinking: 'smooth',
+            cursorSmoothCaretAnimation: 'on',
+            padding: { top: 10, bottom: 10 }
+          });
+
+          monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+            runProject();
+          });
+          monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.S, () => {
+            clearTimeout(saveTimer);
+            note.updatedAt = Date.now();
+            persistNote(note);
+            persistIndex();
+            setSaveStatus('saved', note);
+            renderSidebarCardOnly(note);
+            showToast('Saved project');
+          });
+        }
+
+        const language = getFileLanguage(path);
+        let model = monaco.editor.getModels().find(m => m.uri.path === '/' + path);
+        if (!model) {
+          model = monaco.editor.createModel(note.files[path].content, language, monaco.Uri.parse('file:///' + path));
+          model.onDidChangeContent(() => {
+            if (note.files[path]) {
+              note.files[path].content = model.getValue();
+              saveProjectState();
+            }
+          });
+        } else {
+          if (model.getValue() !== note.files[path].content) {
+            model.setValue(note.files[path].content);
+          }
+        }
+        monacoEditorInstance.setModel(model);
+        monacoEditorInstance.focus();
+      });
+    }
+
+    function closeTab(path) {
+      note.openTabs = note.openTabs.filter(t => t !== path);
+      if (note.activeFile === path) {
+        note.activeFile = note.openTabs.length > 0 ? note.openTabs[note.openTabs.length - 1] : null;
+      }
+      saveProjectState();
+      renderTabs();
+      renderExplorer();
+
+      if (!note.activeFile) {
+        if (emptyState && editorContainer) {
+          emptyState.style.display = 'flex';
+          editorContainer.style.display = 'none';
+        }
+        if (monacoEditorInstance) {
+          monacoEditorInstance.setModel(null);
+        }
+      } else {
+        openFile(note.activeFile);
+      }
+    }
+
+    function createNewFile() {
+      const name = prompt("Enter file name (e.g. script.js or src/main.py):");
+      if (!name) return;
+      if (note.files[name]) {
+        alert("A file or directory with this name already exists.");
+        return;
+      }
+      note.files[name] = { content: "" };
+      note.activeFile = name;
+      if (!note.openTabs.includes(name)) {
+        note.openTabs.push(name);
+      }
+      saveProjectState();
+      renderExplorer();
+      openFile(name);
+      showToast(`Created file ${name}`);
+    }
+
+    function createNewFolder() {
+      let name = prompt("Enter folder name (e.g. src or assets/images):");
+      if (!name) return;
+      if (!name.endsWith('/')) name += '/';
+      if (note.files[name]) {
+        alert("A folder with this name already exists.");
+        return;
+      }
+      note.files[name] = { isFolder: true };
+      saveProjectState();
+      renderExplorer();
+      showToast(`Created folder ${name}`);
+    }
+
+    function renamePath(oldPath) {
+      const filename = oldPath.endsWith('/') ? oldPath.slice(0, -1).split('/').pop() + '/' : oldPath.split('/').pop();
+      let newName = prompt(`Rename ${filename} to:`, filename);
+      if (!newName) return;
+      
+      const isFolder = oldPath.endsWith('/');
+      if (isFolder && !newName.endsWith('/')) newName += '/';
+
+      const dirParts = oldPath.split('/');
+      dirParts.pop();
+      if (isFolder) dirParts.pop();
+      const parentDir = dirParts.length > 0 ? dirParts.join('/') + '/' : '';
+      const newPath = parentDir + newName;
+
+      if (note.files[newPath]) {
+        alert("A file or folder with this name already exists.");
+        return;
+      }
+
+      const oldKeys = Object.keys(note.files);
+      oldKeys.forEach(k => {
+        if (k === oldPath) {
+          note.files[newPath] = note.files[oldPath];
+          delete note.files[oldPath];
+        } else if (isFolder && k.startsWith(oldPath)) {
+          const relativePart = k.slice(oldPath.length);
+          const childNewPath = newPath + relativePart;
+          note.files[childNewPath] = note.files[k];
+          delete note.files[k];
+        }
+      });
+
+      note.openTabs = note.openTabs.map(t => {
+        if (t === oldPath) return newPath;
+        if (isFolder && t.startsWith(oldPath)) return newPath + t.slice(oldPath.length);
+        return t;
+      });
+
+      if (note.activeFile === oldPath) {
+        note.activeFile = newPath;
+      } else if (isFolder && note.activeFile && note.activeFile.startsWith(oldPath)) {
+        note.activeFile = newPath + note.activeFile.slice(oldPath.length);
+      }
+
+      if (window.monaco) {
+        const model = monaco.editor.getModels().find(m => m.uri.path === '/' + oldPath);
+        if (model) model.dispose();
+      }
+
+      saveProjectState();
+      renderExplorer();
+      renderTabs();
+      if (note.activeFile) {
+        openFile(note.activeFile);
+      }
+      showToast(`Renamed to ${newName}`);
+    }
+
+    function deletePath(path) {
+      const isFolder = path.endsWith('/');
+      const msg = isFolder 
+        ? `Are you sure you want to delete folder '${path}' and all of its contents?`
+        : `Are you sure you want to delete file '${path}'?`;
+      if (!confirm(msg)) return;
+
+      const oldKeys = Object.keys(note.files);
+      oldKeys.forEach(k => {
+        if (k === path || (isFolder && k.startsWith(path))) {
+          delete note.files[k];
+          note.openTabs = note.openTabs.filter(t => t !== k);
+          if (note.activeFile === k) note.activeFile = null;
+          if (window.monaco) {
+            const model = monaco.editor.getModels().find(m => m.uri.path === '/' + k);
+            if (model) model.dispose();
+          }
+        }
+      });
+
+      if (!note.activeFile && note.openTabs.length > 0) {
+        note.activeFile = note.openTabs[note.openTabs.length - 1];
+      }
+
+      saveProjectState();
+      renderExplorer();
+      renderTabs();
+      if (note.activeFile) {
+        openFile(note.activeFile);
+      } else {
+        if (emptyState && editorContainer) {
+          emptyState.style.display = 'flex';
+          editorContainer.style.display = 'none';
+        }
+      }
+      showToast(`Deleted ${isFolder ? 'folder' : 'file'}`);
+    }
+
+    const newFileBtn = document.getElementById('projectNewFileBtn');
+    const newFolderBtn = document.getElementById('projectNewFolderBtn');
+    const expNewFileBtn = document.getElementById('explorerNewFileBtn');
+    const expNewFolderBtn = document.getElementById('explorerNewFolderBtn');
+    const runBtn = document.getElementById('projectRunBtn');
+    const stopBtn = document.getElementById('projectStopBtn');
+    const formatBtn = document.getElementById('projectFormatBtn');
+    const themeSelect = document.getElementById('projectThemeSelect');
+    const consoleClearBtn = document.getElementById('projectConsoleClearBtn');
+
+    if (newFileBtn) newFileBtn.onclick = createNewFile;
+    if (expNewFileBtn) expNewFileBtn.onclick = createNewFile;
+    if (newFolderBtn) newFolderBtn.onclick = createNewFolder;
+    if (expNewFolderBtn) expNewFolderBtn.onclick = createNewFolder;
+    if (runBtn) runBtn.onclick = runProject;
+    if (stopBtn) stopBtn.onclick = stopExecution;
+    if (formatBtn) formatBtn.onclick = () => {
+      if (monacoEditorInstance) {
+        monacoEditorInstance.trigger('editor', 'editor.action.formatDocument', null);
+        showToast('Formatted file');
+      }
+    };
+    if (themeSelect) {
+      themeSelect.onchange = (e) => {
+        note.ideTheme = e.target.value;
+        saveProjectState();
+        applyMonacoThemeForActiveNote();
+      };
+    }
+    if (consoleClearBtn) {
+      consoleClearBtn.onclick = () => {
+        const term = document.getElementById('projectTerminal');
+        if (term) term.innerHTML = '';
+        const statusEl = document.getElementById('projectConsoleStatus');
+        if (statusEl) statusEl.textContent = '';
+        const timeEl = document.getElementById('projectConsoleTime');
+        if (timeEl) timeEl.textContent = '';
+      };
+    }
+
+    const resizer = document.getElementById('projectConsoleResizer');
+    const consolePanel = document.getElementById('projectConsolePanel');
+    if (resizer && consolePanel) {
+      resizer.onmousedown = (e) => {
+        e.preventDefault();
+        const startY = e.clientY;
+        const startHeight = parseInt(document.defaultView.getComputedStyle(consolePanel).height, 10);
+        function doDrag(ev) {
+          const newHeight = startHeight - (ev.clientY - startY);
+          if (newHeight >= 60 && newHeight <= 500) {
+            consolePanel.style.height = `${newHeight}px`;
+            if (monacoEditorInstance) monacoEditorInstance.layout();
+          }
+        }
+        function stopDrag() {
+          document.documentElement.removeEventListener('mousemove', doDrag);
+          document.documentElement.removeEventListener('mouseup', stopDrag);
+        }
+        document.documentElement.addEventListener('mousemove', doDrag);
+        document.documentElement.addEventListener('mouseup', stopDrag);
+      };
+    }
+
+    const tabTerm = document.getElementById('projectTabTerminal');
+    const tabPrev = document.getElementById('projectTabPreview');
+    const termArea = document.getElementById('projectTerminal');
+    const prevArea = document.getElementById('projectPreviewWrapper');
+
+    if (tabTerm && tabPrev && termArea && prevArea) {
+      tabTerm.onclick = () => {
+        tabTerm.classList.add('active');
+        tabPrev.classList.remove('active');
+        termArea.style.display = 'block';
+        prevArea.style.display = 'none';
+      };
+      tabPrev.onclick = () => {
+        tabPrev.classList.add('active');
+        tabTerm.classList.remove('active');
+        prevArea.style.display = 'block';
+        termArea.style.display = 'none';
+      };
+    }
+
+    renderExplorer();
+    renderTabs();
+    if (note.activeFile) {
+      openFile(note.activeFile);
+    } else {
+      if (emptyState && editorContainer) {
+        emptyState.style.display = 'flex';
+        editorContainer.style.display = 'none';
+      }
+    }
+  }
+
+  async function runProject() {
+    const note = getActive();
+    if (!note || note.type !== 'project') return;
+
+    const term = document.getElementById('projectTerminal');
+    const statusEl = document.getElementById('projectConsoleStatus');
+    const timeEl = document.getElementById('projectConsoleTime');
+    const previewFrame = document.getElementById('projectPreviewFrame');
+    
+    function logTerm(msg, type = 'log') {
+      if (!term) return;
+      const line = document.createElement('div');
+      line.className = 'ide-console-line ' + (type === 'error' ? 'is-error' : type === 'warn' ? 'is-warn' : type === 'info' ? 'is-info' : '');
+      line.textContent = msg;
+      term.appendChild(line);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    if (term) term.innerHTML = '';
+    if (statusEl) statusEl.textContent = 'Running...';
+    if (timeEl) timeEl.textContent = '';
+
+    const hasIndexHtml = note.files && note.files['index.html'];
+    const activeFile = note.activeFile;
+    const activeLang = activeFile ? getFileLanguage(activeFile) : '';
+    const isBackendLang = ['python', 'c', 'cpp', 'java', 'csharp', 'go', 'rust', 'kotlin', 'sql'].includes(activeLang);
+
+    if (isBackendLang || !hasIndexHtml) {
+      if (!activeFile) {
+        if (statusEl) statusEl.textContent = 'Failed';
+        logTerm('Error: No active file open to run.', 'error');
+        return;
+      }
+
+      const tabTerm = document.getElementById('projectTabTerminal');
+      if (tabTerm) tabTerm.click();
+
+      const code = note.files[activeFile].content;
+      const language = activeLang;
+
+      if (language === 'sql') {
+        const startTime = performance.now();
+        try {
+          if (statusEl) statusEl.textContent = 'Initializing SQLite...';
+          if (!window.initSqlJs) {
+            logTerm('Loading sql.js from jsDelivr CDN...', 'info');
+            await new Promise((resolve, reject) => {
+              const script = document.createElement('script');
+              script.src = 'https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/sql-wasm.js';
+              script.onload = () => resolve();
+              script.onerror = () => reject(new Error("Failed to load sql.js."));
+              document.head.appendChild(script);
+            });
+          }
+
+          if (statusEl) statusEl.textContent = 'Running SQL...';
+          const SQL = await window.initSqlJs({
+            locateFile: file => `https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/${file}`
+          });
+          const db = new SQL.Database();
+          const results = db.exec(code);
+          const duration = (performance.now() - startTime).toFixed(0);
+          if (timeEl) timeEl.textContent = `${duration}ms`;
+
+          if (results.length === 0) {
+            logTerm('Query executed successfully. (No results returned)', 'info');
+          } else {
+            results.forEach((res, idx) => {
+              if (results.length > 1) {
+                logTerm(`--- Result Set ${idx + 1} ---`, 'info');
+              }
+              const tableStr = formatQueryResult(res.columns, res.values);
+              logTerm(tableStr, 'log');
+              logTerm(`(${res.values.length} rows)`, 'info');
+            });
+          }
+          if (statusEl) statusEl.textContent = 'Finished';
+        } catch (err) {
+          const duration = (performance.now() - startTime).toFixed(0);
+          if (timeEl) timeEl.textContent = `${duration}ms`;
+          if (statusEl) statusEl.textContent = 'Failed';
+          logTerm(`Error: ${err.message}`, 'error');
+        }
+      } else {
+        let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          backendUrl = 'http://localhost:3000/api/run';
+        }
+
+        try {
+          if (statusEl) statusEl.textContent = 'Compiling / Running on server...';
+          const response = await fetch(backendUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, language, stdin: '' })
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const result = await response.json();
+          
+          if (result.compileError) {
+            if (statusEl) statusEl.textContent = 'Compilation Failed';
+            logTerm('--- Compilation Output ---', 'error');
+            logTerm(result.compileError, 'error');
+            if (result.duration && timeEl) timeEl.textContent = `${result.duration}ms`;
+            return;
+          }
+
+          if (result.stdout) {
+            logTerm(result.stdout, 'log');
+          }
+          if (result.stderr) {
+            logTerm(result.stderr, 'error');
+          }
+
+          if (result.duration && timeEl) {
+            timeEl.textContent = `${result.duration}ms`;
+          }
+
+          if (result.exitCode !== 0) {
+            if (statusEl) statusEl.textContent = `Failed (Exit Code ${result.exitCode})`;
+          } else {
+            if (statusEl) statusEl.textContent = 'Finished';
+          }
+        } catch (err) {
+          if (statusEl) statusEl.textContent = 'Server Connection Error';
+          logTerm('Error: Could not connect to the backend server.', 'error');
+        }
+      }
+    } else {
+      const tabPrev = document.getElementById('projectTabPreview');
+      if (tabPrev) tabPrev.click();
+
+      if (statusEl) statusEl.textContent = 'Bundling...';
+      const startTime = performance.now();
+      const bundledHtml = bundleProject(note.files);
+      if (previewFrame) {
+        previewFrame.srcdoc = bundledHtml;
+      }
+      const duration = (performance.now() - startTime).toFixed(0);
+      if (timeEl) timeEl.textContent = `${duration}ms`;
+      if (statusEl) statusEl.textContent = 'Browser Preview Updated';
+    }
+  }
+
+  function bundleProject(files, entryPoint = 'index.html') {
+    let html = files[entryPoint] ? files[entryPoint].content : '';
+    if (!html) return '<h1>Error: entry point index.html not found!</h1>';
+    
+    html = html.replace(/<link\s+[^>]*rel="stylesheet"\s+[^>]*href="([^"]+)"[^>]*>/gi, (match, href) => {
+      const cleanHref = href.replace(/^\.?\//, '');
+      if (files[cleanHref]) {
+        return `<style data-href="${cleanHref}">${files[cleanHref].content}</style>`;
+      }
+      return match;
+    });
+
+    html = html.replace(/<script\s+[^>]*src="([^"]+)"[^>]*><\/script>/gi, (match, src) => {
+      const cleanSrc = src.replace(/^\.?\//, '');
+      if (files[cleanSrc]) {
+        return `<script data-src="${cleanSrc}">${files[cleanSrc].content}<\/script>`;
+      }
+      return match;
+    });
+
+    return html;
   }
 
   function bindIDEControls(note) {
@@ -2723,6 +3773,102 @@
           </div>
         </div>
       `;
+    } else if(note.type === 'project'){
+      if (!note.files) {
+        note.files = {
+          "index.html": { content: "<!DOCTYPE html>\n<html>\n<head>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Hello, World!</h1>\n  <script src=\"app.js\"></script>\n</body>\n</html>" },
+          "style.css": { content: "body {\n  font-family: sans-serif;\n  background: #f4f4f9;\n  color: #333;\n  text-align: center;\n  padding-top: 50px;\n}" },
+          "app.js": { content: "console.log('Hello from app.js!');" }
+        };
+        note.openTabs = ["index.html", "style.css", "app.js"];
+        note.activeFile = "index.html";
+        queueSave(note);
+      }
+      
+      toolbarHtml = `
+        <div class="rich-toolbar project-toolbar" id="projectToolbar">
+          <button class="ide-btn run-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Run</span>
+          </button>
+          <button class="ide-btn stop-btn" id="projectStopBtn" title="Stop">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            <span>Stop</span>
+          </button>
+          <button class="ide-btn" id="projectFormatBtn" title="Format current file">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM12 6v12M3 12h18"/></svg>
+            <span>Format</span>
+          </button>
+          <span class="rt-sep"></span>
+          <button class="ide-btn" id="projectNewFileBtn" title="New File">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            <span>+ File</span>
+          </button>
+          <button class="ide-btn" id="projectNewFolderBtn" title="New Folder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+            <span>+ Folder</span>
+          </button>
+          <span class="rt-sep"></span>
+          <select class="ide-select" id="projectThemeSelect" title="Editor Theme">
+            <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
+            <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
+            <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
+          </select>
+        </div>`;
+
+      bodyHtml = `
+        <div class="project-ide">
+          <div class="project-explorer">
+            <div class="project-explorer-header">
+              <span>Workspace Files</span>
+              <div class="project-explorer-actions">
+                <button class="project-explorer-action-btn" id="explorerNewFileBtn" title="New File">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                </button>
+                <button class="project-explorer-action-btn" id="explorerNewFolderBtn" title="New Folder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="project-explorer-tree" id="projectExplorerTree"></div>
+          </div>
+          
+          <div class="project-editor-pane">
+            <div class="project-tabs-bar" id="projectTabsBar"></div>
+            
+            <div class="project-main-area">
+              <div class="project-editor-container" id="projectEditorContainer" style="display: block; width:100%; height:100%;">
+                <div id="projectMonacoContainer" style="width:100%; height:100%;"></div>
+              </div>
+              <div class="project-empty-state" id="projectEmptyState" style="display: none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+                <span>No active file open. Select a file from the explorer to edit.</span>
+              </div>
+            </div>
+            
+            <div class="project-console-panel" id="projectConsolePanel" style="height: 180px;">
+              <div class="ide-console-resizer" id="projectConsoleResizer"></div>
+              <div class="project-console-header">
+                <div class="project-console-tabs">
+                  <div class="project-console-tab active" data-tab="terminal" id="projectTabTerminal">Terminal</div>
+                  <div class="project-console-tab" data-tab="preview" id="projectTabPreview">Browser Preview</div>
+                </div>
+                <div class="project-console-actions">
+                  <span class="ide-console-status" id="projectConsoleStatus"></span>
+                  <span class="ide-console-status" id="projectConsoleTime"></span>
+                  <button class="ide-console-clear" id="projectConsoleClearBtn">Clear</button>
+                </div>
+              </div>
+              <div class="project-console-content">
+                <div class="project-terminal" id="projectTerminal" style="display: block;"></div>
+                <div class="project-preview-wrapper" id="projectPreviewWrapper" style="display: none; width:100%; height:100%;">
+                  <iframe class="project-preview-iframe" id="projectPreviewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
     } else {
       toolbarHtml = richToolbarHtml;
       bodyHtml = `<div class="content-area rich ${rulesOn ? 'ruled' : ''}" id="richArea" contenteditable="true" data-placeholder="Start writing…">${note.content || ''}</div>`;
@@ -2814,6 +3960,8 @@
       bindTodoEvents(note);
     } else if(note.type === 'code'){
       initializeCodeSimulator(note);
+    } else if(note.type === 'project'){
+      initializeProjectIDE(note);
     } else {
       bindRichEvents(note);
     }
@@ -3170,6 +4318,14 @@
     let text = `${note.title || 'Untitled'}\n\n`;
     if(note.type === 'todo'){
       text += note.todos.map(t => `${t.done ? '[x]' : '[ ]'} ${t.text}`).join('\n');
+    } else if(note.type === 'project'){
+      text += Object.keys(note.files || {}).map(path => {
+        const item = note.files[path];
+        if (item.isFolder) {
+          return `Folder: ${path}`;
+        }
+        return `File: ${path}\n====================\n${item.content}\n====================`;
+      }).join('\n\n');
     } else {
       text += contentAsPlainText(note);
     }
@@ -3177,7 +4333,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    const ext = note.type === 'code' ? 'txt' : 'md';
+    const ext = note.type === 'code' || note.type === 'project' ? 'txt' : 'md';
     a.download = `${(note.title||'untitled').replace(/[^\w\- ]/g,'').trim() || 'untitled'}.${ext}`;
     a.click();
     URL.revokeObjectURL(url);
@@ -3193,6 +4349,14 @@
       bodyHtml = note.todos.map(t => `<p>${t.done ? '☑' : '☐'}&nbsp;&nbsp;${escapeHtml(t.text)}</p>`).join('') || '<p></p>';
     } else if(note.type === 'code'){
       bodyHtml = `<pre style="font-family:'Courier New',monospace;font-size:11pt;white-space:pre-wrap;">${escapeHtml(note.content)}</pre>`;
+    } else if(note.type === 'project'){
+      bodyHtml = Object.keys(note.files || {}).map(path => {
+        const item = note.files[path];
+        if (item.isFolder) {
+          return `<h3>Folder: ${escapeHtml(path)}</h3>`;
+        }
+        return `<h3>File: ${escapeHtml(path)}</h3><pre style="font-family:'Courier New',monospace;font-size:10pt;white-space:pre-wrap;background:#f4f4f4;padding:10px;border:1px solid #ccc;">${escapeHtml(item.content)}</pre>`;
+      }).join('<br>') || '<p></p>';
     } else {
       // note/journal content is already the rich editor's own HTML output
       bodyHtml = note.content || '<p></p>';
@@ -3255,6 +4419,14 @@
         </div>`).join('');
     } else if(note.type === 'code'){
       bodyHtml = `<div class="print-body print-code">${escapeHtml(note.content)}</div>`;
+    } else if(note.type === 'project'){
+      bodyHtml = Object.keys(note.files || {}).map(path => {
+        const item = note.files[path];
+        if (item.isFolder) {
+          return `<h3>Folder: ${escapeHtml(path)}</h3>`;
+        }
+        return `<h3>File: ${escapeHtml(path)}</h3><div class="print-body print-code">${escapeHtml(item.content)}</div>`;
+      }).join('<br>') || '<div class="print-body"></div>';
     } else {
       // note/journal content is the rich editor's own HTML output
       // (already safe, browser-generated markup) — insert it directly
