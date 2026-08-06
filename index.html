@@ -1006,6 +1006,47 @@
     background: var(--bg-surface);
   }
 
+  .ide-console-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .ide-console-stdin-container {
+    width: 260px;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-sidebar);
+    flex-shrink: 0;
+  }
+
+  .ide-console-stdin-header {
+    padding: 6px 12px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .ide-console-stdin {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    resize: none;
+    line-height: 1.6;
+  }
+
   .ide-console-line {
     padding: 3px 0;
     border-bottom: 1px solid var(--rule-line);
@@ -1622,10 +1663,13 @@
       }
       try {
         updateConsoleStatus('Compiling / Running on server...');
+        const stdinEl = document.getElementById('ideConsoleStdin');
+        const stdin = stdinEl ? stdinEl.value : '';
+        
         const response = await fetch(backendUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code, language })
+          body: JSON.stringify({ code, language, stdin })
         });
         
         if (!response.ok) {
@@ -2543,7 +2587,13 @@
                 <button class="ide-console-clear" id="ideConsoleClearBtn">Clear Console</button>
               </div>
             </div>
-            <div class="ide-console-logs" id="ideConsoleLogs"></div>
+            <div class="ide-console-body">
+              <div class="ide-console-logs" id="ideConsoleLogs"></div>
+              <div class="ide-console-stdin-container">
+                <div class="ide-console-stdin-header">stdin (standard input)</div>
+                <textarea class="ide-console-stdin" id="ideConsoleStdin" placeholder="Provide program inputs here..."></textarea>
+              </div>
+            </div>
           </div>
         </div>
       `;

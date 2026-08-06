@@ -248,7 +248,7 @@ function runProcess(command, args, input, timeoutMs, maxOutputBytes, cwd, compil
 }
 
 app.post('/api/run', async (req, res) => {
-  const { code, language } = req.body;
+  const { code, language, stdin } = req.body;
   if (!code) {
     return res.status(400).json({ error: 'Code is required' });
   }
@@ -410,7 +410,7 @@ app.post('/api/run', async (req, res) => {
       }
     }
 
-    const runResult = await runProcess(runCmd, runArgs, null, 5000, 102400, sessionDir, compilerBinDir);
+    const runResult = await runProcess(runCmd, runArgs, stdin, 5000, 102400, sessionDir, compilerBinDir);
     return res.json({
       success: runResult.success,
       stdout: runResult.stdout,
