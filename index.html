@@ -3776,7 +3776,7 @@
     } else if(note.type === 'project'){
       if (!note.files) {
         note.files = {
-          "index.html": { content: "<!DOCTYPE html>\n<html>\n<head>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Hello, World!</h1>\n  <script src=\"app.js\"></script>\n</body>\n</html>" },
+          "index.html": { content: "<!DOCTYPE html>\n<html>\n<head>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Hello, World!</h1>\n  <script src=\"app.js\"><\/script>\n</body>\n</html>" },
           "style.css": { content: "body {\n  font-family: sans-serif;\n  background: #f4f4f9;\n  color: #333;\n  text-align: center;\n  padding-top: 50px;\n}" },
           "app.js": { content: "console.log('Hello from app.js!');" }
         };
