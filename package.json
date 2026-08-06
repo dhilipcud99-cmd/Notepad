@@ -1,0 +1,13 @@
+{
+  "name": "notepad-backend",
+  "version": "1.0.0",
+  "description": "Backend execution server for Notepad compiled languages support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}

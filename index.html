@@ -1336,9 +1336,24 @@
     if (pyodideInstance) return Promise.resolve(pyodideInstance);
     if (pyodideLoadingPromise) return pyodideLoadingPromise;
     pyodideLoadingPromise = new Promise((resolve, reject) => {
+      // Temporarily stash and delete AMD loader globals to prevent Pyodide and its
+      // dependencies (e.g., error-stack-parser) from resolving via Monaco's require/define.
+      const oldRequire = window.require;
+      const oldDefine = window.define;
+      try {
+        delete window.require;
+        delete window.define;
+      } catch (e) {
+        window.require = undefined;
+        window.define = undefined;
+      }
+
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js';
       script.onload = async () => {
+        // Restore globals immediately
+        if (oldRequire !== undefined) window.require = oldRequire;
+        if (oldDefine !== undefined) window.define = oldDefine;
         try {
           pyodideInstance = await loadPyodide({
             stdout: onStdout,
@@ -1351,6 +1366,9 @@
         }
       };
       script.onerror = (err) => {
+        // Restore globals immediately
+        if (oldRequire !== undefined) window.require = oldRequire;
+        if (oldDefine !== undefined) window.define = oldDefine;
         pyodideLoadingPromise = null;
         reject(err);
       };
@@ -1358,6 +1376,7 @@
     });
     return pyodideLoadingPromise;
   }
+
 
   // --- Code Simulator Helpers ---
   function appendConsoleLog(message, type = 'log') {
@@ -1625,6 +1644,56 @@
         updateConsoleTime(duration);
         updateConsoleStatus('Failed', true);
         appendConsoleLog(String(err), 'error');
+      }
+    } else if (['java', 'cpp', 'c', 'csharp', 'go', 'rust', 'kotlin'].includes(language)) {
+      let backendUrl = '/api/run';
+      if (window.location.protocol === 'file:') {
+        backendUrl = 'http://localhost:3000/api/run';
+      }
+      try {
+        updateConsoleStatus('Compiling / Running on server...');
+        const response = await fetch(backendUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, language })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        isExecuting = false;
+        
+        if (result.compileError) {
+          updateConsoleStatus('Compilation Failed', true);
+          appendConsoleLog('--- Compilation Output ---', 'error');
+          appendConsoleLog(result.compileError, 'error');
+          if (result.duration) updateConsoleTime(result.duration);
+          return;
+        }
+        
+        if (result.stdout) {
+          appendConsoleLog(result.stdout, 'log');
+        }
+        if (result.stderr) {
+          appendConsoleLog(result.stderr, 'error');
+        }
+        
+        if (result.duration) {
+          updateConsoleTime(result.duration);
+        }
+        
+        if (result.exitCode !== 0) {
+          updateConsoleStatus(`Failed (Exit Code ${result.exitCode})`, true);
+        } else {
+          updateConsoleStatus('Finished');
+        }
+      } catch (err) {
+        isExecuting = false;
+        updateConsoleStatus('Server Connection Error', true);
+        appendConsoleLog('Error: Could not connect to the backend server.', 'error');
+        appendConsoleLog('Please verify that the backend execution server is running locally (run "npm start" in the Notepad folder).', 'info');
       }
     } else {
       isExecuting = false;
@@ -2438,11 +2507,13 @@
                 <option value="html" ${note.language === 'html' ? 'selected' : ''}>HTML/CSS/JS (Live Preview)</option>
                 <option value="python" ${note.language === 'python' ? 'selected' : ''}>Python</option>
                 <option value="typescript" ${note.language === 'typescript' ? 'selected' : ''}>TypeScript</option>
+                <option value="c" ${note.language === 'c' ? 'selected' : ''}>C</option>
                 <option value="cpp" ${note.language === 'cpp' ? 'selected' : ''}>C++</option>
                 <option value="java" ${note.language === 'java' ? 'selected' : ''}>Java</option>
                 <option value="csharp" ${note.language === 'csharp' ? 'selected' : ''}>C#</option>
                 <option value="go" ${note.language === 'go' ? 'selected' : ''}>Go</option>
                 <option value="rust" ${note.language === 'rust' ? 'selected' : ''}>Rust</option>
+                <option value="kotlin" ${note.language === 'kotlin' ? 'selected' : ''}>Kotlin</option>
                 <option value="php" ${note.language === 'php' ? 'selected' : ''}>PHP</option>
                 <option value="ruby" ${note.language === 'ruby' ? 'selected' : ''}>Ruby</option>
                 <option value="sql" ${note.language === 'sql' ? 'selected' : ''}>SQL</option>
