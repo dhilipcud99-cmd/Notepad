@@ -1370,8 +1370,18 @@
   .project-main-area {
     flex: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     min-height: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-editor-side {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
     position: relative;
     overflow: hidden;
   }
@@ -1394,7 +1404,119 @@
     height: 100% !important;
   }
 
+  .project-h-divider {
+    width: 5px;
+    background: var(--border);
+    cursor: ew-resize;
+    flex-shrink: 0;
+    position: relative;
+    transition: background 0.15s;
+  }
+  .project-h-divider:hover, .project-h-divider.dragging {
+    background: var(--accent);
+  }
+
+  .project-preview-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: #fff;
+    border-left: none;
+    overflow: hidden;
+    position: relative;
+  }
+  .project-preview-panel.collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: hidden;
+  }
+
+  .project-preview-header {
+    height: 32px;
+    background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .project-preview-header span {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+  }
+  .project-preview-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .project-preview-collapse-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s, background 0.15s;
+  }
+  .project-preview-collapse-btn:hover {
+    color: var(--ink);
+    background: var(--accent-soft);
+  }
+  .project-preview-collapse-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .project-preview-iframe-wrap {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    background: #fff;
+  }
+  .project-preview-iframe-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background: #fff;
+  }
+  .project-preview-expand-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 48px;
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border);
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    transition: color 0.15s, background 0.15s;
+    z-index: 10;
+  }
+  .project-preview-expand-btn:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .project-preview-expand-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
   /* Bottom Console Panel */
+  .project-console-panel.preview-open {}
   .project-console-panel {
     border-top: 1px solid var(--border);
     display: flex;
@@ -1472,19 +1594,6 @@
     background: var(--bg-surface);
     white-space: pre-wrap;
     word-break: break-all;
-  }
-
-  .project-preview-wrapper {
-    width: 100%;
-    height: 100%;
-    background: #ffffff;
-  }
-
-  .project-preview-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: #ffffff;
   }
 
   .run-btn .spinner {
@@ -2599,6 +2708,7 @@
             if (note.files[path]) {
               note.files[path].content = model.getValue();
               saveProjectState();
+              schedulePreviewRefresh();
             }
           });
         } else {
@@ -2798,6 +2908,7 @@
       };
     }
 
+    // --- Vertical console resizer ---
     const resizer = document.getElementById('projectConsoleResizer');
     const consolePanel = document.getElementById('projectConsolePanel');
     if (resizer && consolePanel) {
@@ -2821,25 +2932,68 @@
       };
     }
 
-    const tabTerm = document.getElementById('projectTabTerminal');
-    const tabPrev = document.getElementById('projectTabPreview');
-    const termArea = document.getElementById('projectTerminal');
-    const prevArea = document.getElementById('projectPreviewWrapper');
+    // --- Horizontal preview divider ---
+    const hDivider = document.getElementById('projectHDivider');
+    const previewPanel = document.getElementById('projectPreviewPanel');
+    const expandBtn = document.getElementById('projectPreviewExpandBtn');
+    const collapseBtn = document.getElementById('projectPreviewCollapseBtn');
 
-    if (tabTerm && tabPrev && termArea && prevArea) {
-      tabTerm.onclick = () => {
-        tabTerm.classList.add('active');
-        tabPrev.classList.remove('active');
-        termArea.style.display = 'block';
-        prevArea.style.display = 'none';
-      };
-      tabPrev.onclick = () => {
-        tabPrev.classList.add('active');
-        tabTerm.classList.remove('active');
-        prevArea.style.display = 'block';
-        termArea.style.display = 'none';
+    function collapsePreview() {
+      if (!previewPanel) return;
+      previewPanel.classList.add('collapsed');
+      previewPanel.style.width = '0';
+      if (hDivider) hDivider.style.display = 'none';
+      if (expandBtn) expandBtn.style.display = 'flex';
+      if (projectMonacoInstance) projectMonacoInstance.layout();
+    }
+    function expandPreview() {
+      if (!previewPanel) return;
+      previewPanel.classList.remove('collapsed');
+      previewPanel.style.width = '420px';
+      if (hDivider) hDivider.style.display = '';
+      if (expandBtn) expandBtn.style.display = 'none';
+      if (projectMonacoInstance) projectMonacoInstance.layout();
+    }
+
+    if (collapseBtn) collapseBtn.onclick = collapsePreview;
+    if (expandBtn) expandBtn.onclick = expandPreview;
+
+    if (hDivider && previewPanel) {
+      hDivider.onmousedown = (e) => {
+        e.preventDefault();
+        hDivider.classList.add('dragging');
+        const startX = e.clientX;
+        const startW = parseInt(document.defaultView.getComputedStyle(previewPanel).width, 10);
+        function doDragH(ev) {
+          const newW = startW - (ev.clientX - startX);
+          if (newW >= 160 && newW <= 900) {
+            previewPanel.style.width = `${newW}px`;
+            if (projectMonacoInstance) projectMonacoInstance.layout();
+          }
+        }
+        function stopDragH() {
+          hDivider.classList.remove('dragging');
+          document.documentElement.removeEventListener('mousemove', doDragH);
+          document.documentElement.removeEventListener('mouseup', stopDragH);
+        }
+        document.documentElement.addEventListener('mousemove', doDragH);
+        document.documentElement.addEventListener('mouseup', stopDragH);
       };
     }
+
+    // --- Auto-refresh preview on file change ---
+    let previewRefreshTimer = null;
+    function schedulePreviewRefresh() {
+      if (!previewPanel || previewPanel.classList.contains('collapsed')) return;
+      if (!note.files || !note.files['index.html']) return;
+      clearTimeout(previewRefreshTimer);
+      previewRefreshTimer = setTimeout(() => {
+        const frame = document.getElementById('projectPreviewFrame');
+        if (frame) frame.srcdoc = bundleProject(note.files);
+      }, 600);
+    }
+
+
 
     renderExplorer();
     renderTabs();
@@ -2984,9 +3138,6 @@
         }
       }
     } else {
-      const tabPrev = document.getElementById('projectTabPreview');
-      if (tabPrev) tabPrev.click();
-
       if (statusEl) statusEl.textContent = 'Bundling...';
       const startTime = performance.now();
       const bundledHtml = bundleProject(note.files);
@@ -3894,33 +4045,48 @@
             <div class="project-tabs-bar" id="projectTabsBar"></div>
             
             <div class="project-main-area">
-              <div class="project-editor-container" id="projectEditorContainer">
-                <div id="projectMonacoContainer"></div>
+              <div class="project-editor-side">
+                <div class="project-editor-container" id="projectEditorContainer">
+                  <div id="projectMonacoContainer"></div>
+                </div>
+                <div class="project-empty-state" id="projectEmptyState" style="display:none;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+                  <span>No active file open. Select a file from the explorer to edit.</span>
+                </div>
               </div>
-              <div class="project-empty-state" id="projectEmptyState" style="display:none;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
-                <span>No active file open. Select a file from the explorer to edit.</span>
+              <div class="project-h-divider" id="projectHDivider"></div>
+              <div class="project-preview-panel" id="projectPreviewPanel" style="width:420px;">
+                <div class="project-preview-header">
+                  <span>Browser Preview</span>
+                  <div class="project-preview-header-actions">
+                    <span class="ide-console-status" id="projectConsoleStatus"></span>
+                    <button class="project-preview-collapse-btn" id="projectPreviewCollapseBtn" title="Collapse preview">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="project-preview-iframe-wrap">
+                  <iframe id="projectPreviewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
+                </div>
               </div>
+              <button class="project-preview-expand-btn" id="projectPreviewExpandBtn" title="Expand preview" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </button>
             </div>
             
             <div class="project-console-panel" id="projectConsolePanel" style="height: 180px;">
               <div class="ide-console-resizer" id="projectConsoleResizer"></div>
               <div class="project-console-header">
                 <div class="project-console-tabs">
-                  <div class="project-console-tab active" data-tab="terminal" id="projectTabTerminal">Terminal</div>
-                  <div class="project-console-tab" data-tab="preview" id="projectTabPreview">Browser Preview</div>
+                  <div class="project-console-tab active" id="projectTabTerminal">Terminal</div>
                 </div>
                 <div class="project-console-actions">
-                  <span class="ide-console-status" id="projectConsoleStatus"></span>
                   <span class="ide-console-status" id="projectConsoleTime"></span>
                   <button class="ide-console-clear" id="projectConsoleClearBtn">Clear</button>
                 </div>
               </div>
               <div class="project-console-content">
-                <div class="project-terminal" id="projectTerminal" style="display: block;"></div>
-                <div class="project-preview-wrapper" id="projectPreviewWrapper" style="display: none; width:100%; height:100%;">
-                  <iframe class="project-preview-iframe" id="projectPreviewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
-                </div>
+                <div class="project-terminal" id="projectTerminal"></div>
               </div>
             </div>
           </div>
