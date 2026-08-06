@@ -1023,7 +1023,7 @@
   }
 
   .ide-console-stdin-header {
-    padding: 6px 12px;
+    padding: 4px 12px;
     font-size: 9px;
     font-weight: 700;
     text-transform: uppercase;
@@ -1032,6 +1032,38 @@
     border-bottom: 1px solid var(--border);
     user-select: none;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ide-stdin-run-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: none;
+    background: var(--accent);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+
+  .ide-stdin-run-btn:hover {
+    opacity: 0.9;
+  }
+
+  .ide-stdin-run-btn svg {
+    width: 8px;
+    height: 8px;
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 2.5px;
   }
 
   .ide-console-stdin {
@@ -1828,6 +1860,7 @@
   function bindIDEControls(note) {
     const langSelect = document.getElementById('ideLanguageSelect');
     const runBtn = document.getElementById('ideRunBtn');
+    const stdinRunBtn = document.getElementById('ideStdinRunBtn');
     const stopBtn = document.getElementById('ideStopBtn');
     const formatBtn = document.getElementById('ideFormatBtn');
     const clearCodeBtn = document.getElementById('ideClearBtn');
@@ -1862,6 +1895,7 @@
     }
     
     if (runBtn) runBtn.addEventListener('click', runCode);
+    if (stdinRunBtn) stdinRunBtn.addEventListener('click', runCode);
     if (stopBtn) stopBtn.addEventListener('click', stopExecution);
     if (formatBtn) formatBtn.addEventListener('click', formatCode);
     if (clearCodeBtn) clearCodeBtn.addEventListener('click', clearCode);
@@ -2611,7 +2645,13 @@
             <div class="ide-console-body">
               <div class="ide-console-logs" id="ideConsoleLogs"></div>
               <div class="ide-console-stdin-container">
-                <div class="ide-console-stdin-header">stdin (standard input)</div>
+                <div class="ide-console-stdin-header">
+                  <span>stdin (standard input)</span>
+                  <button class="ide-stdin-run-btn" id="ideStdinRunBtn" title="Run code (Ctrl+Enter)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Run</span>
+                  </button>
+                </div>
                 <textarea class="ide-console-stdin" id="ideConsoleStdin" placeholder="Provide program inputs here..."></textarea>
               </div>
             </div>
