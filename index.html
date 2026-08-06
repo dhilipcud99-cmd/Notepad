@@ -3943,7 +3943,7 @@
       </div>`;
 
     if (note && note.type === 'project') {
-      editorInner.innerHTML = bodyHtml;
+      editorInner.innerHTML = toolbarHtml + bodyHtml;
     } else {
       editorInner.innerHTML = `
         ${toolbarHtml}
