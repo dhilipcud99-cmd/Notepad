@@ -480,6 +480,44 @@
     letter-spacing:-0.01em;
   }
   .title-input::placeholder{ color:var(--ink-faint); }
+  .project-toolbar{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:14px;
+    width:100%;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--border);
+  }
+  .project-toolbar-left,
+  .project-toolbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .project-toolbar-center{
+    display:flex;
+    justify-content:center;
+    width:100%;
+    min-width:220px;
+  }
+  .project-toolbar .project-title-input{
+    width:100%;
+    max-width:420px;
+    font-size:18px;
+    font-weight:700;
+    color:var(--ink);
+    padding:6px 10px;
+    border:1px solid transparent;
+    border-radius:10px;
+    background:var(--bg-surface);
+    text-align:center;
+  }
+  .project-toolbar .project-title-input:focus{
+    outline:none;
+    border-color:var(--accent);
+    background:var(--bg);
+  }
 
   .meta-row{
     display:flex; align-items:center; gap:14px;
@@ -2872,9 +2910,11 @@
     const newFolderBtn = document.getElementById('projectNewFolderBtn');
     const expNewFileBtn = document.getElementById('explorerNewFileBtn');
     const expNewFolderBtn = document.getElementById('explorerNewFolderBtn');
+    const projectTitleInput = document.getElementById('projectTitleInput');
+    const importBtn = document.getElementById('projectImportBtn');
+    const importFileInput = document.getElementById('projectImportFileInput');
     const runBtn = document.getElementById('projectRunBtn');
     const stopBtn = document.getElementById('projectStopBtn');
-    const formatBtn = document.getElementById('projectFormatBtn');
     const themeSelect = document.getElementById('projectThemeSelect');
     const consoleClearBtn = document.getElementById('projectConsoleClearBtn');
 
@@ -2882,14 +2922,24 @@
     if (expNewFileBtn) expNewFileBtn.onclick = createNewFile;
     if (newFolderBtn) newFolderBtn.onclick = createNewFolder;
     if (expNewFolderBtn) expNewFolderBtn.onclick = createNewFolder;
+    if (projectTitleInput) {
+      projectTitleInput.addEventListener('input', (e) => {
+        note.title = e.target.value;
+        queueSave(note);
+      });
+    }
+    if (importBtn && importFileInput) {
+      importBtn.onclick = () => importFileInput.click();
+      importFileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (files && files.length) {
+          restoreProjectFromFiles(files);
+        }
+        e.target.value = '';
+      });
+    }
     if (runBtn) runBtn.onclick = runProject;
     if (stopBtn) stopBtn.onclick = stopExecution;
-    if (formatBtn) formatBtn.onclick = () => {
-      if (projectMonacoInstance) {
-        projectMonacoInstance.trigger('editor', 'editor.action.formatDocument', null);
-        showToast('Formatted file');
-      }
-    };
     if (themeSelect) {
       themeSelect.onchange = (e) => {
         note.ideTheme = e.target.value;
@@ -3178,7 +3228,6 @@
     const runBtn = document.getElementById('ideRunBtn');
     const stdinRunBtn = document.getElementById('ideStdinRunBtn');
     const stopBtn = document.getElementById('ideStopBtn');
-    const formatBtn = document.getElementById('ideFormatBtn');
     const clearCodeBtn = document.getElementById('ideClearBtn');
     const copyBtn = document.getElementById('ideCopyBtn');
     const downloadBtn = document.getElementById('ideDownloadBtn');
@@ -3213,7 +3262,6 @@
     if (runBtn) runBtn.addEventListener('click', runCode);
     if (stdinRunBtn) stdinRunBtn.addEventListener('click', runCode);
     if (stopBtn) stopBtn.addEventListener('click', stopExecution);
-    if (formatBtn) formatBtn.addEventListener('click', formatCode);
     if (clearCodeBtn) clearCodeBtn.addEventListener('click', clearCode);
     if (copyBtn) copyBtn.addEventListener('click', copyCode);
     if (downloadBtn) downloadBtn.addEventListener('click', downloadCodeFile);
@@ -3540,7 +3588,7 @@
 
       if(payload.settings){
         theme = payload.settings.theme || theme;
-        rulesOn = payload.settings.rulesOn !== undefined ? payload.settings.rulesOn : rulesOn;
+        rulesOn = payload.settings.rulesOn !== undefined ? payload.settingsOn : rulesOn;
         accentColor = payload.settings.accentColor || accentColor;
         applyTheme(theme, false);
         if(accentColor) applyAccent(accentColor, false);
@@ -3559,6 +3607,77 @@
     };
     reader.onerror = () => alert('Could not read that file.');
     reader.readAsText(file);
+  }
+
+  async function restoreProjectFromFiles(fileList){
+    const files = Array.from(fileList);
+    if(files.length === 0) return;
+
+    function readText(file){
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(file);
+      });
+    }
+
+    const first = files[0];
+    if(files.length === 1 && first.name.toLowerCase().endsWith('.json')){
+      try{
+        const content = await readText(first);
+        const payload = JSON.parse(content);
+        const projectData = payload.files ? payload : (payload.project && payload.project.files ? payload.project : null);
+        if(projectData && typeof projectData.files === 'object'){
+          return restoreProjectObject(projectData.files);
+        }
+      }catch(err){
+        // fall through to file-by-file import below
+      }
+    }
+
+    const importedFiles = {};
+    for(const file of files){
+      try{
+        const text = await readText(file);
+        const path = file.webkitRelativePath || file.name;
+        importedFiles[path] = { content: text };
+      }catch(err) {
+        console.warn('Could not read file', file.name, err);
+      }
+    }
+
+    if(Object.keys(importedFiles).length === 0){
+      alert('No readable files were imported.');
+      return;
+    }
+
+    await restoreProjectObject(importedFiles);
+  }
+
+  async function restoreProjectObject(files){
+    let note = getActive();
+    if(!note || note.type !== 'project'){
+      const createNew = confirm('No active project is open. Create a new project from this import?');
+      if(!createNew) return;
+      await createProject();
+      note = getActive();
+    }
+    if(!note || note.type !== 'project') return;
+
+    const fileCount = Object.keys(files).length;
+    const proceed = confirm(`Import ${fileCount} project file(s) into the current project? This will replace existing project files.`);
+    if(!proceed) return;
+
+    note.files = files;
+    note.openTabs = Object.keys(files).filter(path => !path.endsWith('/')).slice(0, 3);
+    note.activeFile = note.openTabs.length ? note.openTabs[0] : Object.keys(files)[0] || null;
+    note.updatedAt = Date.now();
+    queueSave(note);
+
+    renderSidebar();
+    renderEditor();
+    showToast('Project files imported successfully');
   }
 
   function seedSampleNotes(){
@@ -3917,10 +4036,6 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
                 <span>Stop</span>
               </button>
-              <button class="ide-btn" id="ideFormatBtn" title="Format code">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM12 6v12M3 12h18"/></svg>
-                <span>Format</span>
-              </button>
               <button class="ide-btn" id="ideClearBtn" title="Clear code">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/></svg>
                 <span>Clear</span>
@@ -3994,34 +4109,31 @@
       
       toolbarHtml = `
         <div class="rich-toolbar project-toolbar" id="projectToolbar">
-          <button class="ide-btn run-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
-            <svg class="run-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span class="spinner"></span>
-            <span>Run</span>
-          </button>
-          <button class="ide-btn stop-btn" id="projectStopBtn" title="Stop">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-            <span>Stop</span>
-          </button>
-          <button class="ide-btn" id="projectFormatBtn" title="Format current file">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM12 6v12M3 12h18"/></svg>
-            <span>Format</span>
-          </button>
-          <span class="rt-sep"></span>
-          <button class="ide-btn" id="projectNewFileBtn" title="New File">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-            <span>+ File</span>
-          </button>
-          <button class="ide-btn" id="projectNewFolderBtn" title="New Folder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
-            <span>+ Folder</span>
-          </button>
-          <span class="rt-sep"></span>
-          <select class="ide-select" id="projectThemeSelect" title="Editor Theme">
-            <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
-            <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
-            <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
-          </select>
+          <div class="project-toolbar-left"></div>
+          <div class="project-toolbar-center">
+            <input type="text" class="title-input project-title-input" id="projectTitleInput" placeholder="Untitled Project" value="${escapeHtml(note.title || '')}">
+          </div>
+          <div class="project-toolbar-right">
+            <select class="ide-select" id="projectThemeSelect" title="Editor Theme">
+              <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
+              <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
+              <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
+            </select>
+            <button class="ide-btn" id="projectImportBtn" title="Import project files">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M4 21h16"/></svg>
+              <span>Import</span>
+            </button>
+            <input type="file" id="projectImportFileInput" style="display:none;" multiple>
+            <button class="ide-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
+              <svg class="run-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span class="spinner"></span>
+              <span>Run</span>
+            </button>
+            <button class="ide-btn stop-btn" id="projectStopBtn" title="Stop">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              <span>Stop</span>
+            </button>
+          </div>
         </div>`;
 
       bodyHtml = `

@@ -1700,13 +1700,10 @@
     <div class="sidebar-footer">
       <span id="noteCountLabel">0 notes</span>
       <div style="display:flex; align-items:center; gap:2px;">
-        <button class="icon-btn" id="backupBtn" title="Download a backup of all notes (.json)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="5" rx="1"/><path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/><path d="M10 13h4"/></svg>
+        <button class="icon-btn" id="importBtn" title="Import notes from a local file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M4 21h16"/></svg>
         </button>
-        <button class="icon-btn" id="restoreBtn" title="Restore notes from a backup file">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        </button>
-        <input type="file" id="restoreFileInput" accept="application/json" style="display:none;">
+        <input type="file" id="importFileInput" accept="application/json" style="display:none;">
         <button class="icon-btn" id="selectModeBtn" title="Select multiple notes">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         </button>
@@ -4899,9 +4896,8 @@
 
   document.addEventListener('click', closeProjectDropdown);
 
-  $('#backupBtn').addEventListener('click', downloadBackup);
-  $('#restoreBtn').addEventListener('click', () => $('#restoreFileInput').click());
-  $('#restoreFileInput').addEventListener('change', (e) => {
+  $('#importBtn').addEventListener('click', () => $('#importFileInput').click());
+  $('#importFileInput').addEventListener('change', (e) => {
     const file = e.target.files && e.target.files[0];
     if(file) restoreFromFile(file);
     e.target.value = '';
