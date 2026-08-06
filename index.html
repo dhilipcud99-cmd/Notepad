@@ -558,7 +558,6 @@
     display:flex; align-items:flex-start; gap:10px;
     padding:7px 4px;
     border-radius:6px;
-    group:hover;
   }
   .todo-row:hover{ background:rgba(0,0,0,0.02); }
   [data-theme="dark"] .todo-row:hover{ background:rgba(255,255,255,0.03); }
@@ -1862,6 +1861,12 @@
     }
   }
 
+  function getGitHubPagesNotice() {
+    return window.location.hostname.includes('github.io') || window.location.hostname.includes('githubpages')
+      ? 'GitHub Pages hosts static files only; server-side execution is unavailable here.'
+      : '';
+  }
+
   function updateConsoleTime(durationMs) {
     const timeEl = document.getElementById('ideConsoleTime');
     if (timeEl) {
@@ -2130,6 +2135,7 @@
         isExecuting = false;
       }
     } else if (['java', 'cpp', 'c', 'csharp', 'go', 'rust', 'kotlin', 'python'].includes(language)) {
+      const isGitHubPages = window.location.hostname.includes('github.io') || window.location.hostname.includes('githubpages');
       let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         backendUrl = 'http://localhost:3000/api/run';
@@ -2180,7 +2186,12 @@
         isExecuting = false;
         updateConsoleStatus('Server Connection Error', true);
         appendConsoleLog('Error: Could not connect to the backend server.', 'error');
-        appendConsoleLog('Please verify that the backend execution server is running locally (run "npm start" in the Notepad folder).', 'info');
+        if (isGitHubPages) {
+          appendConsoleLog(getGitHubPagesNotice(), 'info');
+          appendConsoleLog('Use the app locally with "npm start" or deploy the Node backend separately to run compiled languages.', 'info');
+        } else {
+          appendConsoleLog('Please verify that the backend execution server is running locally (run "npm start" in the Notepad folder).', 'info');
+        }
       }
     } else {
       isExecuting = false;
@@ -2885,6 +2896,7 @@
           logTerm(`Error: ${err.message}`, 'error');
         }
       } else {
+        const isGitHubPages = window.location.hostname.includes('github.io') || window.location.hostname.includes('githubpages');
         let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
           backendUrl = 'http://localhost:3000/api/run';
@@ -2931,6 +2943,10 @@
         } catch (err) {
           if (statusEl) statusEl.textContent = 'Server Connection Error';
           logTerm('Error: Could not connect to the backend server.', 'error');
+          if (isGitHubPages) {
+            logTerm(getGitHubPagesNotice(), 'info');
+            logTerm('Use the app locally with "npm start" or deploy the Node backend separately to run compiled languages.', 'info');
+          }
         }
       }
     } else {
