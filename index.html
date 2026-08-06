@@ -1615,37 +1615,7 @@
       updateConsoleStatus('Preview Updated');
       isExecuting = false;
       
-    } else if (language === 'python') {
-      const startTime = performance.now();
-      try {
-        updateConsoleStatus('Loading Pyodide...');
-        const pyodide = await loadPyodideInstance(
-          (text) => {
-            if (text) appendConsoleLog(text, 'log');
-          },
-          (text) => {
-            if (text) appendConsoleLog(text, 'error');
-          }
-        );
-        updateConsoleStatus('Running...');
-        const result = await pyodide.runPythonAsync(code);
-        
-        isExecuting = false;
-        const duration = (performance.now() - startTime).toFixed(0);
-        updateConsoleTime(duration);
-        updateConsoleStatus('Finished');
-        
-        if (result !== undefined && result !== null && String(result) !== 'None') {
-          appendConsoleLog(String(result), 'log');
-        }
-      } catch (err) {
-        isExecuting = false;
-        const duration = (performance.now() - startTime).toFixed(0);
-        updateConsoleTime(duration);
-        updateConsoleStatus('Failed', true);
-        appendConsoleLog(String(err), 'error');
-      }
-    } else if (['java', 'cpp', 'c', 'csharp', 'go', 'rust', 'kotlin'].includes(language)) {
+    } else if (['java', 'cpp', 'c', 'csharp', 'go', 'rust', 'kotlin', 'python'].includes(language)) {
       let backendUrl = '/api/run';
       if (window.location.protocol === 'file:') {
         backendUrl = 'http://localhost:3000/api/run';

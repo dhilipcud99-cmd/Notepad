@@ -388,21 +388,22 @@ app.post('/api/run', async (req, res) => {
     }
 
     // Execution phase
-    if (!isCompiled && runCmd === 'python') {
-      let pythonExists = false;
+    if (!isCompiled) {
+      let runnerExists = false;
       if (path.isAbsolute(runCmd) && fs.existsSync(runCmd)) {
-        pythonExists = true;
+        runnerExists = true;
       } else {
         try {
           const { execSync } = require('child_process');
-          execSync(os.platform() === 'win32' ? 'where python' : 'which python', { stdio: [] });
-          pythonExists = true;
+          const checkCmd = os.platform() === 'win32' ? `where ${runCmd}` : `which ${runCmd}`;
+          execSync(checkCmd, { stdio: [] });
+          runnerExists = true;
         } catch (e) {}
       }
-      if (!pythonExists) {
+      if (!runnerExists) {
         return res.json({
           success: false,
-          stderr: 'Python runner (python.exe) not found in System PATH.',
+          stderr: `Runner executable '${runCmd}' not found in System PATH.`,
           exitCode: -1,
           duration: 0
         });
