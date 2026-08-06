@@ -1657,8 +1657,8 @@
       isExecuting = false;
       
     } else if (['java', 'cpp', 'c', 'csharp', 'go', 'rust', 'kotlin', 'python'].includes(language)) {
-      let backendUrl = '/api/run';
-      if (window.location.protocol === 'file:') {
+      let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         backendUrl = 'http://localhost:3000/api/run';
       }
       try {
