@@ -482,8 +482,8 @@
   }
   .title-input::placeholder{ color:var(--ink-faint); }
   .project-toolbar{
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
+    display:flex;
+    justify-content:space-between;
     align-items:center;
     gap:14px;
     width:100%;
@@ -496,29 +496,7 @@
     align-items:center;
     gap:10px;
   }
-  .project-toolbar-center{
-    display:flex;
-    justify-content:center;
-    width:100%;
-    min-width:220px;
-  }
-  .project-toolbar .project-title-input{
-    width:100%;
-    max-width:420px;
-    font-size:18px;
-    font-weight:700;
-    color:var(--ink);
-    padding:6px 10px;
-    border:1px solid transparent;
-    border-radius:10px;
-    background:var(--bg-surface);
-    text-align:center;
-  }
-  .project-toolbar .project-title-input:focus{
-    outline:none;
-    border-color:var(--accent);
-    background:var(--bg);
-  }
+
 
   .meta-row{
     display:flex; align-items:center; gap:14px;
@@ -930,6 +908,8 @@
     border-color: var(--accent);
   }
   .ide-btn.run-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
     opacity: 0.9;
     color: #ffffff;
   }
@@ -1184,6 +1164,26 @@
     background: var(--bg);
     overflow: hidden;
     position: relative;
+  }
+
+  .project-toolbar .project-title-input{
+    font-size:16px;
+    font-weight:700;
+    color:var(--ink);
+    padding:6px 10px;
+    border:1px solid transparent;
+    border-radius:6px;
+    background:transparent;
+    text-align:left;
+    width:240px;
+  }
+  .project-toolbar .project-title-input:hover{
+    background:var(--bg-surface);
+  }
+  .project-toolbar .project-title-input:focus{
+    outline:none;
+    border-color:var(--border);
+    background:var(--bg-surface);
   }
 
   .project-explorer {
@@ -2985,7 +2985,6 @@
     const newFolderBtn = document.getElementById('projectNewFolderBtn');
     const expNewFileBtn = document.getElementById('explorerNewFileBtn');
     const expNewFolderBtn = document.getElementById('explorerNewFolderBtn');
-    const projectTitleInput = document.getElementById('projectTitleInput');
     const importBtn = document.getElementById('projectImportBtn');
     const importFileInput = document.getElementById('projectImportFileInput');
     const runBtn = document.getElementById('projectRunBtn');
@@ -2997,12 +2996,6 @@
     if (expNewFileBtn) expNewFileBtn.onclick = createNewFile;
     if (newFolderBtn) newFolderBtn.onclick = createNewFolder;
     if (expNewFolderBtn) expNewFolderBtn.onclick = createNewFolder;
-    if (projectTitleInput) {
-      projectTitleInput.addEventListener('input', (e) => {
-        note.title = e.target.value;
-        queueSave(note);
-      });
-    }
     const importMenu = document.getElementById('projectImportMenu');
     const importFilesItem = document.getElementById('importFilesItem');
     const importFolderItem = document.getElementById('importFolderItem');
@@ -4357,9 +4350,8 @@
       
       toolbarHtml = `
         <div class="rich-toolbar project-toolbar" id="projectToolbar">
-          <div class="project-toolbar-left"></div>
-          <div class="project-toolbar-center">
-            <input type="text" class="title-input project-title-input" id="projectTitleInput" placeholder="Untitled Project" value="${escapeHtml(note.title || '')}">
+          <div class="project-toolbar-left">
+            <input type="text" class="title-input project-title-input" id="titleInput" placeholder="Untitled Project" value="${escapeHtml(note.title || '')}">
           </div>
           <div class="project-toolbar-right">
             <select class="ide-select" id="projectThemeSelect" title="Editor Theme">
@@ -4385,7 +4377,7 @@
             </div>
             <input type="file" id="projectImportFileInput" style="display:none;" multiple>
             <input type="file" id="projectImportFolderInput" style="display:none;" webkitdirectory directory multiple>
-            <button class="ide-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
+            <button class="ide-btn run-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
               <svg class="run-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               <span class="spinner"></span>
               <span>Run</span>
