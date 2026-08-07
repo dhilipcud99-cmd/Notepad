@@ -1818,14 +1818,7 @@
           <option value="todo">To-do</option>
           <option value="journal">Journal</option>
         </select>
-        <div class="view-toggle" id="codeViewToggle">
-          <button data-view="preview" title="Preview">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-          <button data-view="code" title="Code">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6M16 6l6 6-6 6"/></svg>
-          </button>
-        </div>
+
       </div>
       <div class="topbar-right">
         <div style="position:relative;" id="projectsMenuWrap">
@@ -3010,6 +3003,171 @@
       showToast(`Deleted ${isFolder ? 'folder' : 'file'}`);
     }
 
+    function triggerFileImport() {
+      let input = document.getElementById('projectImportFileInput');
+      if (!input) {
+        input = document.createElement('input');
+        input.type = 'file';
+        input.id = 'projectImportFileInput';
+        input.style.display = 'none';
+        input.multiple = true;
+        input.addEventListener('change', (e) => {
+          const files = e.target.files;
+          if (files && files.length) {
+            importFilesToWorkspace(files);
+          }
+          e.target.value = '';
+        });
+        document.body.appendChild(input);
+      }
+      input.click();
+    }
+
+    function triggerFolderImport() {
+      let input = document.getElementById('projectImportFolderInput');
+      if (!input) {
+        input = document.createElement('input');
+        input.type = 'file';
+        input.id = 'projectImportFolderInput';
+        input.style.display = 'none';
+        input.multiple = true;
+        input.webkitdirectory = true;
+        input.directory = true;
+        input.addEventListener('change', (e) => {
+          const files = e.target.files;
+          if (files && files.length) {
+            importFilesToWorkspace(files);
+          }
+          e.target.value = '';
+        });
+        document.body.appendChild(input);
+      }
+      input.click();
+    }
+
+    async function importFilesToWorkspace(fileList) {
+      const files = Array.from(fileList);
+      if (files.length === 0) return;
+
+      function readText(file){
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsText(file);
+        });
+      }
+
+      const importedFiles = {};
+      const first = files[0];
+
+      if (files.length === 1 && first.name.toLowerCase().endsWith('.zip')) {
+        try {
+          showToast('Extracting project from zip archive...');
+          if (!window.JSZip) {
+            await new Promise((resolve, reject) => {
+              const script = document.createElement('script');
+              script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+              script.onload = resolve;
+              script.onerror = reject;
+              document.head.appendChild(script);
+            });
+          }
+          const zip = await window.JSZip.loadAsync(first);
+          const promises = [];
+          zip.forEach((relativePath, zipEntry) => {
+            if (!zipEntry.dir) {
+              promises.push(
+                zipEntry.async('string').then(text => {
+                  importedFiles[relativePath] = { content: text };
+                })
+              );
+            }
+          });
+          await Promise.all(promises);
+
+          let cleanedFiles = importedFiles;
+          const paths = Object.keys(importedFiles);
+          if (paths.length > 0) {
+            const firstParts = paths[0].split('/');
+            if (firstParts.length > 1) {
+              const rootCandidate = firstParts[0] + '/';
+              const allShareRoot = paths.every(p => p.startsWith(rootCandidate));
+              if (allShareRoot) {
+                cleanedFiles = {};
+                for (const [p, val] of Object.entries(importedFiles)) {
+                  cleanedFiles[p.substring(rootCandidate.length)] = val;
+                }
+              }
+            }
+          }
+          
+          if (!note.files) note.files = {};
+          for (const [path, data] of Object.entries(cleanedFiles)) {
+            note.files[path] = data;
+            ensureParentFolders(path);
+          }
+        } catch (err) {
+          alert('Failed to parse zip archive: ' + err.message);
+          return;
+        }
+      } else {
+        for (const file of files) {
+          try {
+            const text = await readText(file);
+            const path = file.webkitRelativePath || file.name;
+            let cleanPath = path;
+            if (cleanPath.startsWith('/')) cleanPath = cleanPath.slice(1);
+            importedFiles[cleanPath] = { content: text };
+          } catch (err) {
+            console.warn('Could not read file', file.name, err);
+          }
+        }
+
+        if (Object.keys(importedFiles).length === 0) {
+          showToast('No files were imported');
+          return;
+        }
+
+        if (!note.files) note.files = {};
+        for (const [path, data] of Object.entries(importedFiles)) {
+          note.files[path] = data;
+          ensureParentFolders(path);
+        }
+      }
+
+      function ensureParentFolders(path) {
+        const parts = path.split('/');
+        let currentDir = '';
+        for (let i = 0; i < parts.length - 1; i++) {
+          currentDir += parts[i] + '/';
+          if (!note.files[currentDir]) {
+            note.files[currentDir] = { isFolder: true };
+          }
+        }
+      }
+
+      const importedPaths = Object.keys(importedFiles).filter(p => !p.endsWith('/'));
+      if (!note.openTabs) note.openTabs = [];
+      importedPaths.forEach(path => {
+        if (!note.openTabs.includes(path)) {
+          note.openTabs.push(path);
+        }
+      });
+
+      if (importedPaths.length > 0) {
+        note.activeFile = importedPaths[0];
+      }
+
+      saveProjectState();
+      renderExplorer();
+      renderTabs();
+      if (note.activeFile) {
+        openFile(note.activeFile);
+      }
+      showToast(`Imported ${importedPaths.length} file(s)`);
+    }
+
     const newFileBtn = document.getElementById('projectNewFileBtn');
     const newFolderBtn = document.getElementById('projectNewFolderBtn');
     const expNewFileBtn = document.getElementById('explorerNewFileBtn');
@@ -3021,10 +3179,10 @@
     const themeSelect = document.getElementById('projectThemeSelect');
     const consoleClearBtn = document.getElementById('projectConsoleClearBtn');
 
-    if (newFileBtn) newFileBtn.onclick = createNewFile;
-    if (expNewFileBtn) expNewFileBtn.onclick = createNewFile;
-    if (newFolderBtn) newFolderBtn.onclick = createNewFolder;
-    if (expNewFolderBtn) expNewFolderBtn.onclick = createNewFolder;
+    if (newFileBtn) newFileBtn.onclick = triggerFileImport;
+    if (expNewFileBtn) expNewFileBtn.onclick = triggerFileImport;
+    if (newFolderBtn) newFolderBtn.onclick = triggerFolderImport;
+    if (expNewFolderBtn) expNewFolderBtn.onclick = triggerFolderImport;
     const importMenu = document.getElementById('projectImportMenu');
     const importFilesItem = document.getElementById('importFilesItem');
     const importFolderItem = document.getElementById('importFolderItem');
@@ -3039,23 +3197,23 @@
         else importMenu.classList.add('open');
       };
     }
-    if (importFilesItem && importFileInput) {
+    if (importFilesItem) {
       importFilesItem.onclick = () => {
         if (importMenu) importMenu.classList.remove('open');
-        importFileInput.click();
+        triggerFileImport();
       };
     }
-    if (importFolderItem && importFolderInput) {
+    if (importFolderItem) {
       importFolderItem.onclick = () => {
         if (importMenu) importMenu.classList.remove('open');
-        importFolderInput.click();
+        triggerFolderImport();
       };
     }
     if (importFileInput) {
       importFileInput.addEventListener('change', (e) => {
         const files = e.target.files;
         if (files && files.length) {
-          restoreProjectFromFiles(files);
+          importFilesToWorkspace(files);
         }
         e.target.value = '';
       });
@@ -3064,7 +3222,7 @@
       importFolderInput.addEventListener('change', (e) => {
         const files = e.target.files;
         if (files && files.length) {
-          restoreProjectFromFiles(files);
+          importFilesToWorkspace(files);
         }
         e.target.value = '';
       });
@@ -3846,125 +4004,7 @@
     reader.readAsText(file);
   }
 
-  async function restoreProjectFromFiles(fileList){
-    const files = Array.from(fileList);
-    if(files.length === 0) return;
 
-    function readText(file){
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsText(file);
-      });
-    }
-
-    const first = files[0];
-    if(files.length === 1 && first.name.toLowerCase().endsWith('.zip')){
-      try{
-        showToast('Extracting project from zip archive...');
-        if (!window.JSZip) {
-          await new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-          });
-        }
-        const zip = await window.JSZip.loadAsync(first);
-        const importedFiles = {};
-        const promises = [];
-        zip.forEach((relativePath, zipEntry) => {
-          if (!zipEntry.dir) {
-            promises.push(
-              zipEntry.async('string').then(text => {
-                importedFiles[relativePath] = { content: text };
-              })
-            );
-          }
-        });
-        await Promise.all(promises);
-
-        let cleanedFiles = importedFiles;
-        const paths = Object.keys(importedFiles);
-        if (paths.length > 0) {
-          const firstParts = paths[0].split('/');
-          if (firstParts.length > 1) {
-            const rootCandidate = firstParts[0] + '/';
-            const allShareRoot = paths.every(p => p.startsWith(rootCandidate));
-            if (allShareRoot) {
-              cleanedFiles = {};
-              for (const [p, val] of Object.entries(importedFiles)) {
-                cleanedFiles[p.substring(rootCandidate.length)] = val;
-              }
-            }
-          }
-        }
-        
-        return restoreProjectObject(cleanedFiles);
-      }catch(err){
-        alert('Failed to parse zip archive: ' + err.message);
-        return;
-      }
-    }
-
-    if(files.length === 1 && first.name.toLowerCase().endsWith('.json')){
-      try{
-        const content = await readText(first);
-        const payload = JSON.parse(content);
-        const projectData = payload.files ? payload : (payload.project && payload.project.files ? payload.project : null);
-        if(projectData && typeof projectData.files === 'object'){
-          return restoreProjectObject(projectData.files);
-        }
-      }catch(err){
-        // fall through to file-by-file import below
-      }
-    }
-
-    const importedFiles = {};
-    for(const file of files){
-      try{
-        const text = await readText(file);
-        const path = file.webkitRelativePath || file.name;
-        importedFiles[path] = { content: text };
-      }catch(err) {
-        console.warn('Could not read file', file.name, err);
-      }
-    }
-
-    if(Object.keys(importedFiles).length === 0){
-      alert('No readable files were imported.');
-      return;
-    }
-
-    await restoreProjectObject(importedFiles);
-  }
-
-  async function restoreProjectObject(files){
-    let note = getActive();
-    if(!note || note.type !== 'project'){
-      const createNew = confirm('No active project is open. Create a new project from this import?');
-      if(!createNew) return;
-      await createProject();
-      note = getActive();
-    }
-    if(!note || note.type !== 'project') return;
-
-    const fileCount = Object.keys(files).length;
-    const proceed = confirm(`Import ${fileCount} project file(s) into the current project? This will replace existing project files.`);
-    if(!proceed) return;
-
-    note.files = files;
-    note.openTabs = Object.keys(files).filter(path => !path.endsWith('/')).slice(0, 3);
-    note.activeFile = note.openTabs.length ? note.openTabs[0] : Object.keys(files)[0] || null;
-    note.updatedAt = Date.now();
-    queueSave(note);
-
-    renderSidebar();
-    renderEditor();
-    showToast('Project files imported successfully');
-  }
 
   function seedSampleNotes(){
     notes = [];
@@ -4198,7 +4238,6 @@
     setSaveStatus(note ? 'saved' : 'idle', note);
 
     if(!note){
-      $('#codeViewToggle').classList.remove('show');
       editorInner.innerHTML = `
         <div class="empty-editor">
           <div class="em-mark">Nothing selected</div>
@@ -4211,11 +4250,7 @@
 
     $('#typeSelect').value = note.type;
 
-    const codeToggle = $('#codeViewToggle');
-    codeToggle.classList.toggle('show', note.type === 'code');
-    codeToggle.querySelectorAll('button').forEach(b => {
-      b.classList.toggle('active', b.getAttribute('data-view') === getCodeView(note.id));
-    });
+
 
     const richToolbarHtml = `
       <div class="rich-toolbar" id="richToolbar">
@@ -5373,15 +5408,7 @@
   });
   $('#typeSelect').addEventListener('change', (e) => changeActiveType(e.target.value));
 
-  $('#codeViewToggle').querySelectorAll('button[data-view]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const note = getActive();
-      if(!note) return;
-      setCodeView(note.id, btn.getAttribute('data-view'));
-      setFilter('code');
-      renderEditor();
-    });
-  });
+
 
   window.addEventListener('message', (e) => {
     if(e.data && e.data.__notepadConsole) {
