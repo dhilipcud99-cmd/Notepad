@@ -250,7 +250,7 @@ function runProcess(command, args, input, timeoutMs, maxOutputBytes, cwd, compil
 }
 
 app.post('/api/run', async (req, res) => {
-  const { code, language, stdin } = req.body;
+  const { code, language, stdin, files, entryPoint } = req.body;
   if (!code) {
     return res.status(400).json({ error: 'Code is required' });
   }
@@ -259,7 +259,17 @@ app.post('/api/run', async (req, res) => {
   fs.mkdirSync(sessionDir, { recursive: true });
 
   try {
-    let sourceFilename = '';
+    let sourceFilename = entryPoint || '';
+    if (!sourceFilename) {
+      if (language === 'java') sourceFilename = 'Main.java';
+      else if (language === 'cpp' || language === 'c') sourceFilename = `main.${language === 'cpp' ? 'cpp' : 'c'}`;
+      else if (language === 'csharp') sourceFilename = 'Program.cs';
+      else if (language === 'go') sourceFilename = 'main.go';
+      else if (language === 'rust') sourceFilename = 'main.rs';
+      else if (language === 'kotlin') sourceFilename = 'main.kt';
+      else if (language === 'python') sourceFilename = 'main.py';
+    }
+
     let compileCmd = '';
     let compileArgs = [];
     let runCmd = '';
@@ -269,7 +279,9 @@ app.post('/api/run', async (req, res) => {
     if (language === 'java') {
       const classMatch = code.match(/public\s+class\s+(\w+)/) || code.match(/class\s+(\w+)/);
       const className = classMatch ? classMatch[1] : 'Main';
-      sourceFilename = `${className}.java`;
+      if (!sourceFilename.endsWith('.java')) {
+        sourceFilename = `${className}.java`;
+      }
       
       const javac = resolveCommand('javac');
       const java = resolveCommand('java');
@@ -277,42 +289,45 @@ app.post('/api/run', async (req, res) => {
       compileCmd = javac;
       compileArgs = [sourceFilename];
 
+      const sourceFileDir = path.dirname(sourceFilename);
       runCmd = java;
-      runArgs = ['-cp', '.', className];
+      runArgs = ['-cp', sourceFileDir === '.' ? '.' : sourceFileDir, className];
     } else if (language === 'cpp' || language === 'c') {
-      const ext = language === 'cpp' ? 'cpp' : 'c';
-      sourceFilename = `main.${ext}`;
-      
       const gxx = resolveCommand(language === 'cpp' ? 'g++' : 'gcc');
       compileCmd = gxx;
-      compileArgs = ['-O3', sourceFilename, '-o', 'main.exe'];
+      
+      let allSources = [sourceFilename];
+      if (files && typeof files === 'object') {
+        const ext = language === 'cpp' ? '.cpp' : '.c';
+        Object.keys(files).forEach(f => {
+          if (f.endsWith(ext) && f !== sourceFilename) {
+            allSources.push(f);
+          }
+        });
+      }
 
+      compileArgs = ['-O3', ...allSources, '-o', 'main.exe'];
       runCmd = path.join(sessionDir, 'main.exe');
       runArgs = [];
     } else if (language === 'csharp') {
-      sourceFilename = 'Program.cs';
       const csc = resolveCommand('csc');
-
       compileCmd = csc;
       compileArgs = [sourceFilename, '/out:program.exe', '/nologo'];
       runCmd = path.join(sessionDir, 'program.exe');
       runArgs = [];
     } else if (language === 'go') {
-      sourceFilename = 'main.go';
       const go = resolveCommand('go');
       compileCmd = go;
       compileArgs = ['build', '-o', 'main.exe', sourceFilename];
       runCmd = path.join(sessionDir, 'main.exe');
       runArgs = [];
     } else if (language === 'rust') {
-      sourceFilename = 'main.rs';
       const rustc = resolveCommand('rustc');
       compileCmd = rustc;
       compileArgs = [sourceFilename, '-o', 'main.exe'];
       runCmd = path.join(sessionDir, 'main.exe');
       runArgs = [];
     } else if (language === 'kotlin') {
-      sourceFilename = 'main.kt';
       const kotlinc = resolveCommand('kotlinc');
       const java = resolveCommand('java');
       compileCmd = kotlinc;
@@ -320,7 +335,6 @@ app.post('/api/run', async (req, res) => {
       runCmd = java;
       runArgs = ['-jar', 'main.jar'];
     } else if (language === 'python') {
-      sourceFilename = 'main.py';
       isCompiled = false;
       const python = resolveCommand('python') !== 'python' ? resolveCommand('python') : (resolveCommand('py') !== 'py' ? resolveCommand('py') : 'python');
       runCmd = python;
@@ -329,8 +343,29 @@ app.post('/api/run', async (req, res) => {
       return res.status(400).json({ error: `Language '${language}' is not supported for server-side execution.` });
     }
 
-    // Write source code file
-    fs.writeFileSync(path.join(sessionDir, sourceFilename), code);
+    // Write source code files
+    if (files && typeof files === 'object') {
+      for (const [relPath, fileObj] of Object.entries(files)) {
+        if (fileObj && typeof fileObj.content === 'string') {
+          const fullPath = path.join(sessionDir, relPath);
+          const parentDir = path.dirname(fullPath);
+          if (!fs.existsSync(parentDir)) {
+            fs.mkdirSync(parentDir, { recursive: true });
+          }
+          fs.writeFileSync(fullPath, fileObj.content);
+        }
+      }
+      if (sourceFilename) {
+        const fullPath = path.join(sessionDir, sourceFilename);
+        const parentDir = path.dirname(fullPath);
+        if (!fs.existsSync(parentDir)) {
+          fs.mkdirSync(parentDir, { recursive: true });
+        }
+        fs.writeFileSync(fullPath, code);
+      }
+    } else {
+      fs.writeFileSync(path.join(sessionDir, sourceFilename), code);
+    }
 
     let compilerBinDir = null;
     if (isCompiled && path.isAbsolute(compileCmd)) {

@@ -2235,7 +2235,7 @@
 
   async function getBackendUrl() {
     let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
       return 'http://localhost:3000/api/run';
     }
     try {
@@ -3307,7 +3307,13 @@
           const response = await fetch(backendUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code, language, stdin: '' })
+            body: JSON.stringify({
+              code,
+              language,
+              stdin: '',
+              files: note.files,
+              entryPoint: activeFile
+            })
           });
 
           if (!response.ok) {
