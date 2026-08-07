@@ -469,7 +469,24 @@ app.post('/api/run', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Notepad backend running at http://localhost:${PORT}`);
-});
+const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
+const MAX_PORT_ATTEMPTS = 10;
+
+function startServer(port, attemptsLeft) {
+  const server = app.listen(port, () => {
+    console.log(`Notepad backend running at http://localhost:${port}`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE' && attemptsLeft > 0) {
+      const nextPort = port + 1;
+      console.warn(`Port ${port} is in use. Trying port ${nextPort}...`);
+      setTimeout(() => startServer(nextPort, attemptsLeft - 1), 200);
+    } else {
+      console.error(`Failed to start server on port ${port}:`, err);
+      process.exit(1);
+    }
+  });
+}
+
+startServer(DEFAULT_PORT, MAX_PORT_ATTEMPTS);
