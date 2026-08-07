@@ -3242,22 +3242,41 @@
     }
   }
 
+  function resolveRelativePath(basePath, relativePath) {
+    if (relativePath.startsWith('/') || relativePath.includes('://')) {
+      return relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
+    }
+    let cleanRel = relativePath.replace(/^\.\//, '');
+    const parts = basePath.split('/');
+    parts.pop();
+    while (cleanRel.startsWith('../')) {
+      cleanRel = cleanRel.substring(3);
+      if (parts.length > 0) {
+        parts.pop();
+      }
+    }
+    const dir = parts.join('/');
+    return dir ? `${dir}/${cleanRel}` : cleanRel;
+  }
+
   function bundleProject(files, entryPoint = 'index.html') {
     let html = files[entryPoint] ? files[entryPoint].content : '';
     if (!html) return `<h1>Error: entry point ${entryPoint} not found!</h1>`;
     
     html = html.replace(/<link\s+[^>]*rel="stylesheet"\s+[^>]*href="([^"]+)"[^>]*>/gi, (match, href) => {
-      const cleanHref = href.replace(/^\.?\//, '');
-      if (files[cleanHref]) {
-        return `<style data-href="${cleanHref}">${files[cleanHref].content}</style>`;
+      if (href.includes('://') || href.startsWith('//')) return match;
+      const resolvedPath = resolveRelativePath(entryPoint, href);
+      if (files[resolvedPath]) {
+        return `<style data-href="${resolvedPath}">${files[resolvedPath].content}</style>`;
       }
       return match;
     });
 
     html = html.replace(/<script\s+[^>]*src="([^"]+)"[^>]*><\/script>/gi, (match, src) => {
-      const cleanSrc = src.replace(/^\.?\//, '');
-      if (files[cleanSrc]) {
-        return `<script data-src="${cleanSrc}">${files[cleanSrc].content}<\/script>`;
+      if (src.includes('://') || src.startsWith('//')) return match;
+      const resolvedPath = resolveRelativePath(entryPoint, src);
+      if (files[resolvedPath]) {
+        return `<script data-src="${resolvedPath}">${files[resolvedPath].content}<\/script>`;
       }
       return match;
     });
