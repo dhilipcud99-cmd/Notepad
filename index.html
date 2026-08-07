@@ -2220,6 +2220,26 @@
     window.monaco.editor.setTheme(mTheme);
   }
 
+  async function getBackendUrl() {
+    let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:3000/api/run';
+    }
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 600);
+      const localCheck = await fetch('http://localhost:3000/api/run', {
+        method: 'OPTIONS',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (localCheck.status === 200 || localCheck.status === 204) {
+        return 'http://localhost:3000/api/run';
+      }
+    } catch (e) {}
+    return backendUrl;
+  }
+
   async function runCode() {
     const note = getActive();
     if (!note || note.type !== 'code') return;
@@ -2334,10 +2354,7 @@
         isExecuting = false;
       }
     } else if (['java', 'cpp', 'c', 'csharp', 'go', 'rust', 'kotlin', 'python'].includes(language)) {
-      let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        backendUrl = 'http://localhost:3000/api/run';
-      }
+      const backendUrl = await getBackendUrl();
       try {
         updateConsoleStatus('Compiling / Running on server...');
         const stdinEl = document.getElementById('ideConsoleStdin');
@@ -3035,11 +3052,26 @@
     let previewRefreshTimer = null;
     function schedulePreviewRefresh() {
       if (!previewPanel || previewPanel.classList.contains('collapsed')) return;
-      if (!note.files || !note.files['index.html']) return;
+      if (!note.files) return;
+      
+      let entryPoint = 'index.html';
+      if (!note.files['index.html']) {
+        if (note.activeFile && note.activeFile.endsWith('.html')) {
+          entryPoint = note.activeFile;
+        } else {
+          const htmlFiles = Object.keys(note.files).filter(f => f.endsWith('.html'));
+          if (htmlFiles.length > 0) {
+            entryPoint = htmlFiles[0];
+          } else {
+            return;
+          }
+        }
+      }
+      
       clearTimeout(previewRefreshTimer);
       previewRefreshTimer = setTimeout(() => {
         const frame = document.getElementById('projectPreviewFrame');
-        if (frame) frame.srcdoc = bundleProject(note.files);
+        if (frame) frame.srcdoc = bundleProject(note.files, entryPoint);
       }, 600);
     }
 
@@ -3077,12 +3109,11 @@
     if (statusEl) statusEl.textContent = 'Running...';
     if (timeEl) timeEl.textContent = '';
 
-    const hasIndexHtml = note.files && note.files['index.html'];
     const activeFile = note.activeFile;
     const activeLang = activeFile ? getFileLanguage(activeFile) : '';
     const isBackendLang = ['python', 'c', 'cpp', 'java', 'csharp', 'go', 'rust', 'kotlin', 'sql'].includes(activeLang);
 
-    if (isBackendLang || !hasIndexHtml) {
+    if (isBackendLang) {
       if (!activeFile) {
         if (statusEl) statusEl.textContent = 'Failed';
         logTerm('Error: No active file open to run.', 'error');
@@ -3139,10 +3170,7 @@
           logTerm(`Error: ${err.message}`, 'error');
         }
       } else {
-        let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-          backendUrl = 'http://localhost:3000/api/run';
-        }
+        const backendUrl = await getBackendUrl();
 
         try {
           if (statusEl) statusEl.textContent = 'Compiling / Running on server...';
@@ -3185,12 +3213,26 @@
         } catch (err) {
           if (statusEl) statusEl.textContent = 'Server Connection Error';
           logTerm('Error: Could not connect to the backend server.', 'error');
+          logTerm('Please verify that the backend execution server is running locally (run "npm start" in the Notepad folder) or that the remote server is active.', 'info');
         }
       }
     } else {
       if (statusEl) statusEl.textContent = 'Bundling...';
       const startTime = performance.now();
-      const bundledHtml = bundleProject(note.files);
+      
+      let entryPoint = 'index.html';
+      if (note.files && !note.files['index.html']) {
+        if (activeFile && activeFile.endsWith('.html')) {
+          entryPoint = activeFile;
+        } else {
+          const htmlFiles = Object.keys(note.files).filter(f => f.endsWith('.html'));
+          if (htmlFiles.length > 0) {
+            entryPoint = htmlFiles[0];
+          }
+        }
+      }
+
+      const bundledHtml = bundleProject(note.files, entryPoint);
       if (previewFrame) {
         previewFrame.srcdoc = bundledHtml;
       }
@@ -3202,7 +3244,7 @@
 
   function bundleProject(files, entryPoint = 'index.html') {
     let html = files[entryPoint] ? files[entryPoint].content : '';
-    if (!html) return '<h1>Error: entry point index.html not found!</h1>';
+    if (!html) return `<h1>Error: entry point ${entryPoint} not found!</h1>`;
     
     html = html.replace(/<link\s+[^>]*rel="stylesheet"\s+[^>]*href="([^"]+)"[^>]*>/gi, (match, href) => {
       const cleanHref = href.replace(/^\.?\//, '');
