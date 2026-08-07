@@ -2958,9 +2958,43 @@
         queueSave(note);
       });
     }
-    if (importBtn && importFileInput) {
-      importBtn.onclick = () => importFileInput.click();
+    const importMenu = document.getElementById('projectImportMenu');
+    const importFilesItem = document.getElementById('importFilesItem');
+    const importFolderItem = document.getElementById('importFolderItem');
+    const importFolderInput = document.getElementById('projectImportFolderInput');
+
+    if (importBtn && importMenu) {
+      importBtn.onclick = (e) => {
+        e.stopPropagation();
+        const isOpen = importMenu.classList.contains('open');
+        document.querySelectorAll('.export-menu.open').forEach(m => { if(m !== importMenu) m.classList.remove('open'); });
+        if(isOpen) importMenu.classList.remove('open');
+        else importMenu.classList.add('open');
+      };
+    }
+    if (importFilesItem && importFileInput) {
+      importFilesItem.onclick = () => {
+        if (importMenu) importMenu.classList.remove('open');
+        importFileInput.click();
+      };
+    }
+    if (importFolderItem && importFolderInput) {
+      importFolderItem.onclick = () => {
+        if (importMenu) importMenu.classList.remove('open');
+        importFolderInput.click();
+      };
+    }
+    if (importFileInput) {
       importFileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (files && files.length) {
+          restoreProjectFromFiles(files);
+        }
+        e.target.value = '';
+      });
+    }
+    if (importFolderInput) {
+      importFolderInput.addEventListener('change', (e) => {
         const files = e.target.files;
         if (files && files.length) {
           restoreProjectFromFiles(files);
@@ -3718,6 +3752,55 @@
     }
 
     const first = files[0];
+    if(files.length === 1 && first.name.toLowerCase().endsWith('.zip')){
+      try{
+        showToast('Extracting project from zip archive...');
+        if (!window.JSZip) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+        const zip = await window.JSZip.loadAsync(first);
+        const importedFiles = {};
+        const promises = [];
+        zip.forEach((relativePath, zipEntry) => {
+          if (!zipEntry.dir) {
+            promises.push(
+              zipEntry.async('string').then(text => {
+                importedFiles[relativePath] = { content: text };
+              })
+            );
+          }
+        });
+        await Promise.all(promises);
+
+        let cleanedFiles = importedFiles;
+        const paths = Object.keys(importedFiles);
+        if (paths.length > 0) {
+          const firstParts = paths[0].split('/');
+          if (firstParts.length > 1) {
+            const rootCandidate = firstParts[0] + '/';
+            const allShareRoot = paths.every(p => p.startsWith(rootCandidate));
+            if (allShareRoot) {
+              cleanedFiles = {};
+              for (const [p, val] of Object.entries(importedFiles)) {
+                cleanedFiles[p.substring(rootCandidate.length)] = val;
+              }
+            }
+          }
+        }
+        
+        return restoreProjectObject(cleanedFiles);
+      }catch(err){
+        alert('Failed to parse zip archive: ' + err.message);
+        return;
+      }
+    }
+
     if(files.length === 1 && first.name.toLowerCase().endsWith('.json')){
       try{
         const content = await readText(first);
@@ -4214,11 +4297,24 @@
               <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
               <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
             </select>
-            <button class="ide-btn" id="projectImportBtn" title="Import project files">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M4 21h16"/></svg>
-              <span>Import</span>
-            </button>
+            <div class="export-wrap">
+              <button class="ide-btn" id="projectImportBtn" title="Import project files">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M4 21h16"/></svg>
+                <span>Import</span>
+              </button>
+              <div class="export-menu" id="projectImportMenu">
+                <button id="importFilesItem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <span>Files / .zip</span>
+                </button>
+                <button id="importFolderItem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; margin-right:4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  <span>Folder</span>
+                </button>
+              </div>
+            </div>
             <input type="file" id="projectImportFileInput" style="display:none;" multiple>
+            <input type="file" id="projectImportFolderInput" style="display:none;" webkitdirectory directory multiple>
             <button class="ide-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
               <svg class="run-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               <span class="spinner"></span>
