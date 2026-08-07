@@ -1455,7 +1455,8 @@
     align-items: center;
     gap: 6px;
   }
-  .project-preview-collapse-btn {
+  .project-preview-collapse-btn,
+  .project-preview-fullscreen-btn {
     background: transparent;
     border: none;
     color: var(--ink-faint);
@@ -1466,11 +1467,13 @@
     align-items: center;
     transition: color 0.15s, background 0.15s;
   }
-  .project-preview-collapse-btn:hover {
+  .project-preview-collapse-btn:hover,
+  .project-preview-fullscreen-btn:hover {
     color: var(--ink);
     background: var(--accent-soft);
   }
-  .project-preview-collapse-btn svg {
+  .project-preview-collapse-btn svg,
+  .project-preview-fullscreen-btn svg {
     width: 14px;
     height: 14px;
   }
@@ -2951,6 +2954,7 @@
     const previewPanel = document.getElementById('projectPreviewPanel');
     const expandBtn = document.getElementById('projectPreviewExpandBtn');
     const collapseBtn = document.getElementById('projectPreviewCollapseBtn');
+    const fullscreenBtn = document.getElementById('projectPreviewFullscreenBtn');
 
     function collapsePreview() {
       if (!previewPanel) return;
@@ -2968,9 +2972,22 @@
       if (expandBtn) expandBtn.style.display = 'none';
       if (projectMonacoInstance) projectMonacoInstance.layout();
     }
+    function openFullscreen() {
+      const iframe = document.getElementById('projectPreviewFrame');
+      if (iframe) {
+        if (iframe.requestFullscreen) {
+          iframe.requestFullscreen();
+        } else if (iframe.webkitRequestFullscreen) { /* Safari */
+          iframe.webkitRequestFullscreen();
+        } else if (iframe.msRequestFullscreen) { /* IE11 */
+          iframe.msRequestFullscreen();
+        }
+      }
+    }
 
     if (collapseBtn) collapseBtn.onclick = collapsePreview;
     if (expandBtn) expandBtn.onclick = expandPreview;
+    if (fullscreenBtn) fullscreenBtn.onclick = openFullscreen;
 
     if (hDivider && previewPanel) {
       hDivider.onmousedown = (e) => {
@@ -4099,17 +4116,20 @@
                   <span>Browser Preview</span>
                   <div class="project-preview-header-actions">
                     <span class="ide-console-status" id="projectConsoleStatus"></span>
-                    <button class="project-preview-collapse-btn" id="projectPreviewCollapseBtn" title="Collapse preview">
+                    <button class="project-preview-fullscreen-btn" id="projectPreviewFullscreenBtn" title="Open in Full Screen">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                    </button>
+                    <button class="project-preview-collapse-btn" id="projectPreviewCollapseBtn" title="Collapse preview">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </button>
                   </div>
                 </div>
                 <div class="project-preview-iframe-wrap">
-                  <iframe id="projectPreviewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
+                  <iframe id="projectPreviewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups" allowfullscreen></iframe>
                 </div>
               </div>
               <button class="project-preview-expand-btn" id="projectPreviewExpandBtn" title="Expand preview" style="display:none;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
             </div>
             
