@@ -2364,7 +2364,10 @@
 
   async function getBackendUrl() {
     let backendUrl = 'https://notepad-v1j7.onrender.com/api/run';
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return window.location.origin + '/api/run';
+    }
+    if (window.location.protocol === 'file:') {
       return 'http://localhost:3000/api/run';
     }
     try {
@@ -3287,6 +3290,34 @@
     if (expNewFileBtn) expNewFileBtn.onclick = triggerFileImport;
     if (newFolderBtn) newFolderBtn.onclick = triggerFolderImport;
     if (expNewFolderBtn) expNewFolderBtn.onclick = triggerFolderImport;
+
+    const importBtn = document.getElementById('projectImportBtn');
+    const importMenu = document.getElementById('projectImportMenu');
+    const filesItem = document.getElementById('importFilesItem');
+    const folderItem = document.getElementById('importFolderItem');
+
+    if (importBtn && importMenu) {
+      importBtn.onclick = (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.export-menu.open').forEach(m => { if(m !== importMenu) m.classList.remove('open'); });
+        importMenu.classList.toggle('open');
+      };
+    }
+    if (filesItem) {
+      filesItem.onclick = (e) => {
+        e.stopPropagation();
+        if (importMenu) importMenu.classList.remove('open');
+        triggerFileImport();
+      };
+    }
+    if (folderItem) {
+      folderItem.onclick = (e) => {
+        e.stopPropagation();
+        if (importMenu) importMenu.classList.remove('open');
+        triggerFolderImport();
+      };
+    }
+
     if (runBtn) runBtn.onclick = runProject;
     if (stopBtn) stopBtn.onclick = stopExecution;
     if (previewToggleBtn) {
