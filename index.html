@@ -4555,7 +4555,7 @@
         </div>
       `;
     } else if(note.type === 'project'){
-      if (!note.files) {
+      if (!note.files || Object.keys(note.files).length === 0) {
         note.files = {
           "index.html": { content: "<!DOCTYPE html>\n<html>\n<head>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Hello, World!</h1>\n  <script src=\"app.js\"><\/script>\n</body>\n</html>" },
           "style.css": { content: "body {\n  font-family: sans-serif;\n  background: #f4f4f9;\n  color: #333;\n  text-align: center;\n  padding-top: 50px;\n}" },
@@ -5353,7 +5353,7 @@
     const project = notes.find(n => n.id === lastProjectActiveId && n.type === 'project')
       || notes.find(n => n.type === 'project');
     if (!project) {
-      showToast('No project available');
+      await createProject();
       return;
     }
     activeId = project.id;
