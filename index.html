@@ -3670,6 +3670,7 @@
     const stdinRunBtn = document.getElementById('ideStdinRunBtn');
     const stopBtn = document.getElementById('ideStopBtn');
     const formatBtn = document.getElementById('ideFormatBtn');
+    const previewToggleBtn = document.getElementById('idePreviewToggleBtn');
     const clearCodeBtn = document.getElementById('ideClearBtn');
     const copyBtn = document.getElementById('ideCopyBtn');
     const pasteBtn = document.getElementById('idePasteBtn');
@@ -3706,6 +3707,21 @@
     if (stdinRunBtn) stdinRunBtn.addEventListener('click', runCode);
     if (stopBtn) stopBtn.addEventListener('click', stopExecution);
     if (formatBtn) formatBtn.addEventListener('click', formatCode);
+    if (previewToggleBtn) {
+      previewToggleBtn.addEventListener('click', () => {
+        const previewWrap = document.getElementById('idePreviewWrapper');
+        if (previewWrap) {
+          const isHidden = previewWrap.style.display === 'none';
+          previewWrap.style.display = isHidden ? 'block' : 'none';
+          if (isHidden) {
+            updatePreview(monacoEditorInstance ? monacoEditorInstance.getValue() : note.content);
+          }
+          if (monacoEditorInstance) {
+            setTimeout(() => monacoEditorInstance.layout(), 10);
+          }
+        }
+      });
+    }
     if (clearCodeBtn) clearCodeBtn.addEventListener('click', clearCode);
     if (copyBtn) copyBtn.addEventListener('click', copyCode);
     if (pasteBtn) pasteBtn.addEventListener('click', pasteCode);
@@ -4467,6 +4483,10 @@
               <button class="ide-btn" id="ideFormatBtn" title="Format code">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM12 6v12M3 12h18"/></svg>
                 <span>Format</span>
+              </button>
+              <button class="ide-btn" id="idePreviewToggleBtn" title="Toggle browser preview">
+                ${ICONS.fileCode}
+                <span>Preview</span>
               </button>
               <button class="ide-btn" id="ideClearBtn" title="Clear code">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/></svg>
