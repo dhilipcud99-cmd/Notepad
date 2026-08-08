@@ -5493,10 +5493,7 @@
     projectMenuBtn.classList.remove('on');
   }
 
-  document.addEventListener('click', () => {
-    closeProjectDropdown(projectDropdown, projectMenuBtn);
-    closeProjectDropdown(projectDropdownTop, projectMenuBtnTop);
-  });
+  document.addEventListener('click', closeProjectDropdown);
 
   $('#importBtn').addEventListener('click', () => $('#importFileInput').click());
   $('#importFileInput').addEventListener('change', (e) => {
