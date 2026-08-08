@@ -2281,6 +2281,38 @@
     }
   }
 
+  async function pasteCode() {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text !== undefined && text !== null) {
+        if (window.monaco && monacoEditorInstance) {
+          const selection = monacoEditorInstance.getSelection();
+          const range = new window.monaco.Range(
+            selection.startLineNumber,
+            selection.startColumn,
+            selection.endLineNumber,
+            selection.endColumn
+          );
+          const id = { major: 1, minor: 1 };
+          const textOp = { identifier: id, range: range, text: text, forceMoveMarkers: true };
+          monacoEditorInstance.executeEdits("paste-button", [textOp]);
+          monacoEditorInstance.focus();
+        } else {
+          const active = getActive();
+          if (active && active.type === 'code') {
+            active.content = text;
+            queueSave(active);
+            renderEditor();
+          }
+        }
+        showToast('Pasted from clipboard');
+      }
+    } catch (err) {
+      console.warn('Failed to read clipboard:', err);
+      showToast('Clipboard access denied. Please use Ctrl+V/Cmd+V to paste.', 'error');
+    }
+  }
+
   function downloadCodeFile() {
     const note = getActive();
     if (!note) return;
@@ -3640,6 +3672,7 @@
     const formatBtn = document.getElementById('ideFormatBtn');
     const clearCodeBtn = document.getElementById('ideClearBtn');
     const copyBtn = document.getElementById('ideCopyBtn');
+    const pasteBtn = document.getElementById('idePasteBtn');
     const downloadBtn = document.getElementById('ideDownloadBtn');
     const themeSelect = document.getElementById('ideThemeSelect');
     const clearBtn = document.getElementById('ideConsoleClearBtn');
@@ -3675,6 +3708,7 @@
     if (formatBtn) formatBtn.addEventListener('click', formatCode);
     if (clearCodeBtn) clearCodeBtn.addEventListener('click', clearCode);
     if (copyBtn) copyBtn.addEventListener('click', copyCode);
+    if (pasteBtn) pasteBtn.addEventListener('click', pasteCode);
     if (downloadBtn) downloadBtn.addEventListener('click', downloadCodeFile);
     
     if (themeSelect) {
@@ -4443,6 +4477,10 @@
               <button class="ide-btn" id="ideCopyBtn" title="Copy code">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 <span>Copy</span>
+              </button>
+              <button class="ide-btn" id="idePasteBtn" title="Paste from clipboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                <span>Paste</span>
               </button>
               <button class="ide-btn" id="ideDownloadBtn" title="Download file">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
