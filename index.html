@@ -4468,6 +4468,10 @@
             <input type="text" class="title-input project-title-input" id="titleInput" placeholder="Untitled Project" value="${escapeHtml(note.title || '')}">
           </div>
           <div class="project-toolbar-right">
+            <button class="ide-btn" id="projectBackBtn" title="Back to notes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              <span>Back to notes</span>
+            </button>
             <div style="position:relative;" id="projectsMenuWrap">
               <button class="ide-btn" id="projectMenuBtn" title="Projects">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -4615,6 +4619,7 @@
     if (note && note.type === 'project') {
       editorInner.innerHTML = toolbarHtml + bodyHtml;
       bindProjectMenu();
+      bindProjectToolbarActions();
     } else {
       editorInner.innerHTML = `
         ${toolbarHtml}
@@ -5395,6 +5400,7 @@
   $('#duplicateBtn').addEventListener('click', duplicateActive);
   $('#pinToggle').addEventListener('click', togglePin);
   $('#rulesToggle').addEventListener('click', toggleRules);
+  $('#projectEditorBtn').addEventListener('click', openProjectWorkspace);
 
   let projectMenuBtn = null;
   let projectDropdown = null;
@@ -5439,13 +5445,6 @@
       backBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         exitProjectWorkspace();
-      });
-    }
-    const projectEditorBtn = $('#projectEditorBtn');
-    if (projectEditorBtn) {
-      projectEditorBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openProjectWorkspace();
       });
     }
   }
