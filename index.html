@@ -4577,14 +4577,14 @@
               <span>Back to notes</span>
             </button>
             <div style="position:relative;" id="projectsMenuWrap">
-              <button class="ide-btn" id="projectMenuBtn" title="Projects">
+              <button class="ide-btn" id="projectMenuBtnIDE" title="Projects">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                 <span>Projects</span>
               </button>
-              <div id="projectDropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; width:240px; background:var(--bg-surface); border:1px solid var(--border); border-radius:9px; box-shadow:var(--shadow); z-index:50; padding:5px; display:none; flex-direction:column; gap:1px;">
-                <div id="projectDropdownList"></div>
+              <div id="projectDropdownIDE" style="display:none; position:absolute; top:calc(100% + 6px); right:0; width:240px; background:var(--bg-surface); border:1px solid var(--border); border-radius:9px; box-shadow:var(--shadow); z-index:50; padding:5px; display:none; flex-direction:column; gap:1px;">
+                <div id="projectDropdownListIDE"></div>
                 <div style="border-top:1px solid var(--border); margin-top:4px; padding-top:4px;">
-                  <button id="projectDropdownNew" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:transparent; color:var(--ink); font-size:12.5px; font-weight:600; cursor:pointer;">
+                  <button id="projectDropdownNewIDE" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:transparent; color:var(--ink); font-size:12.5px; font-weight:600; cursor:pointer;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M12 5v14M5 12h14"/></svg>
                     New project
                   </button>
@@ -4722,7 +4722,7 @@
 
     if (note && note.type === 'project') {
       editorInner.innerHTML = toolbarHtml + bodyHtml;
-      bindProjectMenu();
+      bindProjectMenuIDE();
       bindProjectToolbarActions();
     } else {
       editorInner.innerHTML = `
@@ -5505,6 +5505,7 @@
   $('#pinToggle').addEventListener('click', togglePin);
   $('#rulesToggle').addEventListener('click', toggleRules);
   $('#projectEditorBtn').addEventListener('click', openProjectWorkspace);
+  bindProjectMenu();
 
   let projectMenuBtn = null;
   let projectDropdown = null;
@@ -5522,7 +5523,7 @@
 
     projectMenuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      projectDropdown.style.display === 'none' ? openProjectDropdown() : closeProjectDropdown();
+      projectDropdown.style.display === 'none' ? openProjectDropdown() : closeAllProjectDropdowns();
     });
 
     projectDropdown.addEventListener('click', (e) => e.stopPropagation());
@@ -5530,7 +5531,37 @@
     if (projectDropdownNew) {
       projectDropdownNew.addEventListener('click', (e) => {
         e.stopPropagation();
-        closeProjectDropdown();
+        closeAllProjectDropdowns();
+        createProject();
+      });
+    }
+  }
+
+  function bindProjectMenuIDE() {
+    const menuBtn = $('#projectMenuBtnIDE');
+    const dropdown = $('#projectDropdownIDE');
+    const dropdownNew = $('#projectDropdownNewIDE');
+    if (!menuBtn || !dropdown) return;
+
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (dropdown.style.display === 'none') {
+        renderProjectDropdown('projectDropdownListIDE');
+        dropdown.style.display = 'flex';
+        menuBtn.classList.add('on');
+      } else {
+        dropdown.style.display = 'none';
+        menuBtn.classList.remove('on');
+      }
+    });
+
+    dropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    if (dropdownNew) {
+      dropdownNew.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.style.display = 'none';
+        menuBtn.classList.remove('on');
         createProject();
       });
     }
@@ -5576,7 +5607,7 @@
         activeId = id;
         lastProjectActiveId = id;
         persistAppState();
-        closeProjectDropdown();
+        closeAllProjectDropdowns();
         renderSidebar();
         renderEditor();
       });
@@ -5585,18 +5616,27 @@
 
   function openProjectDropdown() {
     if (!projectDropdown || !projectMenuBtn) return;
-    renderProjectDropdown();
+    renderProjectDropdown('projectDropdownList');
     projectDropdown.style.display = 'flex';
     projectMenuBtn.classList.add('on');
   }
 
-  function closeProjectDropdown() {
-    if (!projectDropdown || !projectMenuBtn) return;
-    projectDropdown.style.display = 'none';
-    projectMenuBtn.classList.remove('on');
+  function closeAllProjectDropdowns() {
+    const dropdown = $('#projectDropdown');
+    const menuBtn = $('#projectMenuBtn');
+    if (dropdown && menuBtn) {
+      dropdown.style.display = 'none';
+      menuBtn.classList.remove('on');
+    }
+    const dropdownIDE = $('#projectDropdownIDE');
+    const menuBtnIDE = $('#projectMenuBtnIDE');
+    if (dropdownIDE && menuBtnIDE) {
+      dropdownIDE.style.display = 'none';
+      menuBtnIDE.classList.remove('on');
+    }
   }
 
-  document.addEventListener('click', closeProjectDropdown);
+  document.addEventListener('click', closeAllProjectDropdowns);
 
   $('#importBtn').addEventListener('click', () => $('#importFileInput').click());
   $('#importFileInput').addEventListener('change', (e) => {
