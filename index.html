@@ -1851,9 +1851,6 @@
         <button class="icon-btn" id="sidebarToggle" title="Toggle sidebar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>
         </button>
-        <button class="icon-btn" id="projectEditorBtn" title="Open Project Editor">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18M3 19h18M7 5v14M17 5v14"/></svg>
-        </button>
         <select class="type-select" id="typeSelect">
           <option value="note">Note</option>
           <option value="code">Code</option>
@@ -1927,6 +1924,7 @@
   // exist — so we fall back to localStorage, keyed under a namespace,
   // to make sure notes still survive a refresh either way.
   const LS_PREFIX = 'claude-notepad::';
+  const APP_STATE_KEY = 'app-state';
   const hasNativeStorage = typeof window.storage === 'object' && window.storage !== null && typeof window.storage.get === 'function';
 
   const storage = {
@@ -2056,6 +2054,7 @@
   let pyodideLoadingPromise = null;
   let monacoLoadingPromise = null;
   let isExecuting = false;
+  let projectRunAbortController = null;
   let previewDebounceTimer = null;
 
   function loadMonaco() {
@@ -2186,6 +2185,10 @@
 
   function stopExecution() {
     isExecuting = false;
+    if (projectRunAbortController) {
+      projectRunAbortController.abort();
+      projectRunAbortController = null;
+    }
     updateConsoleStatus('Stopped', false);
     const runnerFrame = document.getElementById('jsRunnerFrame');
     if (runnerFrame) {
@@ -3582,13 +3585,15 @@
         }
       } else {
         const backendUrl = await getBackendUrl();
+        projectRunAbortController = new AbortController();
 
         try {
           if (statusEl) statusEl.textContent = 'Compiling / Running on server...';
           const response = await fetch(backendUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code, language, stdin: '' })
+            body: JSON.stringify({ code, language, stdin: '' }),
+            signal: projectRunAbortController.signal
           });
 
           if (!response.ok) {
@@ -3622,9 +3627,16 @@
             if (statusEl) statusEl.textContent = 'Finished';
           }
         } catch (err) {
-          if (statusEl) statusEl.textContent = 'Server Connection Error';
-          logTerm('Error: Could not connect to the backend server.', 'error');
-          logTerm('Please verify that the backend execution server is running locally (run "npm start" in the Notepad folder) or that the remote server is active.', 'info');
+          if (err.name === 'AbortError') {
+            if (statusEl) statusEl.textContent = 'Stopped';
+            logTerm('Execution cancelled.', 'info');
+          } else {
+            if (statusEl) statusEl.textContent = 'Server Connection Error';
+            logTerm('Error: Could not connect to the backend server.', 'error');
+            logTerm('Please verify that the backend execution server is running locally (run "npm start" in the Notepad folder) or that the remote server is active.', 'info');
+          }
+        } finally {
+          projectRunAbortController = null;
         }
       }
     } else {
@@ -3981,10 +3993,8 @@
       const rawState = stateRec && stateRec.value ? stateRec.value : localState;
       if (rawState) {
         const state = JSON.parse(rawState);
-        if (state && state.activeId) {
-          const exists = notes.some(n => n.id === state.activeId);
-          if (exists) activeId = state.activeId;
-        }
+        // Always load the homepage on refresh instead of restoring the last active note/project.
+        activeId = null;
         if (state && typeof state.filter === 'string') {
           filter = state.filter;
         }
@@ -4018,8 +4028,6 @@
 
     if(notes.length === 0){
       seedSampleNotes();
-    } else {
-      activeId = notes[0].id;
     }
     renderSidebar();
     renderEditor();
@@ -4199,6 +4207,11 @@
 
   function sidebarNotes(){
     return notes.filter(n => n.type !== 'project');
+  }
+
+  function firstNonProjectNoteId(){
+    const note = notes.find(n => n.type !== 'project');
+    return note ? note.id : (notes[0] && notes[0].id) || null;
   }
 
   function allTags(){
@@ -4600,14 +4613,18 @@
       toolbarHtml = `
         <div class="rich-toolbar project-toolbar" id="projectToolbar">
           <div class="project-toolbar-left">
+            <button class="ide-btn" id="projectBackBtn" title="Back to notes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
             <input type="text" class="title-input project-title-input" id="titleInput" placeholder="Untitled Project" value="${escapeHtml(note.title || '')}">
           </div>
           <div class="project-toolbar-right">
-            <button class="ide-btn" id="projectBackBtn" title="Back to notes">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-              <span>Back to notes</span>
-            </button>
-            <div style="position:relative;" id="projectsMenuWrap">
+            <select class="ide-select" id="projectThemeSelect" title="Editor Theme">
+              <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
+              <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
+              <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
+            </select>
+            <div style="position:relative;" id="projectMenuWrapIDE">
               <button class="ide-btn" id="projectMenuBtnIDE" title="Projects">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                 <span>Projects</span>
@@ -4622,11 +4639,6 @@
                 </div>
               </div>
             </div>
-            <select class="ide-select" id="projectThemeSelect" title="Editor Theme">
-              <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
-              <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
-              <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
-            </select>
             <div class="export-wrap">
               <button class="ide-btn" id="projectImportBtn" title="Import project files">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M4 21h16"/></svg>
@@ -5530,17 +5542,18 @@
     });
   }
 
+  let projectMenuBtn = null;
+  let projectDropdown = null;
+  let projectDropdownNew = null;
+
   $('#newNoteBtn').addEventListener('click', createNote);
   $('#deleteBtn').addEventListener('click', deleteActive);
   $('#duplicateBtn').addEventListener('click', duplicateActive);
   $('#pinToggle').addEventListener('click', togglePin);
   $('#rulesToggle').addEventListener('click', toggleRules);
-  $('#projectEditorBtn').addEventListener('click', openProjectWorkspace);
+  const projectEditorBtn = $('#projectEditorBtn');
+  if (projectEditorBtn) projectEditorBtn.addEventListener('click', openProjectWorkspace);
   bindProjectMenu();
-
-  let projectMenuBtn = null;
-  let projectDropdown = null;
-  let projectDropdownNew = null;
 
   function updateProjectMenuElements() {
     projectMenuBtn = $('#projectMenuBtn');
@@ -5551,10 +5564,16 @@
   function bindProjectMenu() {
     updateProjectMenuElements();
     if (!projectMenuBtn || !projectDropdown) return;
+    if (projectMenuBtn.dataset.bound === '1') return;
+    projectMenuBtn.dataset.bound = '1';
 
     projectMenuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      projectDropdown.style.display === 'none' ? openProjectDropdown() : closeAllProjectDropdowns();
+      if (projectDropdown.style.display === 'none' || projectDropdown.style.display === '') {
+        openProjectDropdown();
+      } else {
+        closeAllProjectDropdowns();
+      }
     });
 
     projectDropdown.addEventListener('click', (e) => e.stopPropagation());
@@ -5650,6 +5669,15 @@
     renderProjectDropdown('projectDropdownList');
     projectDropdown.style.display = 'flex';
     projectMenuBtn.classList.add('on');
+  }
+
+  function openProjectDropdownIDE() {
+    const dropdownIDE = $('#projectDropdownIDE');
+    const menuBtnIDE = $('#projectMenuBtnIDE');
+    if (!dropdownIDE || !menuBtnIDE) return;
+    renderProjectDropdown('projectDropdownListIDE');
+    dropdownIDE.style.display = 'flex';
+    menuBtnIDE.classList.add('on');
   }
 
   function closeAllProjectDropdowns() {
