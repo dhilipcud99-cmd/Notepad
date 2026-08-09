@@ -1190,6 +1190,8 @@
     background: var(--bg);
     overflow: hidden;
     position: relative;
+    align-items: stretch;
+    gap: 10px;
   }
 
   .project-toolbar {
@@ -1245,22 +1247,26 @@
   }
 
   .project-explorer {
+    flex: 0 0 240px;
     width: 240px;
+    min-width: 240px;
     background: var(--bg-sidebar);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     user-select: none;
     height: 100%;
+    min-height: 0;
   }
 
   .project-center-pane {
-    flex: 1;
+    flex: 1 1 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+    min-height: 0;
   }
 
   .project-explorer-header {
@@ -1491,17 +1497,21 @@
     flex-direction: column;
     min-width: 0;
     min-height: 0;
-    flex: 1;
+    flex: 1 1 auto;
     position: relative;
     overflow: hidden;
+    gap: 10px;
   }
 
   .project-editor-container {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     position: relative;
     overflow: hidden;
-    display: block !important;
+    display: flex !important;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
   }
 
   #projectMonacoContainer {
@@ -1522,14 +1532,17 @@
     position: relative;
     transition: background 0.15s;
     z-index: 10;
+    min-height: 0;
+    align-self: stretch;
+    margin: 0 4px;
   }
   .project-h-divider::after {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
-    left: -3px;
-    width: 7px;
+    left: -6px;
+    width: 13px;
     cursor: ew-resize;
     background: transparent;
   }
@@ -1538,14 +1551,24 @@
   }
 
   .project-preview-panel {
+    flex: 0 0 min(38vw, 380px);
+    width: min(38vw, 380px);
+    min-width: 280px;
+    max-width: 420px;
     display: flex;
     flex-direction: column;
-    min-width: 0;
     min-height: 0;
     background: var(--bg-surface);
-    border-left: none;
+    border-left: 1px solid var(--border);
     overflow: hidden;
     position: relative;
+  }
+
+  .project-preview-panel.collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: hidden;
+    border-left: none;
   }
   .project-preview-panel.collapsed {
     width: 0 !important;
@@ -1647,10 +1670,15 @@
     flex-direction: column;
     background: var(--bg-surface);
     position: relative;
-    flex-shrink: 0;
-    height: 200px;
-    min-height: 80px;
-    max-height: 600px;
+    flex: 0 0 200px;
+    min-height: 140px;
+    max-height: 520px;
+    overflow: hidden;
+  }
+
+  .project-console-panel .project-console-content {
+    min-height: 0;
+    height: 100%;
   }
 
   .project-console-header {
@@ -1704,6 +1732,23 @@
     position: relative;
     overflow: hidden;
     min-height: 0;
+    height: 100%;
+  }
+
+  .project-preview-iframe-wrap {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    background: #fff;
+    overflow: hidden;
+  }
+  .project-preview-iframe-wrap iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    border: none;
+    display: block;
+    background: #fff;
   }
 
   .project-terminal {
@@ -3114,6 +3159,23 @@
       showToast(`Deleted ${isFolder ? 'folder' : 'file'}`);
     }
 
+    function ensureImportInput(input, isFolder = false) {
+      if (!input._importListenerAttached) {
+        input._importListenerAttached = true;
+        input.addEventListener('change', (e) => {
+          const files = e.target.files;
+          if (files && files.length) {
+            importFilesToWorkspace(files);
+          }
+          e.target.value = '';
+        });
+      }
+      if (isFolder) {
+        input.webkitdirectory = true;
+        input.directory = true;
+      }
+    }
+
     function triggerFileImport() {
       let input = document.getElementById('projectImportFileInput');
       if (!input) {
@@ -3122,15 +3184,10 @@
         input.id = 'projectImportFileInput';
         input.style.display = 'none';
         input.multiple = true;
-        input.addEventListener('change', (e) => {
-          const files = e.target.files;
-          if (files && files.length) {
-            importFilesToWorkspace(files);
-          }
-          e.target.value = '';
-        });
         document.body.appendChild(input);
       }
+      input.multiple = true;
+      ensureImportInput(input, false);
       input.click();
     }
 
@@ -3142,19 +3199,18 @@
         input.id = 'projectImportFolderInput';
         input.style.display = 'none';
         input.multiple = true;
-        input.webkitdirectory = true;
-        input.directory = true;
-        input.addEventListener('change', (e) => {
-          const files = e.target.files;
-          if (files && files.length) {
-            importFilesToWorkspace(files);
-          }
-          e.target.value = '';
-        });
         document.body.appendChild(input);
       }
+      input.multiple = true;
+      ensureImportInput(input, true);
       input.click();
     }
+
+    // Expose these helpers to the global scope so event handlers from
+    // dynamically inserted project UI can resolve them reliably.
+    window.triggerFileImport = triggerFileImport;
+    window.triggerFolderImport = triggerFolderImport;
+    window.importFilesToWorkspace = importFilesToWorkspace;
 
     async function importFilesToWorkspace(fileList) {
       const files = Array.from(fileList);
@@ -3293,33 +3349,6 @@
     if (expNewFileBtn) expNewFileBtn.onclick = triggerFileImport;
     if (newFolderBtn) newFolderBtn.onclick = triggerFolderImport;
     if (expNewFolderBtn) expNewFolderBtn.onclick = triggerFolderImport;
-
-    const importBtn = document.getElementById('projectImportBtn');
-    const importMenu = document.getElementById('projectImportMenu');
-    const filesItem = document.getElementById('importFilesItem');
-    const folderItem = document.getElementById('importFolderItem');
-
-    if (importBtn && importMenu) {
-      importBtn.onclick = (e) => {
-        e.stopPropagation();
-        document.querySelectorAll('.export-menu.open').forEach(m => { if(m !== importMenu) m.classList.remove('open'); });
-        importMenu.classList.toggle('open');
-      };
-    }
-    if (filesItem) {
-      filesItem.onclick = (e) => {
-        e.stopPropagation();
-        if (importMenu) importMenu.classList.remove('open');
-        triggerFileImport();
-      };
-    }
-    if (folderItem) {
-      folderItem.onclick = (e) => {
-        e.stopPropagation();
-        if (importMenu) importMenu.classList.remove('open');
-        triggerFolderImport();
-      };
-    }
 
     if (runBtn) runBtn.onclick = runProject;
     if (stopBtn) stopBtn.onclick = stopExecution;
@@ -4666,6 +4695,10 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
               <span>Stop</span>
             </button>
+            <button class="ide-btn" id="projectDeleteBtn" title="Delete project">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18.333 20.333A2 2 0 0 1 16.333 22H7.667a2 2 0 0 1-1.999-1.667L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+              <span>Delete</span>
+            </button>
             <button class="ide-btn" id="projectPreviewToggleBtn" title="Toggle browser preview">
               ${ICONS.fileCode}
               <span>Preview</span>
@@ -4675,7 +4708,7 @@
 
       bodyHtml = `
         <div class="project-ide">
-          <div class="project-explorer" style="width: 240px;">
+          <div class="project-explorer">
             <div class="project-explorer-header">
               <span>Workspace Files</span>
               <div class="project-explorer-actions">
@@ -4705,7 +4738,7 @@
               </div>
             </div>
             
-            <div class="project-console-panel" id="projectConsolePanel" style="height: 180px;">
+            <div class="project-console-panel" id="projectConsolePanel">
               <div class="ide-console-resizer" id="projectConsoleResizer"></div>
               <div class="project-console-header">
                 <div class="project-console-tabs">
@@ -4724,7 +4757,7 @@
           
           <div class="project-h-divider" id="projectHDivider"></div>
           
-          <div class="project-preview-panel" id="projectPreviewPanel" style="width: 380px;">
+          <div class="project-preview-panel" id="projectPreviewPanel">
             <div class="project-preview-header">
               <span>Browser Preview</span>
               <div class="project-preview-header-actions">
@@ -4765,8 +4798,6 @@
 
     if (note && note.type === 'project') {
       editorInner.innerHTML = toolbarHtml + bodyHtml;
-      bindProjectMenuIDE();
-      bindProjectToolbarActions();
     } else {
       editorInner.innerHTML = `
         ${toolbarHtml}
@@ -4779,6 +4810,11 @@
 
     updateMetaRow(note);
     bindEditorEvents(note);
+    if (note && note.type === 'project') {
+      bindProjectMenuIDE();
+      bindProjectToolbarActions();
+      bindProjectImportActions();
+    }
     bindTagEvents(note);
   }
 
@@ -5630,6 +5666,44 @@
       backBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         exitProjectWorkspace();
+      });
+    }
+    const deleteBtn = $('#projectDeleteBtn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteActive();
+      });
+    }
+  }
+
+  function bindProjectImportActions() {
+    const importBtn = document.getElementById('projectImportBtn');
+    const importMenu = document.getElementById('projectImportMenu');
+    const filesItem = document.getElementById('importFilesItem');
+    const folderItem = document.getElementById('importFolderItem');
+
+    if (importBtn && importMenu) {
+      importBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.export-menu.open').forEach((m) => {
+          if (m !== importMenu) m.classList.remove('open');
+        });
+        importMenu.classList.toggle('open');
+      });
+    }
+    if (filesItem) {
+      filesItem.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (importMenu) importMenu.classList.remove('open');
+        triggerFileImport();
+      });
+    }
+    if (folderItem) {
+      folderItem.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (importMenu) importMenu.classList.remove('open');
+        triggerFolderImport();
       });
     }
   }
