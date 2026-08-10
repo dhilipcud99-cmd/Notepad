@@ -82,6 +82,11 @@
     opacity:0;
     pointer-events:none;
   }
+  .app.sidebar-hidden .sidebar{
+    margin-left:calc(-1 * var(--sidebar-w));
+    opacity:0;
+    pointer-events:none;
+  }
   .app.project-active .sidebar,
   .app.code-active .sidebar{
     margin-left:calc(-1 * var(--sidebar-w));
@@ -165,16 +170,16 @@
   }
 
   .search-wrap{
-    margin:0 14px 12px;
+    margin:0 20px 12px;
     position:relative;
   }
   .search-wrap svg{
-    position:absolute; left:10px; top:50%; transform:translateY(-50%);
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
     width:14px; height:14px; color:var(--ink-faint); pointer-events:none;
   }
   .search-wrap input{
     width:100%;
-    padding:8px 10px 8px 30px;
+    padding:8px 12px 8px 34px;
     border-radius:8px;
     border:1px solid var(--border);
     background:var(--bg-surface);
@@ -185,25 +190,35 @@
   }
   .search-wrap input:focus{ border-color:var(--accent); }
 
-  .new-note-btn{
-    margin:0 14px 14px;
-    display:flex; align-items:center; justify-content:center; gap:6px;
+  .sidebar-action-row{
+    display:flex;
+    gap:10px;
+    margin:0 20px 18px;
+  }
+  .sidebar-action-btn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    min-height:42px;
     padding:9px 12px;
     border-radius:8px;
     border:1px solid var(--border);
     background:var(--bg-surface);
     color:var(--ink);
-    font-size:13px; font-weight:600;
+    font-size:13px;
+    font-weight:600;
     box-shadow: var(--shadow);
-    transition: transform .12s ease, border-color .15s ease;
+    transition: transform .12s ease, border-color .15s ease, background .15s ease;
   }
-  .new-note-btn:hover{ border-color:var(--accent); }
-  .new-note-btn:active{ transform:scale(.98); }
-  .new-note-btn svg{ width:14px; height:14px; }
+  .sidebar-action-btn:hover{ border-color:var(--accent); }
+  .sidebar-action-btn:active{ transform:scale(.98); }
+  .sidebar-action-btn svg{ width:14px; height:14px; }
 
   .filters{
     display:flex; gap:4px;
-    margin:0 14px 10px;
+    margin:0 20px 10px;
     padding:3px;
     background:var(--bg-surface);
     border:1px solid var(--border);
@@ -226,16 +241,17 @@
   .note-list{
     flex:1;
     overflow-y:auto;
-    padding:2px 10px 14px;
+    padding:2px 20px 14px;
+    margin:0;
   }
   .note-list::-webkit-scrollbar{ width:6px; }
   .note-list::-webkit-scrollbar-thumb{ background:var(--border); border-radius:3px; }
 
   .note-card{
     position:relative;
-    padding:11px 12px;
-    margin-bottom:6px;
-    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:8px;
+    border-radius:10px;
     cursor:pointer;
     z-index:1;
     border:1px solid var(--border);
@@ -280,7 +296,7 @@
   .type-dot.journal{ background:#B6789E; }
 
   .note-card-title{
-    font-size:13.5px;
+    font-size:14px;
     font-weight:700;
     color:var(--ink);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
@@ -294,7 +310,7 @@
     margin-bottom:4px;
   }
   .note-card-meta{
-    font-size:10.5px;
+    font-size:11px;
     color:var(--ink-soft);
     font-weight:500;
   }
@@ -462,7 +478,7 @@
     flex-direction: column;
     height: 100%;
   }
-  .editor-scroll.project-mode .editor-inner {
+  .editor-scroll.project-mode .editor-inner:not(.code-layout) {
     flex: 1;
     min-height: 0;
     width: 100% !important;
@@ -472,6 +488,98 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+  }
+  .editor-inner.code-layout {
+    width: 88%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 44px 16px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .editor-inner.code-layout .title-input {
+    font-size: 24px;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .editor-inner.code-layout .meta-row {
+    margin: 0 0 10px;
+    gap: 10px;
+  }
+  .editor-inner.code-layout .tag-row {
+    margin: 0 0 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .editor-inner.code-layout .code-editor-shell {
+    flex: 1 1 auto;
+    min-height: 320px;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .editor-inner.code-layout .code-left-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+  }
+  .editor-inner.code-layout .code-toolbar {
+    margin-bottom: 16px;
+  }
+  .editor-inner.code-layout .project-center-pane {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .editor-inner.code-layout .project-editor-side {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .editor-inner.code-layout .project-editor-container {
+    flex: 1 1 auto;
+    min-height: 240px;
+    height: auto;
+  }
+  .editor-inner.code-layout .project-console-panel {
+    flex: 0 0 auto;
+    min-height: 110px;
+    max-height: 180px;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .editor-inner.code-layout .code-left-pane {
+    border-right: 1px solid transparent;
+  }
+  .editor-inner.code-layout .project-preview-panel {
+    flex: 0 0 min(38vw, 420px);
+    width: min(38vw, 420px);
+    min-width: 260px;
+    max-width: 420px;
+    min-height: 0;
+    border-left: 1px solid var(--border);
+    margin-top: 0;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+  }
+  .editor-inner.code-layout .project-preview-panel .project-preview-header {
+    background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
   }
   .editor-scroll::-webkit-scrollbar{ width:8px; }
   .editor-scroll::-webkit-scrollbar-thumb{ background:var(--border); border-radius:4px; }
@@ -490,16 +598,29 @@
     border:none; outline:none; background:transparent;
     font-family: var(--font-sans);
     font-weight:600;
-    font-size:30px;
+    font-size:28px;
     color:var(--ink);
     margin-bottom:6px;
     letter-spacing:-0.01em;
   }
+  .code-title-input{
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 28px;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+    padding: 0;
+  }
   .title-input::placeholder{ color:var(--ink-faint); }
 
   .meta-row{
-    display:flex; align-items:center; gap:14px;
-    margin-bottom:28px;
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:16px;
     font-size:12px;
     color:var(--ink-faint);
   }
@@ -1200,78 +1321,46 @@
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    height: 48px !important;
-    padding: 0 16px !important;
+    min-height: 44px !important;
+    padding: 0 12px !important;
     border-bottom: 1px solid var(--border) !important;
     background: var(--bg-sidebar) !important;
     margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
     flex-wrap: nowrap !important;
-    gap: 12px !important;
+    gap: 8px !important;
     flex-shrink: 0 !important;
   }
 
   .code-editor-shell {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex: 1;
     min-height: 0;
-    gap: 12px;
+    gap: 0;
+    align-items: stretch;
   }
 
-  .code-editor-hero {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 14px 16px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent-soft), var(--bg-surface));
-    box-shadow: var(--shadow);
+  .code-editor-shell .code-explorer,
+  .code-editor-shell .project-explorer,
+  .code-editor-shell .project-explorer-header,
+  .code-editor-shell .project-explorer-tree,
+  .code-editor-shell .project-h-divider,
+  .code-editor-shell .code-editor-hero,
+  .code-editor-shell .code-editor-meta,
+  .code-editor-shell .code-editor-chip,
+  .code-editor-shell .code-editor-pill,
+  .code-editor-shell .code-editor-title {
+    display: none !important;
   }
-
-  .code-editor-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    width: fit-content;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: var(--accent);
-    color: #fff;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-
-  .code-editor-title {
-    margin-top: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ink);
-  }
-
-  .code-editor-meta {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .code-editor-chip {
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 5px 9px;
-    font-size: 11px;
-    color: var(--ink-soft);
-    background: var(--bg-surface);
+  .code-editor-shell .project-console-panel {
+    display: flex !important;
   }
   .project-toolbar-left {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-shrink: 0;
+    flex: 1 1 auto;
+    min-width: 0;
   }
   .project-toolbar-right {
     display: flex;
@@ -1578,6 +1667,7 @@
     border-radius: 12px;
     background: var(--bg);
     border: 1px solid var(--border);
+    padding: 0;
   }
 
   #projectMonacoContainer {
@@ -1649,7 +1739,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
+    padding: 0 14px;
     flex-shrink: 0;
     user-select: none;
   }
@@ -1736,10 +1826,29 @@
     flex-direction: column;
     background: var(--bg-surface);
     position: relative;
-    flex: 0 0 200px;
+    flex: 0 0 180px;
     min-height: 140px;
-    max-height: 520px;
+    max-height: 260px;
     overflow: hidden;
+  }
+  .ide-console-resizer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    cursor: row-resize;
+    z-index: 5;
+  }
+  .ide-console-clear {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-sidebar);
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
   }
 
   .project-console-panel .project-console-content {
@@ -1753,15 +1862,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 12px;
+    padding: 0 14px;
     background: var(--bg-sidebar);
     flex-shrink: 0;
   }
 
   .project-console-tabs {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     height: 100%;
+    align-items: center;
   }
 
   .project-console-tab {
@@ -1790,7 +1900,7 @@
   .project-console-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
 
   .project-console-content {
@@ -1821,7 +1931,7 @@
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    padding: 10px 14px;
+    padding: 16px 20px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     line-height: 1.6;
@@ -1898,10 +2008,20 @@
       <input id="searchInput" type="text" placeholder="Search notes…">
     </div>
 
-    <button class="new-note-btn" id="newNoteBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      New note
-    </button>
+    <div class="sidebar-action-row">
+      <button class="sidebar-action-btn" id="newNoteBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        New note
+      </button>
+      <button class="sidebar-action-btn" id="newCodeEditorBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h8M8 12h8M8 18h8"/><path d="M4 4h16v16H4z"/></svg>
+        Code Editor
+      </button>
+      <button class="sidebar-action-btn" id="newProjectBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        New project
+      </button>
+    </div>
 
     <div class="filters" id="filterTabs">
       <button class="filter-tab active" data-filter="all">All</button>
@@ -1969,16 +2089,6 @@
 
       </div>
       <div class="topbar-right">
-        <div style="position:relative;" id="projectsMenuWrap">
-          <button class="icon-btn" id="projectMenuBtn" title="Projects">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-          </button>
-        </div>
-        <div style="position:relative;" id="codesMenuWrap">
-          <button class="icon-btn" id="codeMenuBtn" title="Code Snippets">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          </button>
-        </div>
         <span class="save-status" id="saveStatus"><span class="dot"></span>Saved</span>
         <button class="icon-btn" id="pinToggle" title="Pin note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M8 3h8l-1 7 3 3H6l3-3-1-7Z"/></svg>
@@ -1993,12 +2103,14 @@
             <button data-format="docx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Word (.doc)</button>
           </div>
         </div>
-        <button class="icon-btn" id="focusToggle" title="Focus mode">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m11-5v3a2 2 0 0 0-2 2h-3"/></svg>
-        </button>
         <button class="icon-btn" id="duplicateBtn" title="Duplicate note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V4a2 2 0 0 1 2-2h10"/></svg>
         </button>
+        <div style="position:relative;" id="codesMenuWrap">
+          <button class="icon-btn" id="codeMenuBtn" title="Code Snippets">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -3095,35 +3207,46 @@
     }
 
     function createNewFile() {
+      const baseFolder = getProjectCreationBaseFolder();
       const name = prompt("Enter file name (e.g. script.js or src/main.py):");
       if (!name) return;
-      if (note.files[name]) {
+      const sanitizedName = sanitizeProjectPath(name).replace(/^\/+/, '');
+      if (!sanitizedName) return;
+      const fullPath = baseFolder ? (baseFolder.endsWith('/') ? baseFolder + sanitizedName : baseFolder + '/' + sanitizedName) : sanitizedName;
+      if (note.files[fullPath]) {
         alert("A file or directory with this name already exists.");
         return;
       }
-      note.files[name] = { content: "" };
-      note.activeFile = name;
-      if (!note.openTabs.includes(name)) {
-        note.openTabs.push(name);
+      note.files[fullPath] = { content: "" };
+      ensureProjectFolderStructure(note.files, fullPath);
+      note.activeFile = fullPath;
+      if (!note.openTabs.includes(fullPath)) {
+        note.openTabs.push(fullPath);
       }
       saveProjectState();
       renderExplorer();
-      openFile(name);
-      showToast(`Created file ${name}`);
+      openFile(fullPath);
+      showToast(`Created file ${fullPath}`);
     }
 
     function createNewFolder() {
+      const baseFolder = getProjectCreationBaseFolder();
       let name = prompt("Enter folder name (e.g. src or assets/images):");
       if (!name) return;
-      if (!name.endsWith('/')) name += '/';
-      if (note.files[name]) {
+      const sanitizedName = sanitizeProjectPath(name).replace(/^\/+/, '');
+      if (!sanitizedName) return;
+      let folderName = sanitizedName;
+      if (!folderName.endsWith('/')) folderName += '/';
+      const fullPath = baseFolder ? (baseFolder.endsWith('/') ? baseFolder + folderName : baseFolder + '/' + folderName) : folderName;
+      if (note.files[fullPath]) {
         alert("A folder with this name already exists.");
         return;
       }
-      note.files[name] = { isFolder: true };
+      note.files[fullPath] = { isFolder: true };
+      ensureProjectFolderStructure(note.files, fullPath);
       saveProjectState();
       renderExplorer();
-      showToast(`Created folder ${name}`);
+      showToast(`Created folder ${fullPath}`);
     }
 
     function renamePath(oldPath) {
@@ -3229,54 +3352,114 @@
       showToast(`Deleted ${isFolder ? 'folder' : 'file'}`);
     }
 
-    function triggerFileImport() {
-      const input = document.getElementById('projectImportFileInput') || document.createElement('input');
+    function sanitizeProjectPath(path) {
+      if (!path) return '';
+      let cleanPath = String(path).replace(/\\/g, '/');
+      cleanPath = cleanPath.replace(/^\/+/, '');
+      cleanPath = cleanPath.replace(/^\.\//, '');
+      cleanPath = cleanPath.replace(/\/+/g, '/');
+      return cleanPath;
+    }
+
+    function getFileSystemPath(file) {
+      const raw = file && (
+        file.webkitRelativePath ||
+        file.relativePath ||
+        file.path ||
+        file.name ||
+        ''
+      );
+      const safe = sanitizeProjectPath(raw);
+      if (!safe) return file && file.name ? sanitizeProjectPath(file.name) : '';
+      return safe;
+    }
+
+    function ensureProjectFolderStructure(fileMap, filePath) {
+      if (!filePath) return;
+      const parts = filePath.split('/');
+      let currentDir = '';
+      for (let i = 0; i < parts.length - 1; i++) {
+        currentDir += (currentDir ? '/' : '') + parts[i];
+        const folderPath = currentDir + '/';
+        if (!note.files[folderPath]) {
+          note.files[folderPath] = { isFolder: true };
+        }
+      }
+    }
+
+    function getProjectCreationBaseFolder() {
+      if (!note || !note.files) return '';
+      if (note.activeFile && note.files[note.activeFile] && note.files[note.activeFile].isFolder) {
+        return note.activeFile;
+      }
+      if (note.activeFile) {
+        const parts = note.activeFile.split('/');
+        if (parts.length > 1) {
+          return parts.slice(0, -1).join('/') + '/';
+        }
+      }
+      return '';
+    }
+
+    function attachProjectPicker(inputId, options = {}) {
+      const input = document.getElementById(inputId) || document.createElement('input');
       if (!input.id) {
+        input.id = inputId;
         input.type = 'file';
         input.style.display = 'none';
-        input.multiple = true;
-        input.id = 'projectImportFileInput';
+        input.multiple = !!options.multiple;
+        if (options.accept) input.accept = options.accept;
+        if (options.directory) {
+          input.webkitdirectory = true;
+          input.directory = true;
+        }
         document.body.appendChild(input);
       }
       input.value = '';
+      input.multiple = !!options.multiple;
+      if (options.accept) input.accept = options.accept;
+      if (options.directory) {
+        input.webkitdirectory = true;
+        input.directory = true;
+      }
       input.onchange = (e) => {
         const files = e.target.files;
         if (files && files.length) {
-          importFilesToWorkspace(files);
+          importFilesToWorkspace(files, options.importMode || 'merge');
         }
-        setTimeout(() => {
-          input.value = '';
-        }, 0);
+        setTimeout(() => { input.value = ''; }, 0);
       };
-      input.click();
+      return input;
+    }
+
+    function triggerFileImport() {
+      attachProjectPicker('projectImportFileInput', { multiple: true, accept: '*/*' });
+      const input = document.getElementById('projectImportFileInput');
+      if (input) input.click();
     }
 
     function triggerFolderImport() {
-      const input = document.getElementById('projectImportFolderInput') || document.createElement('input');
-      if (!input.id) {
-        input.type = 'file';
-        input.webkitdirectory = true;
-        input.directory = true;
-        input.multiple = true;
-        input.style.display = 'none';
-        input.id = 'projectImportFolderInput';
-        document.body.appendChild(input);
-      }
-      input.value = '';
-      input.onchange = (e) => {
-        const files = e.target.files;
-        if (files && files.length) {
-          importFilesToWorkspace(files);
-        }
-        setTimeout(() => {
-          input.value = '';
-        }, 0);
-      };
-      input.click();
+      attachProjectPicker('projectImportFolderInput', { multiple: true, directory: true });
+      const input = document.getElementById('projectImportFolderInput');
+      if (input) input.click();
+    }
+
+    function triggerAddFileToWorkspace() {
+      attachProjectPicker('projectAddFileInput', { multiple: true, accept: '*/*' });
+      const input = document.getElementById('projectAddFileInput');
+      if (input) input.click();
+    }
+
+    function triggerAddFolderToWorkspace() {
+      attachProjectPicker('projectAddFolderInput', { multiple: true, directory: true });
+      const input = document.getElementById('projectAddFolderInput');
+      if (input) input.click();
     }
 
     window.triggerFileImport = triggerFileImport;
     window.triggerFolderImport = triggerFolderImport;
+    window.triggerAddFileToWorkspace = triggerAddFileToWorkspace;
+    window.triggerAddFolderToWorkspace = triggerAddFolderToWorkspace;
     window.importFilesToWorkspace = importFilesToWorkspace;
 
     async function importFilesToWorkspace(fileList) {
@@ -3294,6 +3477,13 @@
 
       const importedFiles = {};
       const first = files[0];
+
+      const addImportedFile = (path, content) => {
+        const cleanPath = sanitizeProjectPath(path);
+        if (!cleanPath) return;
+        importedFiles[cleanPath] = { content };
+        ensureProjectFolderStructure(importedFiles, cleanPath);
+      };
 
       if (files.length === 1 && first.name.toLowerCase().endsWith('.zip')) {
         try {
@@ -3313,7 +3503,7 @@
             if (!zipEntry.dir) {
               promises.push(
                 zipEntry.async('string').then(text => {
-                  importedFiles[relativePath] = { content: text };
+                  addImportedFile(relativePath, text);
                 })
               );
             }
@@ -3349,10 +3539,10 @@
         for (const file of files) {
           try {
             const text = await readText(file);
-            const path = file.webkitRelativePath || file.name;
-            let cleanPath = path;
-            if (cleanPath.startsWith('/')) cleanPath = cleanPath.slice(1);
-            importedFiles[cleanPath] = { content: text };
+            const path = getFileSystemPath(file);
+            if (path) {
+              addImportedFile(path, text);
+            }
           } catch (err) {
             console.warn('Could not read file', file.name, err);
           }
@@ -3365,19 +3555,10 @@
 
         if (!note.files) note.files = {};
         for (const [path, data] of Object.entries(importedFiles)) {
-          note.files[path] = data;
-          ensureParentFolders(path);
-        }
-      }
-
-      function ensureParentFolders(path) {
-        const parts = path.split('/');
-        let currentDir = '';
-        for (let i = 0; i < parts.length - 1; i++) {
-          currentDir += parts[i] + '/';
-          if (!note.files[currentDir]) {
-            note.files[currentDir] = { isFolder: true };
-          }
+          const cleanPath = sanitizeProjectPath(path);
+          if (!cleanPath) continue;
+          note.files[cleanPath] = data;
+          ensureProjectFolderStructure(note.files, cleanPath);
         }
       }
 
@@ -3533,6 +3714,8 @@
     const newFolderBtn = document.getElementById('projectNewFolderBtn');
     const expNewFileBtn = document.getElementById('explorerNewFileBtn');
     const expNewFolderBtn = document.getElementById('explorerNewFolderBtn');
+    const expAddFileBtn = document.getElementById('explorerAddFileBtn');
+    const expAddFolderBtn = document.getElementById('explorerAddFolderBtn');
     const runBtn = document.getElementById('projectRunBtn');
     const stopBtn = document.getElementById('projectStopBtn');
     const previewToggleBtn = document.getElementById('projectPreviewToggleBtn');
@@ -3541,8 +3724,10 @@
 
     if (newFileBtn) newFileBtn.onclick = createNewFile;
     if (expNewFileBtn) expNewFileBtn.onclick = createNewFile;
+    if (expAddFileBtn) expAddFileBtn.onclick = triggerAddFileToWorkspace;
     if (newFolderBtn) newFolderBtn.onclick = createNewFolder;
     if (expNewFolderBtn) expNewFolderBtn.onclick = createNewFolder;
+    if (expAddFolderBtn) expAddFolderBtn.onclick = triggerAddFolderToWorkspace;
 
     if (runBtn) runBtn.onclick = runProject;
     if (stopBtn) stopBtn.onclick = stopExecution;
@@ -3958,7 +4143,7 @@
         
         const previewWrap = document.getElementById('idePreviewWrapper');
         if (previewWrap) {
-          previewWrap.style.display = newLang === 'html' ? 'block' : 'none';
+          previewWrap.style.display = newLang === 'html' ? 'flex' : 'none';
         }
         
         if (newLang === 'html') {
@@ -4815,10 +5000,15 @@
       projectMonacoInstance = null;
     }
     const note = getActive();
-    app.classList.toggle('project-active', !!(note && note.type === 'project'));
-    app.classList.toggle('code-active', !!(note && note.type === 'code'));
+    app.classList.toggle('project-active', false);
+    app.classList.toggle('code-active', false);
     const editorScroll = $('#editorScroll');
-    if (editorScroll) editorScroll.classList.toggle('project-mode', !!(note && (note.type === 'project' || note.type === 'code')));
+    if (editorScroll) {
+      editorScroll.classList.toggle('project-mode', !!note && (note.type === 'project' || note.type === 'code'));
+    }
+    if (editorInner) {
+      editorInner.classList.toggle('code-layout', !!note && note.type === 'code');
+    }
     $('#typeSelect').style.visibility = note ? 'visible' : 'hidden';
     updateTypeSelectOptions(note);
     $('#duplicateBtn').style.visibility = note ? 'visible' : 'hidden';
@@ -4927,15 +5117,12 @@
       toolbarHtml = `
         <div class="rich-toolbar project-toolbar code-toolbar" id="codeToolbar">
           <div class="project-toolbar-left">
-            <button class="ide-btn" id="codeBackBtn" title="Back to notes">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <input type="text" class="title-input project-title-input" id="titleInput" placeholder="Untitled Snippet" value="${escapeHtml(note.title || '')}">
+            <input type="text" class="title-input code-title-input" id="titleInput" placeholder="Untitled" value="${escapeHtml(note.title)}">
           </div>
           <div class="project-toolbar-right">
             <select class="ide-select" id="ideLanguageSelect" title="Select language">
               <option value="javascript" ${note.language === 'javascript' ? 'selected' : ''}>JavaScript</option>
-              <option value="html" ${note.language === 'html' ? 'selected' : ''}>HTML/CSS/JS (Live Preview)</option>
+              <option value="html" ${note.language === 'html' ? 'selected' : ''}>HTML/CSS/JS</option>
               <option value="python" ${note.language === 'python' ? 'selected' : ''}>Python</option>
               <option value="typescript" ${note.language === 'typescript' ? 'selected' : ''}>TypeScript</option>
               <option value="c" ${note.language === 'c' ? 'selected' : ''}>C</option>
@@ -4948,7 +5135,7 @@
               <option value="php" ${note.language === 'php' ? 'selected' : ''}>PHP</option>
               <option value="ruby" ${note.language === 'ruby' ? 'selected' : ''}>Ruby</option>
               <option value="sql" ${note.language === 'sql' ? 'selected' : ''}>SQL</option>
-              <option value="shell" ${note.language === 'shell' ? 'selected' : ''}>Shell (Bash)</option>
+              <option value="shell" ${note.language === 'shell' ? 'selected' : ''}>Shell</option>
               <option value="css" ${note.language === 'css' ? 'selected' : ''}>CSS</option>
               <option value="json" ${note.language === 'json' ? 'selected' : ''}>JSON</option>
               <option value="markdown" ${note.language === 'markdown' ? 'selected' : ''}>Markdown</option>
@@ -4980,73 +5167,35 @@
 
       bodyHtml = `
         <div class="code-editor-shell">
-          <div class="code-editor-hero">
-            <div>
-              <div class="code-editor-pill">Code Editor</div>
-              <div class="code-editor-title">Write, run, and preview your snippet in a focused workspace.</div>
-            </div>
-            <div class="code-editor-meta">
-              <span class="code-editor-chip">Live preview</span>
-              <span class="code-editor-chip">Console</span>
-              <span class="code-editor-chip">Quick actions</span>
-            </div>
-          </div>
-          <div class="project-ide code-workspace">
-          <div class="project-explorer code-explorer">
-            <div class="project-explorer-header">
-              <span>Code Snippets</span>
-              <div class="project-explorer-actions">
-                <button class="project-explorer-action-btn" id="codeExplorerNewBtn" title="New Code Snippet">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                </button>
-              </div>
-            </div>
-            <div class="project-explorer-tree" id="codeSnippetsList"></div>
-          </div>
-          
-          <div class="project-h-divider" id="codeSidebarDivider"></div>
-          
-          <div class="project-center-pane">
+          <div class="code-left-pane">
             <div class="project-editor-side">
               <div class="project-editor-container" id="monacoEditorContainer">
                 <!-- Monaco editor mounts here -->
               </div>
             </div>
-            
-            <div class="project-console-panel" id="ideConsolePanel" style="height:180px;">
-              <div class="ide-console-resizer" id="ideConsoleResizer"></div>
-              <div class="project-console-header">
-                <div class="project-console-tabs">
-                  <div class="project-console-tab active" id="codeTabTerminal">Terminal</div>
-                </div>
-                <div class="project-console-actions">
-                  <span class="ide-console-status" id="ideConsoleTime"></span>
-                  <button class="ide-console-clear" id="ideConsoleClearBtn">Clear</button>
-                </div>
+
+            <div class="project-console-panel" id="ideConsolePanel">
+            <div class="ide-console-resizer" id="ideConsoleResizer"></div>
+            <div class="project-console-header">
+              <div class="project-console-tabs">
+                <div class="project-console-tab active" id="projectTabTerminal">Terminal</div>
               </div>
-              <div class="project-console-content">
-                <div class="project-terminal" id="ideConsoleLogs"></div>
-                <div class="code-stdin-container" id="codeStdinContainer" style="display:block; padding:8px; border-top:1px solid var(--border);">
-                  <div style="font-size:11px; font-weight:600; color:var(--accent); margin-bottom:4px; display:flex; align-items:center; justify-content:space-between;">
-                    <span>stdin (standard input)</span>
-                    <button class="ide-stdin-run-btn" id="ideStdinRunBtn" title="Run code (Ctrl+Enter)" style="padding: 2px 6px; font-size: 10px; display: flex; align-items: center; gap: 4px;">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 10px; height: 10px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                      Run
-                    </button>
-                  </div>
-                  <textarea id="ideConsoleStdin" style="width:100%; height:60px; background:var(--bg-sidebar); color:var(--ink); border:1px solid var(--border); border-radius:6px; font-family:monospace; font-size:12px; padding:6px; resize:none; outline:none;" placeholder="Provide program inputs here..."></textarea>
-                </div>
+              <div class="project-console-actions">
+                <span class="ide-console-status" id="ideConsoleStatus"></span>
+                <button class="ide-console-clear" id="ideConsoleClearBtn">Clear</button>
               </div>
             </div>
+            <div class="project-console-content">
+              <div class="project-terminal" id="ideConsoleLogs"></div>
+            </div>
           </div>
-          
-          <div class="project-h-divider" id="codeHDivider"></div>
-          
-          <div class="project-preview-panel" id="idePreviewWrapper" style="display: ${isHtml ? 'flex' : 'none'};">
-            <div class="project-preview-header">
-              <span>Browser Preview</span>
+        </div>
+
+          <div class="project-preview-panel" id="idePreviewWrapper" style="display: ${isHtml ? 'flex' : 'none'}; min-height: 140px;">
+            <div class="project-preview-header" style="padding: 8px 10px; border-bottom: none;">
+              <span style="font-size:12px; font-weight:600;">Preview</span>
               <div class="project-preview-header-actions">
-                <span class="ide-console-status" id="ideConsoleStatus"></span>
+                <span class="ide-console-status" id="ideConsoleStatusPreview"></span>
                 <button class="project-preview-fullscreen-btn" id="idePreviewExpandBtn" title="Open in Full Screen">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
                 </button>
@@ -5055,14 +5204,10 @@
                 </button>
               </div>
             </div>
-            <div class="project-preview-iframe-wrap">
+            <div class="project-preview-iframe-wrap" style="border-top:none;">
               <iframe id="idePreviewFrame" sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups" allowfullscreen></iframe>
             </div>
           </div>
-          
-          <button class="project-preview-expand-btn" id="codePreviewExpandBtn" title="Expand preview" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
         </div>
       `;
     } else if(note.type === 'project'){
@@ -5076,9 +5221,6 @@
       toolbarHtml = `
         <div class="rich-toolbar project-toolbar" id="projectToolbar">
           <div class="project-toolbar-left">
-            <button class="ide-btn" id="projectBackBtn" title="Back to notes">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
             <input type="text" class="title-input project-title-input" id="titleInput" placeholder="Untitled Project" value="${escapeHtml(note.title || '')}">
           </div>
           <div class="project-toolbar-right">
@@ -5102,24 +5244,10 @@
                 </div>
               </div>
             </div>
-            <div class="export-wrap">
-              <button class="ide-btn" id="projectImportBtn" title="Import project files">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M4 21h16"/></svg>
-                <span>Import</span>
-              </button>
-              <div class="export-menu" id="projectImportMenu">
-                <button id="importFilesItem">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  <span>Files / .zip</span>
-                </button>
-                <button id="importFolderItem">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; margin-right:4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                  <span>Folder</span>
-                </button>
-              </div>
-            </div>
             <input type="file" id="projectImportFileInput" style="display:none;" multiple>
             <input type="file" id="projectImportFolderInput" style="display:none;" webkitdirectory directory multiple>
+            <input type="file" id="projectAddFileInput" style="display:none;" multiple>
+            <input type="file" id="projectAddFolderInput" style="display:none;" webkitdirectory directory multiple>
             <button class="ide-btn run-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
               <svg class="run-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               <span class="spinner"></span>
@@ -5146,11 +5274,17 @@
             <div class="project-explorer-header">
               <span>Workspace Files</span>
               <div class="project-explorer-actions">
-                <button class="project-explorer-action-btn" id="explorerNewFileBtn" title="New File">
+                <button class="project-explorer-action-btn" id="explorerAddFileBtn" title="Add File from local storage">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
                 </button>
-                <button class="project-explorer-action-btn" id="explorerNewFolderBtn" title="New Folder">
+                <button class="project-explorer-action-btn" id="explorerAddFolderBtn" title="Add Folder from local storage">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                </button>
+                <button class="project-explorer-action-btn" id="explorerNewFileBtn" title="New File">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </button>
+                <button class="project-explorer-action-btn" id="explorerNewFolderBtn" title="New Folder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                 </button>
               </div>
             </div>
@@ -5230,27 +5364,16 @@
         <input type="text" class="tag-add-input" id="tagAddInput" placeholder="+ add tag">
       </div>`;
 
-    if (note && (note.type === 'project' || note.type === 'code')) {
-      editorInner.innerHTML = toolbarHtml + bodyHtml;
-    } else {
-      editorInner.innerHTML = `
-        ${toolbarHtml}
-        <input type="text" class="title-input" id="titleInput" placeholder="Untitled" value="${escapeHtml(note.title)}">
-        <div class="meta-row" id="metaRow"></div>
-        ${tagRowHtml}
-        ${bodyHtml}
-      `;
-    }
+    const shouldShowMetaAndTags = note.type !== 'code';
+    editorInner.innerHTML = `
+      ${toolbarHtml}
+      ${shouldShowMetaAndTags ? `<div class="meta-row" id="metaRow"></div>` : ''}
+      ${shouldShowMetaAndTags ? tagRowHtml : ''}
+      ${bodyHtml}
+    `;
 
     updateMetaRow(note);
     bindEditorEvents(note);
-    if (note && note.type === 'project') {
-      bindProjectMenuIDE();
-      bindProjectToolbarActions();
-      bindProjectImportActions();
-    } else if (note && note.type === 'code') {
-      bindCodeToolbarActions();
-    }
     bindTagEvents(note);
   }
 
@@ -5323,8 +5446,6 @@
       bindTodoEvents(note);
     } else if(note.type === 'code'){
       initializeCodeSimulator(note);
-    } else if(note.type === 'project'){
-      initializeProjectIDE(note);
     } else {
       bindRichEvents(note);
     }
@@ -6089,6 +6210,27 @@
   let codeDropdownNew = null;
 
   $('#newNoteBtn').addEventListener('click', createNote);
+  const newCodeEditorBtn = $('#newCodeEditorBtn');
+  if (newCodeEditorBtn) {
+    newCodeEditorBtn.addEventListener('click', async () => {
+      if (codes.length) {
+        const codeId = lastCodeActiveId || codes[0].id;
+        await openCodeWorkspace(codeId);
+      } else {
+        await createCode();
+      }
+    });
+  }
+  const newProjectBtn = $('#newProjectBtn');
+  if (newProjectBtn) {
+    newProjectBtn.addEventListener('click', async () => {
+      if (projects.length) {
+        await openProjectWorkspace();
+      } else {
+        await createProject();
+      }
+    });
+  }
   $('#duplicateBtn').addEventListener('click', duplicateActive);
   $('#pinToggle').addEventListener('click', togglePin);
   const projectEditorBtn = $('#projectEditorBtn');
@@ -6221,8 +6363,31 @@
 
     projectMenuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      openProjectWorkspace();
+      if (projectDropdown && projectDropdown.style.display === 'none') {
+        renderProjectDropdown('projectDropdownList');
+        projectDropdown.style.display = 'flex';
+        projectMenuBtn.classList.add('on');
+      } else if (projectDropdown) {
+        projectDropdown.style.display = 'none';
+        projectMenuBtn.classList.remove('on');
+      } else {
+        openProjectWorkspace();
+      }
     });
+
+    const dropdownNew = $('#projectDropdownNew');
+    if (dropdownNew) {
+      dropdownNew.addEventListener('click', (e) => {
+        e.stopPropagation();
+        projectDropdown.style.display = 'none';
+        projectMenuBtn.classList.remove('on');
+        createProject();
+      });
+    }
+
+    if (projectDropdown) {
+      projectDropdown.addEventListener('click', (e) => e.stopPropagation());
+    }
   }
 
   function bindProjectMenuIDE() {
@@ -6263,13 +6428,6 @@
         createProject();
       });
     }
-    const backBtn = $('#projectBackBtn');
-    if (backBtn) {
-      backBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        exitProjectWorkspace();
-      });
-    }
     const deleteBtn = $('#projectDeleteBtn');
     if (deleteBtn) {
       deleteBtn.addEventListener('click', (e) => {
@@ -6280,13 +6438,6 @@
   }
 
   function bindCodeToolbarActions() {
-    const backBtn = $('#codeBackBtn');
-    if (backBtn) {
-      backBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        exitCodeWorkspace();
-      });
-    }
     const deleteBtn = $('#codeDeleteBtn');
     if (deleteBtn) {
       deleteBtn.addEventListener('click', (e) => {
@@ -6613,21 +6764,31 @@
   $('#borderColorInput').addEventListener('input', (e) => applyBorderColor(e.target.value, true));
   $('#borderBtn').addEventListener('dblclick', (e) => { e.preventDefault(); resetBorderColor(true); });
 
-  $('#focusToggle').addEventListener('click', () => {
-    app.classList.toggle('focus-mode');
-    setTimeout(() => {
-      if (monacoEditorInstance) monacoEditorInstance.layout();
-      if (projectMonacoInstance) projectMonacoInstance.layout();
-    }, 350);
-  });
-  $('#sidebarToggle').addEventListener('click', () => {
-    if(window.innerWidth <= 760){ app.classList.toggle('sidebar-open'); }
-    else{ app.classList.toggle('focus-mode'); }
-    setTimeout(() => {
-      if (monacoEditorInstance) monacoEditorInstance.layout();
-      if (projectMonacoInstance) projectMonacoInstance.layout();
-    }, 350);
-  });
+  const focusToggle = $('#focusToggle');
+  if (focusToggle) {
+    focusToggle.addEventListener('click', () => {
+      app.classList.toggle('focus-mode');
+      setTimeout(() => {
+        if (monacoEditorInstance) monacoEditorInstance.layout();
+        if (projectMonacoInstance) projectMonacoInstance.layout();
+      }, 350);
+    });
+  }
+  const sidebarToggle = $('#sidebarToggle');
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      if (window.innerWidth <= 760) {
+        app.classList.toggle('sidebar-open');
+      } else {
+        app.classList.toggle('sidebar-hidden');
+        app.classList.remove('focus-mode');
+      }
+      setTimeout(() => {
+        if (monacoEditorInstance) monacoEditorInstance.layout();
+        if (projectMonacoInstance) projectMonacoInstance.layout();
+      }, 350);
+    });
+  }
 
   window.addEventListener('resize', () => {
     if (monacoEditorInstance) monacoEditorInstance.layout();
