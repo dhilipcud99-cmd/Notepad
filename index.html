@@ -82,12 +82,14 @@
     opacity:0;
     pointer-events:none;
   }
-  .app.project-active .sidebar{
+  .app.project-active .sidebar,
+  .app.code-active .sidebar{
     margin-left:calc(-1 * var(--sidebar-w));
     opacity:0;
     pointer-events:none;
   }
-  .app.project-active .topbar{
+  .app.project-active .topbar,
+  .app.code-active .topbar{
     display:none;
   }
   .brand{
@@ -1208,6 +1210,63 @@
     gap: 12px !important;
     flex-shrink: 0 !important;
   }
+
+  .code-editor-shell {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 12px;
+  }
+
+  .code-editor-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-soft), var(--bg-surface));
+    box-shadow: var(--shadow);
+  }
+
+  .code-editor-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .code-editor-title {
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .code-editor-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .code-editor-chip {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--bg-surface);
+  }
   .project-toolbar-left {
     display: flex;
     align-items: center;
@@ -1257,6 +1316,13 @@
     user-select: none;
     height: 100%;
     min-height: 0;
+    transition: background 0.15s, outline 0.15s;
+  }
+
+  .project-explorer.drag-over {
+    background: var(--accent-soft) !important;
+    outline: 2px dashed var(--accent) !important;
+    outline-offset: -4px;
   }
 
   .project-center-pane {
@@ -1840,7 +1906,6 @@
     <div class="filters" id="filterTabs">
       <button class="filter-tab active" data-filter="all">All</button>
       <button class="filter-tab" data-filter="note">Notes</button>
-      <button class="filter-tab" data-filter="code">Code</button>
       <button class="filter-tab" data-filter="todo">To-do</button>
       <button class="filter-tab" data-filter="journal">Journal</button>
     </div>
@@ -1898,8 +1963,6 @@
         </button>
         <select class="type-select" id="typeSelect">
           <option value="note">Note</option>
-          <option value="code">Code</option>
-          <option value="project">Project</option>
           <option value="todo">To-do</option>
           <option value="journal">Journal</option>
         </select>
@@ -1910,15 +1973,11 @@
           <button class="icon-btn" id="projectMenuBtn" title="Projects">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
           </button>
-          <div id="projectDropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; width:240px; background:var(--bg-surface); border:1px solid var(--border); border-radius:9px; box-shadow:var(--shadow); z-index:50; padding:5px; flex-direction:column; gap:1px;">
-            <div id="projectDropdownList"></div>
-            <div style="border-top:1px solid var(--border); margin-top:4px; padding-top:4px;">
-              <button id="projectDropdownNew" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:transparent; color:var(--ink); font-size:12.5px; font-weight:600; cursor:pointer;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M12 5v14M5 12h14"/></svg>
-                New project
-              </button>
-            </div>
-          </div>
+        </div>
+        <div style="position:relative;" id="codesMenuWrap">
+          <button class="icon-btn" id="codeMenuBtn" title="Code Snippets">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </button>
         </div>
         <span class="save-status" id="saveStatus"><span class="dot"></span>Saved</span>
         <button class="icon-btn" id="pinToggle" title="Pin note">
@@ -1934,17 +1993,11 @@
             <button data-format="docx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Word (.doc)</button>
           </div>
         </div>
-        <button class="icon-btn" id="rulesToggle" title="Toggle ruled lines">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
-        </button>
         <button class="icon-btn" id="focusToggle" title="Focus mode">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m11-5v3a2 2 0 0 0-2 2h-3"/></svg>
         </button>
         <button class="icon-btn" id="duplicateBtn" title="Duplicate note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V4a2 2 0 0 1 2-2h10"/></svg>
-        </button>
-        <button class="icon-btn" id="deleteBtn" title="Delete note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16Z"/></svg>
         </button>
       </div>
     </div>
@@ -2077,9 +2130,12 @@
   const TYPE_LABEL = { note: 'Note', code: 'Code', project: 'Project', todo: 'To-do', journal: 'Journal' };
 
   let notes = [];        // array of note objects, in list order
+  let projects = [];     // array of project objects, in list order
+  let codes = [];        // array of code snippet objects, in list order
   let activeId = null;
   let lastNotesActiveId = null;
   let lastProjectActiveId = null;
+  let lastCodeActiveId = null;
   let filter = 'all';
   let activeTagFilter = null;
   let saveTimer = null;
@@ -2621,6 +2677,8 @@
   }
 
   function initializeCodeSimulator(note) {
+    renderCodeSidebar();
+
     if (monacoEditorInstance) {
       monacoEditorInstance.dispose();
       monacoEditorInstance = null;
@@ -2772,6 +2830,10 @@
   }
 
   function initializeProjectIDE(note) {
+    if (!note) return;
+    if (!note.openTabs) note.openTabs = [];
+    if (!note.files) note.files = {};
+
     if (projectMonacoInstance) {
       projectMonacoInstance.dispose();
       projectMonacoInstance = null;
@@ -2992,7 +3054,7 @@
         }
 
         const language = getFileLanguage(path);
-        let model = monaco.editor.getModels().find(m => m.uri.path === '/' + path);
+        let model = monaco.editor.getModels().find(m => m && m.uri && m.uri.path === '/' + path);
         if (!model) {
           model = monaco.editor.createModel(note.files[path].content, language, monaco.Uri.parse('file:///' + path));
           model.onDidChangeContent(() => {
@@ -3109,8 +3171,12 @@
       }
 
       if (window.monaco) {
-        const model = monaco.editor.getModels().find(m => m.uri.path === '/' + oldPath);
-        if (model) model.dispose();
+        try {
+          const model = monaco.editor.getModels().find(m => m && m.uri && m.uri.path === '/' + oldPath);
+          if (model) model.dispose();
+        } catch (e) {
+          console.error(e);
+        }
       }
 
       saveProjectState();
@@ -3136,8 +3202,12 @@
           note.openTabs = note.openTabs.filter(t => t !== k);
           if (note.activeFile === k) note.activeFile = null;
           if (window.monaco) {
-            const model = monaco.editor.getModels().find(m => m.uri.path === '/' + k);
-            if (model) model.dispose();
+            try {
+              const model = monaco.editor.getModels().find(m => m && m.uri && m.uri.path === '/' + k);
+              if (model) model.dispose();
+            } catch (e) {
+              console.error(e);
+            }
           }
         }
       });
@@ -3159,55 +3229,52 @@
       showToast(`Deleted ${isFolder ? 'folder' : 'file'}`);
     }
 
-    function ensureImportInput(input, isFolder = false) {
-      if (!input._importListenerAttached) {
-        input._importListenerAttached = true;
-        input.addEventListener('change', (e) => {
-          const files = e.target.files;
-          if (files && files.length) {
-            importFilesToWorkspace(files);
-          }
-          e.target.value = '';
-        });
-      }
-      if (isFolder) {
-        input.webkitdirectory = true;
-        input.directory = true;
-      }
-    }
-
     function triggerFileImport() {
-      let input = document.getElementById('projectImportFileInput');
-      if (!input) {
-        input = document.createElement('input');
+      const input = document.getElementById('projectImportFileInput') || document.createElement('input');
+      if (!input.id) {
         input.type = 'file';
-        input.id = 'projectImportFileInput';
         input.style.display = 'none';
         input.multiple = true;
+        input.id = 'projectImportFileInput';
         document.body.appendChild(input);
       }
-      input.multiple = true;
-      ensureImportInput(input, false);
+      input.value = '';
+      input.onchange = (e) => {
+        const files = e.target.files;
+        if (files && files.length) {
+          importFilesToWorkspace(files);
+        }
+        setTimeout(() => {
+          input.value = '';
+        }, 0);
+      };
       input.click();
     }
 
     function triggerFolderImport() {
-      let input = document.getElementById('projectImportFolderInput');
-      if (!input) {
-        input = document.createElement('input');
+      const input = document.getElementById('projectImportFolderInput') || document.createElement('input');
+      if (!input.id) {
         input.type = 'file';
-        input.id = 'projectImportFolderInput';
-        input.style.display = 'none';
+        input.webkitdirectory = true;
+        input.directory = true;
         input.multiple = true;
+        input.style.display = 'none';
+        input.id = 'projectImportFolderInput';
         document.body.appendChild(input);
       }
-      input.multiple = true;
-      ensureImportInput(input, true);
+      input.value = '';
+      input.onchange = (e) => {
+        const files = e.target.files;
+        if (files && files.length) {
+          importFilesToWorkspace(files);
+        }
+        setTimeout(() => {
+          input.value = '';
+        }, 0);
+      };
       input.click();
     }
 
-    // Expose these helpers to the global scope so event handlers from
-    // dynamically inserted project UI can resolve them reliably.
     window.triggerFileImport = triggerFileImport;
     window.triggerFolderImport = triggerFolderImport;
     window.importFilesToWorkspace = importFilesToWorkspace;
@@ -3335,6 +3402,133 @@
       showToast(`Imported ${importedPaths.length} file(s)`);
     }
 
+    const explorerEl = document.querySelector('.project-explorer');
+    if (explorerEl) {
+      explorerEl.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        explorerEl.classList.add('drag-over');
+      });
+
+      explorerEl.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        explorerEl.classList.remove('drag-over');
+      });
+
+      explorerEl.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        explorerEl.classList.remove('drag-over');
+
+        const items = e.dataTransfer.items;
+        if (!items || items.length === 0) return;
+
+        const entries = [];
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (item.kind === 'file') {
+            const entry = item.webkitGetAsEntry();
+            if (entry) {
+              entries.push(entry);
+            }
+          }
+        }
+
+        if (entries.length === 0) return;
+
+        showToast('Reading dropped files...');
+        
+        const importedFiles = {};
+
+        async function readEntry(entry, currentPath = '') {
+          if (entry.isFile) {
+            const file = await new Promise((resolve, reject) => {
+              entry.file(resolve, reject);
+            });
+            const text = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = () => reject(reader.error);
+              reader.readAsText(file);
+            });
+            const fullPath = currentPath ? currentPath + '/' + entry.name : entry.name;
+            importedFiles[fullPath] = { content: text };
+          } else if (entry.isDirectory) {
+            const dirReader = entry.createReader();
+            const nextPath = currentPath ? currentPath + '/' + entry.name : entry.name;
+            
+            const readAllEntries = async () => {
+              let allEntries = [];
+              while (true) {
+                const batch = await new Promise((resolve, reject) => {
+                  dirReader.readEntries(resolve, reject);
+                });
+                if (batch.length === 0) break;
+                allEntries = allEntries.concat(batch);
+              }
+              return allEntries;
+            };
+
+            const childEntries = await readAllEntries();
+            for (const child of childEntries) {
+              await readEntry(child, nextPath);
+            }
+          }
+        }
+
+        for (const entry of entries) {
+          try {
+            await readEntry(entry);
+          } catch (err) {
+            console.warn('Failed to read entry', entry.name, err);
+          }
+        }
+
+        const importedPaths = Object.keys(importedFiles).filter(p => !p.endsWith('/'));
+        if (importedPaths.length === 0) {
+          showToast('No files were read');
+          return;
+        }
+
+        if (!note.files) note.files = {};
+        for (const [path, data] of Object.entries(importedFiles)) {
+          note.files[path] = data;
+          ensureParentFolders(path);
+        }
+
+        function ensureParentFolders(path) {
+          const parts = path.split('/');
+          let currentDir = '';
+          for (let i = 0; i < parts.length - 1; i++) {
+            currentDir += parts[i] + '/';
+            if (!note.files[currentDir]) {
+              note.files[currentDir] = { isFolder: true };
+            }
+          }
+        }
+
+        if (!note.openTabs) note.openTabs = [];
+        importedPaths.forEach(path => {
+          if (!note.openTabs.includes(path)) {
+            note.openTabs.push(path);
+          }
+        });
+
+        if (importedPaths.length > 0) {
+          note.activeFile = importedPaths[0];
+        }
+
+        saveProjectState();
+        renderExplorer();
+        renderTabs();
+        if (note.activeFile) {
+          openFile(note.activeFile);
+        }
+        showToast(`Imported ${importedPaths.length} file(s)`);
+      });
+    }
+
     const newFileBtn = document.getElementById('projectNewFileBtn');
     const newFolderBtn = document.getElementById('projectNewFolderBtn');
     const expNewFileBtn = document.getElementById('explorerNewFileBtn');
@@ -3345,10 +3539,10 @@
     const themeSelect = document.getElementById('projectThemeSelect');
     const consoleClearBtn = document.getElementById('projectConsoleClearBtn');
 
-    if (newFileBtn) newFileBtn.onclick = triggerFileImport;
-    if (expNewFileBtn) expNewFileBtn.onclick = triggerFileImport;
-    if (newFolderBtn) newFolderBtn.onclick = triggerFolderImport;
-    if (expNewFolderBtn) expNewFolderBtn.onclick = triggerFolderImport;
+    if (newFileBtn) newFileBtn.onclick = createNewFile;
+    if (expNewFileBtn) expNewFileBtn.onclick = createNewFile;
+    if (newFolderBtn) newFolderBtn.onclick = createNewFolder;
+    if (expNewFolderBtn) expNewFolderBtn.onclick = createNewFolder;
 
     if (runBtn) runBtn.onclick = runProject;
     if (stopBtn) stopBtn.onclick = stopExecution;
@@ -3997,9 +4191,91 @@
           if(rec) loaded.push(JSON.parse(rec.value));
         }catch(e){ /* skip missing */ }
       }
-      notes = loaded;
+
+      // Separate projects, codes, and notes for migration
+      const migratedProjects = [];
+      const migratedCodes = [];
+      const remainingNotes = [];
+      for (const item of loaded) {
+        if (item && item.type === 'project') {
+          migratedProjects.push(item);
+        } else if (item && item.type === 'code') {
+          migratedCodes.push(item);
+        } else {
+          remainingNotes.push(item);
+        }
+      }
+      notes = remainingNotes;
+
+      if (migratedProjects.length > 0) {
+        let existingProjectIndex = [];
+        try {
+          const pIdx = await storage.get('project-index');
+          existingProjectIndex = pIdx ? JSON.parse(pIdx.value) : [];
+        } catch (e) {}
+
+        for (const p of migratedProjects) {
+          if (!existingProjectIndex.includes(p.id)) {
+            existingProjectIndex.push(p.id);
+          }
+          await storage.set('project:' + p.id, JSON.stringify(p));
+          await storage.delete('note:' + p.id);
+        }
+        await storage.set('project-index', JSON.stringify(existingProjectIndex));
+      }
+
+      if (migratedCodes.length > 0) {
+        let existingCodeIndex = [];
+        try {
+          const cIdx = await storage.get('code-index');
+          existingCodeIndex = cIdx ? JSON.parse(cIdx.value) : [];
+        } catch (e) {}
+
+        for (const c of migratedCodes) {
+          if (!existingCodeIndex.includes(c.id)) {
+            existingCodeIndex.push(c.id);
+          }
+          await storage.set('code:' + c.id, JSON.stringify(c));
+          await storage.delete('note:' + c.id);
+        }
+        await storage.set('code-index', JSON.stringify(existingCodeIndex));
+      }
+
+      if (migratedProjects.length > 0 || migratedCodes.length > 0) {
+        await storage.set('note-index', JSON.stringify(notes.map(n => n.id)));
+      }
     }catch(e){
       notes = [];
+    }
+
+    try{
+      const pIdx = await storage.get('project-index');
+      const pIds = pIdx ? JSON.parse(pIdx.value) : [];
+      const loadedProjects = [];
+      for(const id of pIds){
+        try{
+          const rec = await storage.get('project:' + id);
+          if(rec) loadedProjects.push(JSON.parse(rec.value));
+        }catch(e){ /* skip missing */ }
+      }
+      projects = loadedProjects;
+    }catch(e){
+      projects = [];
+    }
+
+    try{
+      const cIdx = await storage.get('code-index');
+      const cIds = cIdx ? JSON.parse(cIdx.value) : [];
+      const loadedCodes = [];
+      for(const id of cIds){
+        try{
+          const rec = await storage.get('code:' + id);
+          if(rec) loadedCodes.push(JSON.parse(rec.value));
+        }catch(e){ /* skip missing */ }
+      }
+      codes = loadedCodes;
+    }catch(e){
+      codes = [];
     }
 
     let savedAccent = null;
@@ -4034,7 +4310,7 @@
           previewCollapsed = true;
         }
         if (state && state.activeFile && activeId) {
-          const note = notes.find(n => n.id === activeId);
+          const note = projects.find(n => n.id === activeId);
           if (note && note.type === 'project' && note.files && note.files[state.activeFile]) {
             note.activeFile = state.activeFile;
             if (Array.isArray(state.openTabs)) {
@@ -4088,6 +4364,58 @@
     }
   }
 
+  async function persistProjectIndex(){
+    try{
+      const res = await storage.set('project-index', JSON.stringify(projects.map(p => p.id)));
+      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
+      return true;
+    }catch(e){
+      console.error('project index save failed', e);
+      storageHealthy = false;
+      updateStorageBanner();
+      return false;
+    }
+  }
+
+  async function persistProject(project){
+    try{
+      const res = await storage.set('project:' + project.id, JSON.stringify(project));
+      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
+      return true;
+    }catch(e){
+      console.error('project save failed', e);
+      storageHealthy = false;
+      updateStorageBanner();
+      return false;
+    }
+  }
+
+  async function persistCodeIndex(){
+    try{
+      const res = await storage.set('code-index', JSON.stringify(codes.map(c => c.id)));
+      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
+      return true;
+    }catch(e){
+      console.error('code index save failed', e);
+      storageHealthy = false;
+      updateStorageBanner();
+      return false;
+    }
+  }
+
+  async function persistCode(code){
+    try{
+      const res = await storage.set('code:' + code.id, JSON.stringify(code));
+      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
+      return true;
+    }catch(e){
+      console.error('code save failed', e);
+      storageHealthy = false;
+      updateStorageBanner();
+      return false;
+    }
+  }
+
   async function persistSettings(){
     try{
       const res = await storage.set('app-settings', JSON.stringify({ theme, rulesOn, accentColor, borderColor }));
@@ -4104,22 +4432,45 @@
     try{ await storage.delete('note:' + id); }catch(e){ /* ignore */ }
   }
 
-  function queueSave(note){
+  async function deleteProjectStorage(id){
+    try{ await storage.delete('project:' + id); }catch(e){ /* ignore */ }
+  }
+
+  async function deleteCodeStorage(id){
+    try{ await storage.delete('code:' + id); }catch(e){ /* ignore */ }
+  }
+
+  function queueSave(item){
     setSaveStatus('saving');
     clearTimeout(saveTimer);
     saveTimer = setTimeout(async () => {
-      note.updatedAt = Date.now();
-      const okNote = await persistNote(note);
-      const okIndex = await persistIndex();
-      if(okNote && okIndex){
-        setSaveStatus('saved', note);
+      item.updatedAt = Date.now();
+      let okItem = false;
+      let okIndex = false;
+      if (item.type === 'project') {
+        okItem = await persistProject(item);
+        okIndex = await persistProjectIndex();
+      } else if (item.type === 'code') {
+        okItem = await persistCode(item);
+        okIndex = await persistCodeIndex();
+      } else {
+        okItem = await persistNote(item);
+        okIndex = await persistIndex();
+      }
+      if(okItem && okIndex){
+        setSaveStatus('saved', item);
       } else {
         setSaveStatus('error');
-        showToast('Save failed — your notes may not be persisting. Back up now from the sidebar.');
+        showToast('Save failed — your data may not be persisting. Back up now from the sidebar.');
       }
-      renderSidebarCardOnly(note);
+      if (item.type !== 'project' && item.type !== 'code') {
+        renderSidebarCardOnly(item);
+      } else if (item.type === 'code') {
+        renderCodeSidebar();
+      }
     }, 450);
   }
+
 
   // ---------- Backup & restore ----------
   function downloadBackup(){
@@ -4129,6 +4480,8 @@
         version: 1,
         exportedAt: new Date().toISOString(),
         notes: notes,
+        projects: projects,
+        codes: codes,
         settings: { theme, rulesOn, accentColor }
       };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -4157,16 +4510,56 @@
         alert('That file is not valid JSON. Make sure it is a backup exported from this Notepad.');
         return;
       }
-      const restoredNotes = Array.isArray(payload.notes) ? payload.notes : (Array.isArray(payload) ? payload : null);
-      if(!restoredNotes){
+      const rawRestored = Array.isArray(payload.notes) ? payload.notes : (Array.isArray(payload) ? payload : null);
+      if(!rawRestored){
         alert('Could not find any notes in that file. Make sure it is a backup exported from this Notepad.');
         return;
       }
-      const proceed = confirm(`Restore ${restoredNotes.length} note(s) from this backup? This replaces the notes currently shown in the app.`);
+
+      const restoredNotes = [];
+      const restoredProjects = [];
+      const restoredCodes = [];
+
+      if (Array.isArray(payload.codes)) {
+        restoredCodes.push(...payload.codes);
+      }
+
+      if (Array.isArray(payload.projects)) {
+        restoredProjects.push(...payload.projects);
+        for (const item of rawRestored) {
+          if (item && item.type !== 'project' && item.type !== 'code') {
+            restoredNotes.push(item);
+          } else if (item && item.type === 'code' && !payload.codes) {
+            restoredCodes.push(item);
+          }
+        }
+      } else {
+        // Legacy support
+        for (const item of rawRestored) {
+          if (item && item.type === 'project') {
+            restoredProjects.push(item);
+          } else if (item && item.type === 'code') {
+            restoredCodes.push(item);
+          } else if (item) {
+            restoredNotes.push(item);
+          }
+        }
+      }
+
+      const proceed = confirm(`Restore ${restoredNotes.length} note(s), ${restoredProjects.length} project(s), and ${restoredCodes.length} code snippet(s) from this backup? This replaces the notes, projects, and snippets currently shown in the app.`);
       if(!proceed) return;
 
+      // Delete existing storage items to clean up
+      for(const n of notes){ await deleteNoteStorage(n.id); }
+      for(const p of projects){ await deleteProjectStorage(p.id); }
+      for(const c of codes){ await deleteCodeStorage(c.id); }
+
       notes = restoredNotes;
-      activeId = notes.length ? notes[0].id : null;
+      projects = restoredProjects;
+      codes = restoredCodes;
+
+      const activeNote = notes.find(n => n.type !== 'project' && n.type !== 'code');
+      activeId = activeNote ? activeNote.id : (notes.length ? notes[0].id : null);
 
       if(payload.settings){
         theme = payload.settings.theme || theme;
@@ -4179,12 +4572,14 @@
 
       renderSidebar();
       renderEditor();
-      showToast('Notes restored from backup');
+      showToast('Data restored from backup');
 
-      // Best-effort: write the restored notes back to storage too,
-      // so the restore survives the next refresh if storage is healthy.
       for(const n of notes){ await persistNote(n); }
       await persistIndex();
+      for(const p of projects){ await persistProject(p); }
+      await persistProjectIndex();
+      for(const c of codes){ await persistCode(c); }
+      await persistCodeIndex();
       await persistSettings();
     };
     reader.onerror = () => alert('Could not read that file.');
@@ -4198,7 +4593,7 @@
   }
 
   // ---------- Derived helpers ----------
-  function getActive(){ return notes.find(n => n.id === activeId) || null; }
+  function getActive(){ return notes.find(n => n.id === activeId) || projects.find(p => p.id === activeId) || codes.find(c => c.id === activeId) || null; }
 
   function previewText(note){
     if(note.type === 'todo'){
@@ -4235,12 +4630,12 @@
   }
 
   function sidebarNotes(){
-    return notes.filter(n => n.type !== 'project');
+    return notes;
   }
 
   function firstNonProjectNoteId(){
-    const note = notes.find(n => n.type !== 'project');
-    return note ? note.id : (notes[0] && notes[0].id) || null;
+    const note = notes[0] || null;
+    return note ? note.id : null;
   }
 
   function allTags(){
@@ -4421,12 +4816,12 @@
     }
     const note = getActive();
     app.classList.toggle('project-active', !!(note && note.type === 'project'));
+    app.classList.toggle('code-active', !!(note && note.type === 'code'));
     const editorScroll = $('#editorScroll');
-    if (editorScroll) editorScroll.classList.toggle('project-mode', !!(note && note.type === 'project'));
+    if (editorScroll) editorScroll.classList.toggle('project-mode', !!(note && (note.type === 'project' || note.type === 'code')));
     $('#typeSelect').style.visibility = note ? 'visible' : 'hidden';
     updateTypeSelectOptions(note);
     $('#duplicateBtn').style.visibility = note ? 'visible' : 'hidden';
-    $('#deleteBtn').style.visibility = note ? 'visible' : 'hidden';
     $('#pinToggle').style.visibility = note ? 'visible' : 'hidden';
     $('#exportBtn').style.visibility = note ? 'visible' : 'hidden';
     saveStatus.style.visibility = note ? 'visible' : 'hidden';
@@ -4487,6 +4882,14 @@
         <button class="rt-btn" data-cmd="justifyFull" title="Justify">${ICONS.alignJustify}</button>
         <span class="rt-sep"></span>
         <button class="rt-btn" data-cmd="removeFormat" title="Clear formatting">${ICONS.eraser}</button>
+        <span class="rt-sep"></span>
+        <button class="rt-btn" id="rulesToggle" title="Toggle ruled lines">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px; height:14px;"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+        </button>
+        <span class="rt-sep"></span>
+        <button class="rt-btn" id="deleteBtn" title="Delete note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color: var(--danger);"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16Z"/></svg>
+        </button>
       </div>`;
 
     let toolbarHtml = '';
@@ -4520,123 +4923,154 @@
       }
       
       const isHtml = note.language === 'html';
-      
+
+      toolbarHtml = `
+        <div class="rich-toolbar project-toolbar code-toolbar" id="codeToolbar">
+          <div class="project-toolbar-left">
+            <button class="ide-btn" id="codeBackBtn" title="Back to notes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <input type="text" class="title-input project-title-input" id="titleInput" placeholder="Untitled Snippet" value="${escapeHtml(note.title || '')}">
+          </div>
+          <div class="project-toolbar-right">
+            <select class="ide-select" id="ideLanguageSelect" title="Select language">
+              <option value="javascript" ${note.language === 'javascript' ? 'selected' : ''}>JavaScript</option>
+              <option value="html" ${note.language === 'html' ? 'selected' : ''}>HTML/CSS/JS (Live Preview)</option>
+              <option value="python" ${note.language === 'python' ? 'selected' : ''}>Python</option>
+              <option value="typescript" ${note.language === 'typescript' ? 'selected' : ''}>TypeScript</option>
+              <option value="c" ${note.language === 'c' ? 'selected' : ''}>C</option>
+              <option value="cpp" ${note.language === 'cpp' ? 'selected' : ''}>C++</option>
+              <option value="java" ${note.language === 'java' ? 'selected' : ''}>Java</option>
+              <option value="csharp" ${note.language === 'csharp' ? 'selected' : ''}>C#</option>
+              <option value="go" ${note.language === 'go' ? 'selected' : ''}>Go</option>
+              <option value="rust" ${note.language === 'rust' ? 'selected' : ''}>Rust</option>
+              <option value="kotlin" ${note.language === 'kotlin' ? 'selected' : ''}>Kotlin</option>
+              <option value="php" ${note.language === 'php' ? 'selected' : ''}>PHP</option>
+              <option value="ruby" ${note.language === 'ruby' ? 'selected' : ''}>Ruby</option>
+              <option value="sql" ${note.language === 'sql' ? 'selected' : ''}>SQL</option>
+              <option value="shell" ${note.language === 'shell' ? 'selected' : ''}>Shell (Bash)</option>
+              <option value="css" ${note.language === 'css' ? 'selected' : ''}>CSS</option>
+              <option value="json" ${note.language === 'json' ? 'selected' : ''}>JSON</option>
+              <option value="markdown" ${note.language === 'markdown' ? 'selected' : ''}>Markdown</option>
+            </select>
+            <button class="ide-btn run-btn" id="ideRunBtn" title="Run Snippet (Ctrl+Enter)">
+              <svg class="run-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px; height:14px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span class="spinner"></span>
+              <span>Run</span>
+            </button>
+            <button class="ide-btn stop-btn" id="ideStopBtn" title="Stop">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px; height:14px;"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              <span>Stop</span>
+            </button>
+            <button class="ide-btn" id="codeDeleteBtn" title="Delete snippet">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color: var(--danger);"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18.333 20.333A2 2 0 0 1 16.333 22H7.667a2 2 0 0 1-1.999-1.667L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+              <span>Delete</span>
+            </button>
+            <button class="ide-btn" id="idePreviewToggleBtn" title="Toggle browser preview">
+              ${ICONS.fileCode}
+              <span>Preview</span>
+            </button>
+            <select class="ide-select" id="ideThemeSelect" title="Editor Theme">
+              <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
+              <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
+              <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
+            </select>
+          </div>
+        </div>`;
+
       bodyHtml = `
-        <div class="ide-container">
-          <div class="ide-toolbar">
-            <div class="ide-toolbar-left">
-              <select class="ide-select" id="ideLanguageSelect" title="Select language">
-                <option value="javascript" ${note.language === 'javascript' ? 'selected' : ''}>JavaScript</option>
-                <option value="html" ${note.language === 'html' ? 'selected' : ''}>HTML/CSS/JS (Live Preview)</option>
-                <option value="python" ${note.language === 'python' ? 'selected' : ''}>Python</option>
-                <option value="typescript" ${note.language === 'typescript' ? 'selected' : ''}>TypeScript</option>
-                <option value="c" ${note.language === 'c' ? 'selected' : ''}>C</option>
-                <option value="cpp" ${note.language === 'cpp' ? 'selected' : ''}>C++</option>
-                <option value="java" ${note.language === 'java' ? 'selected' : ''}>Java</option>
-                <option value="csharp" ${note.language === 'csharp' ? 'selected' : ''}>C#</option>
-                <option value="go" ${note.language === 'go' ? 'selected' : ''}>Go</option>
-                <option value="rust" ${note.language === 'rust' ? 'selected' : ''}>Rust</option>
-                <option value="kotlin" ${note.language === 'kotlin' ? 'selected' : ''}>Kotlin</option>
-                <option value="php" ${note.language === 'php' ? 'selected' : ''}>PHP</option>
-                <option value="ruby" ${note.language === 'ruby' ? 'selected' : ''}>Ruby</option>
-                <option value="sql" ${note.language === 'sql' ? 'selected' : ''}>SQL</option>
-                <option value="shell" ${note.language === 'shell' ? 'selected' : ''}>Shell (Bash)</option>
-                <option value="css" ${note.language === 'css' ? 'selected' : ''}>CSS</option>
-                <option value="json" ${note.language === 'json' ? 'selected' : ''}>JSON</option>
-                <option value="markdown" ${note.language === 'markdown' ? 'selected' : ''}>Markdown</option>
-              </select>
-              <button class="ide-btn run-btn" id="ideRunBtn" title="Run (Ctrl+Enter)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                <span>Run</span>
-              </button>
-              <button class="ide-btn stop-btn" id="ideStopBtn" title="Stop">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                <span>Stop</span>
-              </button>
-              <button class="ide-btn" id="ideFormatBtn" title="Format code">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM12 6v12M3 12h18"/></svg>
-                <span>Format</span>
-              </button>
-              <button class="ide-btn" id="idePreviewToggleBtn" title="Toggle browser preview">
-                ${ICONS.fileCode}
-                <span>Preview</span>
-              </button>
-              <button class="ide-btn" id="ideClearBtn" title="Clear code">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/></svg>
-                <span>Clear</span>
-              </button>
+        <div class="code-editor-shell">
+          <div class="code-editor-hero">
+            <div>
+              <div class="code-editor-pill">Code Editor</div>
+              <div class="code-editor-title">Write, run, and preview your snippet in a focused workspace.</div>
             </div>
-            <div class="ide-toolbar-right">
-              <button class="ide-btn" id="ideCopyBtn" title="Copy code">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <span>Copy</span>
-              </button>
-              <button class="ide-btn" id="idePasteBtn" title="Paste from clipboard">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-                <span>Paste</span>
-              </button>
-              <button class="ide-btn" id="ideDownloadBtn" title="Download file">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                <span>Download</span>
-              </button>
-              <select class="ide-select" id="ideThemeSelect" title="Editor Theme">
-                <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
-                <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
-                <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
-              </select>
+            <div class="code-editor-meta">
+              <span class="code-editor-chip">Live preview</span>
+              <span class="code-editor-chip">Console</span>
+              <span class="code-editor-chip">Quick actions</span>
             </div>
           </div>
-          
-          <div class="ide-split-pane">
-            <div class="ide-editor-wrapper">
-              <div id="monacoEditorContainer" style="width:100%; height:100%;"></div>
+          <div class="project-ide code-workspace">
+          <div class="project-explorer code-explorer">
+            <div class="project-explorer-header">
+              <span>Code Snippets</span>
+              <div class="project-explorer-actions">
+                <button class="project-explorer-action-btn" id="codeExplorerNewBtn" title="New Code Snippet">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
             </div>
-            <div class="ide-preview-wrapper" id="idePreviewWrapper" style="display: ${isHtml ? 'block' : 'none'}; position: relative;">
-              <button class="ide-preview-expand-btn" id="idePreviewExpandBtn" title="Open in Full Screen">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-              </button>
-              <iframe id="idePreviewFrame" sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"></iframe>
-            </div>
+            <div class="project-explorer-tree" id="codeSnippetsList"></div>
           </div>
           
-          <div class="ide-console-panel" id="ideConsolePanel" style="height: 180px;">
-            <div class="ide-console-resizer" id="ideConsoleResizer"></div>
-            <div class="ide-console-header">
-              <div class="ide-console-header-left">
-                <span>Console Output</span>
-                <span class="ide-console-status" id="ideConsoleStatus"></span>
-              </div>
-              <div class="ide-console-header-right">
-                <span class="ide-console-status" id="ideConsoleTime"></span>
-                <button class="ide-console-clear" id="ideConsoleClearBtn">Clear Console</button>
+          <div class="project-h-divider" id="codeSidebarDivider"></div>
+          
+          <div class="project-center-pane">
+            <div class="project-editor-side">
+              <div class="project-editor-container" id="monacoEditorContainer">
+                <!-- Monaco editor mounts here -->
               </div>
             </div>
-            <div class="ide-console-body">
-              <div class="ide-console-logs" id="ideConsoleLogs"></div>
-              <div class="ide-console-stdin-container">
-                <div class="ide-console-stdin-header">
-                  <span>stdin (standard input)</span>
-                  <button class="ide-stdin-run-btn" id="ideStdinRunBtn" title="Run code (Ctrl+Enter)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    <span>Run</span>
-                  </button>
+            
+            <div class="project-console-panel" id="ideConsolePanel" style="height:180px;">
+              <div class="ide-console-resizer" id="ideConsoleResizer"></div>
+              <div class="project-console-header">
+                <div class="project-console-tabs">
+                  <div class="project-console-tab active" id="codeTabTerminal">Terminal</div>
                 </div>
-                <textarea class="ide-console-stdin" id="ideConsoleStdin" placeholder="Provide program inputs here..."></textarea>
+                <div class="project-console-actions">
+                  <span class="ide-console-status" id="ideConsoleTime"></span>
+                  <button class="ide-console-clear" id="ideConsoleClearBtn">Clear</button>
+                </div>
+              </div>
+              <div class="project-console-content">
+                <div class="project-terminal" id="ideConsoleLogs"></div>
+                <div class="code-stdin-container" id="codeStdinContainer" style="display:block; padding:8px; border-top:1px solid var(--border);">
+                  <div style="font-size:11px; font-weight:600; color:var(--accent); margin-bottom:4px; display:flex; align-items:center; justify-content:space-between;">
+                    <span>stdin (standard input)</span>
+                    <button class="ide-stdin-run-btn" id="ideStdinRunBtn" title="Run code (Ctrl+Enter)" style="padding: 2px 6px; font-size: 10px; display: flex; align-items: center; gap: 4px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 10px; height: 10px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Run
+                    </button>
+                  </div>
+                  <textarea id="ideConsoleStdin" style="width:100%; height:60px; background:var(--bg-sidebar); color:var(--ink); border:1px solid var(--border); border-radius:6px; font-family:monospace; font-size:12px; padding:6px; resize:none; outline:none;" placeholder="Provide program inputs here..."></textarea>
+                </div>
               </div>
             </div>
           </div>
+          
+          <div class="project-h-divider" id="codeHDivider"></div>
+          
+          <div class="project-preview-panel" id="idePreviewWrapper" style="display: ${isHtml ? 'flex' : 'none'};">
+            <div class="project-preview-header">
+              <span>Browser Preview</span>
+              <div class="project-preview-header-actions">
+                <span class="ide-console-status" id="ideConsoleStatus"></span>
+                <button class="project-preview-fullscreen-btn" id="idePreviewExpandBtn" title="Open in Full Screen">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                </button>
+                <button class="project-preview-collapse-btn" id="codePreviewCollapseBtn" title="Collapse preview">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="project-preview-iframe-wrap">
+              <iframe id="idePreviewFrame" sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups" allowfullscreen></iframe>
+            </div>
+          </div>
+          
+          <button class="project-preview-expand-btn" id="codePreviewExpandBtn" title="Expand preview" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
         </div>
       `;
     } else if(note.type === 'project'){
-      if (!note.files || Object.keys(note.files).length === 0) {
-        note.files = {
-          "index.html": { content: "<!DOCTYPE html>\n<html>\n<head>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Hello, World!</h1>\n  <script src=\"app.js\"><\/script>\n</body>\n</html>" },
-          "style.css": { content: "body {\n  font-family: sans-serif;\n  background: #f4f4f9;\n  color: #333;\n  text-align: center;\n  padding-top: 50px;\n}" },
-          "app.js": { content: "console.log('Hello from app.js!');" }
-        };
-        note.openTabs = ["index.html", "style.css", "app.js"];
-        note.activeFile = "index.html";
-        queueSave(note);
+      if (!note.files) {
+        note.files = {};
+      }
+      if (!note.openTabs) {
+        note.openTabs = [];
       }
       
       toolbarHtml = `
@@ -4796,7 +5230,7 @@
         <input type="text" class="tag-add-input" id="tagAddInput" placeholder="+ add tag">
       </div>`;
 
-    if (note && note.type === 'project') {
+    if (note && (note.type === 'project' || note.type === 'code')) {
       editorInner.innerHTML = toolbarHtml + bodyHtml;
     } else {
       editorInner.innerHTML = `
@@ -4814,6 +5248,8 @@
       bindProjectMenuIDE();
       bindProjectToolbarActions();
       bindProjectImportActions();
+    } else if (note && note.type === 'code') {
+      bindCodeToolbarActions();
     }
     bindTagEvents(note);
   }
@@ -4876,6 +5312,11 @@
         note.title = titleInput.value;
         queueSave(note);
       });
+    }
+
+    const deleteBtn = $('#deleteBtn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', deleteActive);
     }
 
     if(note.type === 'todo'){
@@ -5066,6 +5507,12 @@
       $('#highlightColorBar').style.background = hlInput.value;
       sync();
     });
+
+    const rulesToggle = $('#rulesToggle');
+    if (rulesToggle) {
+      rulesToggle.addEventListener('click', toggleRules);
+      updateRulesIcon();
+    }
   }
 
   function bindTodoEvents(note){
@@ -5115,16 +5562,16 @@
     if (activeId && getActive() && getActive().type !== 'project') {
       lastNotesActiveId = activeId;
     }
-    const note = {
+    const project = {
       id: uid(), type:'project', title:'Untitled Project', content:'', todos:[], tags:[], pinned:false,
       files:{}, openTabs:[], activeFile:null,
       createdAt: Date.now(), updatedAt: Date.now()
     };
-    notes.unshift(note);
-    activeId = note.id;
-    lastProjectActiveId = note.id;
-    await persistNote(note);
-    await persistIndex();
+    projects.unshift(project);
+    activeId = project.id;
+    lastProjectActiveId = project.id;
+    await persistProject(project);
+    await persistProjectIndex();
     persistAppState();
     renderSidebar();
     renderEditor();
@@ -5149,36 +5596,90 @@
   }
 
   async function deleteActive(){
-    const note = getActive();
-    if(!note) return;
-    if(!confirm(`Delete “${note.title || 'Untitled'}”? This can’t be undone.`)) return;
-    notes = notes.filter(n => n.id !== note.id);
-    await deleteNoteStorage(note.id);
-    await persistIndex();
-    activeId = notes.length ? notes[0].id : null;
-    renderSidebar();
-    renderEditor();
-    showToast('Note deleted');
+    const item = getActive();
+    if(!item) return;
+    if(!confirm(`Delete “${item.title || 'Untitled'}”? This can’t be undone.`)) return;
+
+    if (item.type === 'project') {
+      projects = projects.filter(p => p.id !== item.id);
+      await deleteProjectStorage(item.id);
+      await persistProjectIndex();
+
+      activeId = lastNotesActiveId || firstNonProjectNoteId();
+      if (activeId && getActive() && getActive().type === 'project') {
+        const firstNote = notes.find(n => n.type !== 'project');
+        activeId = firstNote ? firstNote.id : null;
+      }
+      persistAppState();
+      renderSidebar();
+      renderEditor();
+      showToast('Project deleted');
+    } else if (item.type === 'code') {
+      codes = codes.filter(c => c.id !== item.id);
+      await deleteCodeStorage(item.id);
+      await persistCodeIndex();
+
+      activeId = lastNotesActiveId || firstNonProjectNoteId();
+      if (activeId && getActive() && (getActive().type === 'project' || getActive().type === 'code')) {
+        const firstNote = notes[0];
+        activeId = firstNote ? firstNote.id : null;
+      }
+      persistAppState();
+      renderSidebar();
+      renderEditor();
+      showToast('Code snippet deleted');
+    } else {
+      notes = notes.filter(n => n.id !== item.id);
+      await deleteNoteStorage(item.id);
+      await persistIndex();
+      activeId = notes.length ? notes[0].id : null;
+      renderSidebar();
+      renderEditor();
+      showToast('Note deleted');
+    }
   }
 
   async function duplicateActive(){
-    const note = getActive();
-    if(!note) return;
-    const copy = JSON.parse(JSON.stringify(note));
+    const item = getActive();
+    if(!item) return;
+    const copy = JSON.parse(JSON.stringify(item));
     copy.id = uid();
-    copy.title = (note.title || 'Untitled') + ' copy';
-    copy.todos = copy.todos.map(t => ({...t, id: uid()}));
-    copy.tags = [...(note.tags||[])];
+    copy.title = (item.title || 'Untitled') + ' copy';
+    if (copy.todos) copy.todos = copy.todos.map(t => ({...t, id: uid()}));
+    copy.tags = [...(item.tags||[])];
     copy.pinned = false;
     copy.createdAt = Date.now();
     copy.updatedAt = Date.now();
-    notes.unshift(copy);
-    activeId = copy.id;
-    await persistNote(copy);
-    await persistIndex();
-    renderSidebar();
-    renderEditor();
-    showToast('Note duplicated');
+
+    if (item.type === 'project') {
+      projects.unshift(copy);
+      activeId = copy.id;
+      lastProjectActiveId = copy.id;
+      await persistProject(copy);
+      await persistProjectIndex();
+      persistAppState();
+      renderSidebar();
+      renderEditor();
+      showToast('Project duplicated');
+    } else if (item.type === 'code') {
+      codes.unshift(copy);
+      activeId = copy.id;
+      lastCodeActiveId = copy.id;
+      await persistCode(copy);
+      await persistCodeIndex();
+      persistAppState();
+      renderSidebar();
+      renderEditor();
+      showToast('Code snippet duplicated');
+    } else {
+      notes.unshift(copy);
+      activeId = copy.id;
+      await persistNote(copy);
+      await persistIndex();
+      renderSidebar();
+      renderEditor();
+      showToast('Note duplicated');
+    }
   }
 
   // ---------- Bulk actions ----------
@@ -5390,6 +5891,7 @@
     const btn = $('#rulesToggle');
     if(!btn) return;
     btn.classList.toggle('on', rulesOn);
+    btn.classList.toggle('active', rulesOn);
     btn.title = rulesOn ? 'Turn off ruled lines' : 'Turn on ruled lines';
   }
 
@@ -5417,8 +5919,8 @@
     if (activeId && getActive() && getActive().type === 'project') {
       lastProjectActiveId = activeId;
     }
-    const target = notes.find(n => n.id === lastNotesActiveId && n.type !== 'project')
-      || notes.find(n => n.type !== 'project');
+    const target = notes.find(n => n.id === lastNotesActiveId)
+      || notes[0];
     activeId = target ? target.id : null;
     persistAppState();
     renderSidebar();
@@ -5429,8 +5931,8 @@
     if (activeId && getActive() && getActive().type !== 'project') {
       lastNotesActiveId = activeId;
     }
-    const project = notes.find(n => n.id === lastProjectActiveId && n.type === 'project')
-      || notes.find(n => n.type === 'project');
+    const project = projects.find(n => n.id === lastProjectActiveId)
+      || projects[0];
     if (!project) {
       await createProject();
       return;
@@ -5447,10 +5949,11 @@
     if(!select) return;
     if(note && note.type === 'project'){
       select.innerHTML = `<option value="project">Project</option>`;
+    } else if(note && note.type === 'code'){
+      select.innerHTML = `<option value="code">Code</option>`;
     } else {
       select.innerHTML = `
         <option value="note">Note</option>
-        <option value="code">Code</option>
         <option value="todo">To-do</option>
         <option value="journal">Journal</option>
       `;
@@ -5581,15 +6084,17 @@
   let projectMenuBtn = null;
   let projectDropdown = null;
   let projectDropdownNew = null;
+  let codeMenuBtn = null;
+  let codeDropdown = null;
+  let codeDropdownNew = null;
 
   $('#newNoteBtn').addEventListener('click', createNote);
-  $('#deleteBtn').addEventListener('click', deleteActive);
   $('#duplicateBtn').addEventListener('click', duplicateActive);
   $('#pinToggle').addEventListener('click', togglePin);
-  $('#rulesToggle').addEventListener('click', toggleRules);
   const projectEditorBtn = $('#projectEditorBtn');
   if (projectEditorBtn) projectEditorBtn.addEventListener('click', openProjectWorkspace);
   bindProjectMenu();
+  bindCodeMenu();
 
   function updateProjectMenuElements() {
     projectMenuBtn = $('#projectMenuBtn');
@@ -5597,30 +6102,127 @@
     projectDropdownNew = $('#projectDropdownNew');
   }
 
+  function updateCodeMenuElements() {
+    codeMenuBtn = $('#codeMenuBtn');
+    codeDropdown = $('#codeDropdown');
+    codeDropdownNew = $('#codeDropdownNew');
+  }
+
+  function bindCodeMenu() {
+    updateCodeMenuElements();
+    if (!codeMenuBtn) return;
+    if (codeMenuBtn.dataset.bound === '1') return;
+    codeMenuBtn.dataset.bound = '1';
+
+    codeMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const codeId = lastCodeActiveId || (codes.length ? codes[0].id : null);
+      if (codeId) {
+        openCodeWorkspace(codeId);
+      } else {
+        awaitCreateCodeFallback();
+      }
+    });
+  }
+
+  async function awaitCreateCodeFallback() {
+    await createCode();
+  }
+
+  function renderCodeDropdown() {
+    const list = $('#codeDropdownList');
+    if (!list) return;
+    if (codes.length === 0) {
+      list.innerHTML = '<div style="padding:8px 9px; font-size:12px; color:var(--ink-faint);">No code snippets yet</div>';
+      return;
+    }
+    list.innerHTML = codes.map(c => `
+      <button data-id="${c.id}" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:${c.id === activeId ? 'var(--accent-soft)' : 'transparent'}; color:${c.id === activeId ? 'var(--accent)' : 'var(--ink)'}; font-size:12.5px; font-weight:500; cursor:pointer;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(c.title || 'Untitled Snippet')}</span>
+      </button>
+    `).join('');
+    list.querySelectorAll('button[data-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        openCodeWorkspace(id);
+      });
+    });
+  }
+
+  function openCodeDropdown() {
+    if (!codeDropdown || !codeMenuBtn) return;
+    renderCodeDropdown();
+    codeDropdown.style.display = 'flex';
+    codeMenuBtn.classList.add('on');
+  }
+
+  async function openCodeWorkspace(id) {
+    if (activeId && getActive() && getActive().type !== 'project' && getActive().type !== 'code') {
+      lastNotesActiveId = activeId;
+    }
+    const snippet = codes.find(c => c.id === id) || codes[0];
+    if (!snippet) {
+      await createCode();
+      return;
+    }
+    activeId = snippet.id;
+    lastCodeActiveId = snippet.id;
+    persistAppState();
+    closeAllDropdowns();
+    renderSidebar();
+    renderEditor();
+  }
+
+  async function exitCodeWorkspace() {
+    if (activeId && getActive() && getActive().type === 'code') {
+      lastCodeActiveId = activeId;
+    }
+    const target = notes.find(n => n.id === lastNotesActiveId)
+      || notes[0];
+    activeId = target ? target.id : null;
+    persistAppState();
+    renderSidebar();
+    renderEditor();
+  }
+
+  async function createCode(lang = 'javascript') {
+    const starterTemplates = {
+      javascript: '// Start coding here\nconsole.log("Hello from Notepad");',
+      html: '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>Notepad Preview</title>\n</head>\n<body>\n  <h1>Hello from Notepad</h1>\n</body>\n</html>',
+      python: '# Start coding here\nprint("Hello from Notepad")',
+      markdown: '# Hello from Notepad\n\nStart writing your notes or docs here.'
+    };
+
+    const item = {
+      id: uid(),
+      type: 'code',
+      title: 'Untitled Snippet',
+      content: starterTemplates[lang] || starterTemplates.javascript,
+      language: lang,
+      updatedAt: Date.now()
+    };
+    codes.unshift(item);
+    activeId = item.id;
+    lastCodeActiveId = item.id;
+    await persistCode(item);
+    await persistCodeIndex();
+    persistAppState();
+    renderSidebar();
+    renderEditor();
+    showToast('Created new code snippet');
+  }
+
   function bindProjectMenu() {
     updateProjectMenuElements();
-    if (!projectMenuBtn || !projectDropdown) return;
+    if (!projectMenuBtn) return;
     if (projectMenuBtn.dataset.bound === '1') return;
     projectMenuBtn.dataset.bound = '1';
 
     projectMenuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (projectDropdown.style.display === 'none' || projectDropdown.style.display === '') {
-        openProjectDropdown();
-      } else {
-        closeAllProjectDropdowns();
-      }
+      openProjectWorkspace();
     });
-
-    projectDropdown.addEventListener('click', (e) => e.stopPropagation());
-
-    if (projectDropdownNew) {
-      projectDropdownNew.addEventListener('click', (e) => {
-        e.stopPropagation();
-        closeAllProjectDropdowns();
-        createProject();
-      });
-    }
   }
 
   function bindProjectMenuIDE() {
@@ -5677,11 +6279,149 @@
     }
   }
 
+  function bindCodeToolbarActions() {
+    const backBtn = $('#codeBackBtn');
+    if (backBtn) {
+      backBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        exitCodeWorkspace();
+      });
+    }
+    const deleteBtn = $('#codeDeleteBtn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteActive();
+      });
+    }
+
+    // Title input keyup / input auto-saving
+    const titleInput = $('#titleInput');
+    if (titleInput) {
+      titleInput.addEventListener('input', () => {
+        const note = getActive();
+        if (note) {
+          note.title = titleInput.value;
+          queueSave(note);
+        }
+      });
+    }
+  }
+
+  function renderCodeSidebar() {
+    const list = $('#codeSnippetsList');
+    if (!list) return;
+    if (codes.length === 0) {
+      list.innerHTML = '<div style="padding:8px 9px; font-size:12px; color:var(--ink-faint);">No code snippets yet</div>';
+      return;
+    }
+    list.innerHTML = codes.map(c => `
+      <div class="project-explorer-item ${c.id === activeId ? 'active' : ''}" data-id="${c.id}" style="display:flex; align-items:center; justify-content:space-between; padding:6px 9px; border-radius:6px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span style="font-size:12.5px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color: ${c.id === activeId ? 'var(--accent)' : 'var(--ink)'};">${escapeHtml(c.title || 'Untitled Snippet')}</span>
+        </div>
+        <button class="project-explorer-item-delete" data-action="delete" style="border:none; background:transparent; cursor:pointer; opacity:0.6; display:flex; align-items:center; padding:2px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('.project-explorer-item').forEach(itemEl => {
+      itemEl.addEventListener('click', (e) => {
+        const deleteBtn = e.target.closest('.project-explorer-item-delete');
+        const id = itemEl.getAttribute('data-id');
+        if (deleteBtn) {
+          e.stopPropagation();
+          const targetCode = codes.find(c => c.id === id);
+          if (targetCode) {
+            if (confirm(`Are you sure you want to delete "${targetCode.title || 'Untitled Snippet'}"?`)) {
+              deleteCode(id);
+            }
+          }
+          return;
+        }
+        openCodeWorkspace(id);
+      });
+    });
+
+    const newBtn = $('#codeExplorerNewBtn');
+    if (newBtn) {
+      newBtn.onclick = (e) => {
+        e.stopPropagation();
+        createCode();
+      };
+    }
+
+    // Set up dragging sidebar resizer for Code Workspace
+    const divider = $('#codeSidebarDivider');
+    const sidebar = document.querySelector('.code-explorer');
+    if (divider && sidebar) {
+      divider.onmousedown = (e) => {
+        e.preventDefault();
+        const startX = e.clientX;
+        const startWidth = sidebar.getBoundingClientRect().width;
+        
+        function doDrag(ev) {
+          const newWidth = startWidth + (ev.clientX - startX);
+          if (newWidth >= 160 && newWidth <= 450) {
+            sidebar.style.width = `${newWidth}px`;
+            if (monacoEditorInstance) monacoEditorInstance.layout();
+          }
+        }
+        function stopDrag() {
+          document.removeEventListener('mousemove', doDrag);
+          document.removeEventListener('mouseup', stopDrag);
+        }
+        document.addEventListener('mousemove', doDrag);
+        document.addEventListener('mouseup', stopDrag);
+      };
+    }
+  }
+
+  async function deleteCode(id) {
+    codes = codes.filter(c => c.id !== id);
+    await deleteCodeStorage(id);
+    await persistCodeIndex();
+    if (activeId === id) {
+      activeId = codes.length > 0 ? codes[0].id : null;
+    }
+    persistAppState();
+    renderSidebar();
+    renderEditor();
+  }
+
   function bindProjectImportActions() {
     const importBtn = document.getElementById('projectImportBtn');
     const importMenu = document.getElementById('projectImportMenu');
     const filesItem = document.getElementById('importFilesItem');
     const folderItem = document.getElementById('importFolderItem');
+    const fileInput = document.getElementById('projectImportFileInput');
+    const folderInput = document.getElementById('projectImportFolderInput');
+
+    if (fileInput) {
+      fileInput.onchange = (e) => {
+        const files = e.target.files;
+        if (files && files.length) {
+          importFilesToWorkspace(files);
+        }
+        setTimeout(() => {
+          fileInput.value = '';
+        }, 0);
+      };
+    }
+
+    if (folderInput) {
+      folderInput.onchange = (e) => {
+        const files = e.target.files;
+        if (files && files.length) {
+          importFilesToWorkspace(files);
+        }
+        setTimeout(() => {
+          folderInput.value = '';
+        }, 0);
+      };
+    }
 
     if (importBtn && importMenu) {
       importBtn.addEventListener('click', (e) => {
@@ -5696,14 +6436,16 @@
       filesItem.addEventListener('click', (e) => {
         e.stopPropagation();
         if (importMenu) importMenu.classList.remove('open');
-        triggerFileImport();
+        if (fileInput) fileInput.click();
+        else if (typeof window.triggerFileImport === 'function') window.triggerFileImport();
       });
     }
     if (folderItem) {
       folderItem.addEventListener('click', (e) => {
         e.stopPropagation();
         if (importMenu) importMenu.classList.remove('open');
-        triggerFolderImport();
+        if (folderInput) folderInput.click();
+        else if (typeof window.triggerFolderImport === 'function') window.triggerFolderImport();
       });
     }
   }
@@ -5711,12 +6453,12 @@
   function renderProjectDropdown(dropdownListId = 'projectDropdownList') {
     const list = $('#' + dropdownListId);
     if (!list) return;
-    const projects = notes.filter(n => n.type === 'project');
-    if (projects.length === 0) {
+    const projectsList = projects;
+    if (projectsList.length === 0) {
       list.innerHTML = '<div style="padding:8px 9px; font-size:12px; color:var(--ink-faint);">No projects yet</div>';
       return;
     }
-    list.innerHTML = projects.map(p => `
+    list.innerHTML = projectsList.map(p => `
       <button data-id="${p.id}" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:${p.id === activeId ? 'var(--accent-soft)' : 'transparent'}; color:${p.id === activeId ? 'var(--accent)' : 'var(--ink)'}; font-size:12.5px; font-weight:500; cursor:pointer;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(p.title || 'Untitled Project')}</span>
@@ -5754,7 +6496,7 @@
     menuBtnIDE.classList.add('on');
   }
 
-  function closeAllProjectDropdowns() {
+  function closeAllDropdowns() {
     const dropdown = $('#projectDropdown');
     const menuBtn = $('#projectMenuBtn');
     if (dropdown && menuBtn) {
@@ -5767,9 +6509,19 @@
       dropdownIDE.style.display = 'none';
       menuBtnIDE.classList.remove('on');
     }
+    const dropdownCode = $('#codeDropdown');
+    const menuBtnCode = $('#codeMenuBtn');
+    if (dropdownCode && menuBtnCode) {
+      dropdownCode.style.display = 'none';
+      menuBtnCode.classList.remove('on');
+    }
   }
 
-  document.addEventListener('click', closeAllProjectDropdowns);
+  function closeAllProjectDropdowns() {
+    closeAllDropdowns();
+  }
+
+  document.addEventListener('click', closeAllDropdowns);
 
   $('#importBtn').addEventListener('click', () => $('#importFileInput').click());
   $('#importFileInput').addEventListener('change', (e) => {
