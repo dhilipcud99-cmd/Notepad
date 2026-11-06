@@ -4,7 +4,8 @@
   "description": "Backend execution server for Notepad compiled languages support",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node tests/github-pages-smoke-test.js && node tests/tamil-explainer-test.js"
   },
   "dependencies": {
     "express": "^4.19.2",

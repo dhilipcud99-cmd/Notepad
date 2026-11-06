@@ -1894,6 +1894,184 @@
     }
   }
 
+  /* ---------- Tamil Code Explainer (நிரல் விளக்கம்) Styles ---------- */
+  .tamil-explainer-dialog {
+    max-width: 920px;
+    height: 85vh;
+  }
+  .tamil-explainer-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+    gap: 16px;
+    background: var(--bg);
+  }
+  .tamil-explainer-summary-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tamil-explainer-purpose-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .tamil-explainer-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tamil-explainer-category-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .tamil-explainer-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .tamil-explainer-stats-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border);
+  }
+  .tamil-explainer-stat-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border);
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .tamil-explainer-stat-pill b {
+    color: var(--ink);
+  }
+  .tamil-explainer-lines-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    padding: 4px 2px;
+  }
+  .tamil-explainer-lines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tamil-explainer-line-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .tamil-explainer-line-card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow);
+  }
+  .tamil-explainer-line-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border);
+    font-size: 11.5px;
+  }
+  .tamil-explainer-line-num {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-faint);
+  }
+  .tamil-explainer-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .tamil-explainer-badge.badge-function { background: #e0f2fe; color: #0284c7; }
+  .tamil-explainer-badge.badge-loop { background: #fef3c7; color: #d97706; }
+  .tamil-explainer-badge.badge-condition { background: #fce7f3; color: #db2777; }
+  .tamil-explainer-badge.badge-variable { background: #ecfdf5; color: #059669; }
+  .tamil-explainer-badge.badge-output { background: #f3e8ff; color: #9333ea; }
+  .tamil-explainer-badge.badge-return { background: #ffedd5; color: #ea580c; }
+  .tamil-explainer-badge.badge-input { background: #cffafe; color: #0891b2; }
+  .tamil-explainer-badge.badge-array { background: #fef9c3; color: #a16207; }
+  .tamil-explainer-badge.badge-comment { background: #f1f5f9; color: #64748b; }
+  .tamil-explainer-badge.badge-statement { background: var(--bg-sidebar); color: var(--ink-faint); }
+  .tamil-explainer-badge.badge-operation { background: #fef3c7; color: #b45309; }
+  .tamil-explainer-badge.badge-call { background: #e0e7ff; color: #4338ca; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-function { background: #082f49; color: #38bdf8; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-loop { background: #451a03; color: #fbbf24; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-condition { background: #500724; color: #f472b6; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-variable { background: #022c22; color: #34d399; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-output { background: #3b0764; color: #c084fc; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-return { background: #431407; color: #fb923c; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-input { background: #164e63; color: #22d3ee; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-array { background: #422006; color: #fde047; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-comment { background: #1e293b; color: #94a3b8; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-statement { background: var(--bg-sidebar); color: var(--ink-faint); }
+  [data-theme="dark"] .tamil-explainer-badge.badge-operation { background: #451a03; color: #fde68a; }
+  [data-theme="dark"] .tamil-explainer-badge.badge-call { background: #1e1b4b; color: #a5b4fc; }
+  .tamil-explainer-line-content {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tamil-explainer-code-snippet {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--bg);
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    word-break: break-all;
+  }
+  .tamil-explainer-explanation-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .tamil-explainer-explanation-text code {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 11.5px;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
 
 
 </style>
@@ -2064,6 +2242,7 @@
         <button class="tamil-mode-tab" data-mode="js-to-tamil">JavaScript ➔ தமிழ்</button>
         <button class="tamil-mode-tab" data-mode="tamil-to-py">தமிழ் ➔ Python</button>
         <button class="tamil-mode-tab" data-mode="py-to-tamil">Python ➔ தமிழ்</button>
+        <button class="tamil-mode-tab" id="tamilOpenExplainerTabBtn" title="Explain code in Tamil (தமிழில் நிரல் விளக்கம்)">💡 நிரல் விளக்கம்</button>
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
         <select class="ide-select" id="tamilExampleSelect" title="Load Example" style="padding:4px 8px; font-size:11.5px;">
@@ -2131,6 +2310,53 @@
           <div class="tamil-kw-item"><code>உள்ளிடு</code> <span>➔ prompt / input</span></div>
         </div>
       </details>
+    </div>
+  </div>
+</div>
+
+<!-- தமிழ் நிரல் விளக்கம் (Code Explanation in Tamil) Modal -->
+<div class="tamil-modal-backdrop" id="tamilExplainerModal" style="display:none;">
+  <div class="tamil-modal-dialog tamil-explainer-dialog">
+    <div class="tamil-modal-header">
+      <div class="tamil-modal-title-wrap">
+        <div class="tamil-modal-icon" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">வி</div>
+        <div>
+          <h3 class="tamil-modal-title">தமிழ் நிரல் விளக்கம் (Code Explanation)</h3>
+          <span class="tamil-modal-sub">Line-by-line breakdown, concepts & purpose in clear Tamil</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="tamil-small-btn" id="tamilExplainerSpeechBtn" title="தமிழில் வாசித்துக் காட்டு (Read Aloud)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <span id="tamilSpeechBtnText">வாசி (Listen)</span>
+        </button>
+        <button class="tamil-small-btn" id="tamilExplainerCopyBtn" title="விளக்கத்தை நகலெடு (Copy Markdown)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span>Copy</span>
+        </button>
+        <button class="tamil-small-btn primary" id="tamilExplainerInsertBtn" title="குறிப்பில் சேர்க்க (Insert as Companion Note)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Insert into Note</span>
+        </button>
+        <button class="icon-btn" id="tamilExplainerCloseBtn" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="tamil-explainer-body" id="tamilExplainerBody">
+      <div class="tamil-explainer-summary-card" id="tamilExplainerSummary">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="tamil-explainer-lines-header">
+        <span>வரிவரியான விளக்கம் (Line-by-Line Breakdown)</span>
+        <span id="tamilExplainerLineCount" style="font-size:11px; color:var(--ink-faint);"></span>
+      </div>
+
+      <div class="tamil-explainer-lines-list" id="tamilExplainerLinesList">
+        <!-- Rows rendered dynamically -->
+      </div>
     </div>
   </div>
 </div>
@@ -2284,12 +2510,19 @@
   // ==========================================
 
   function tokenizeCode(code) {
+    // Sanitize curly quotes & special zero-width/NBSP characters to avoid "Invalid or unexpected token"
+    const normalized = (code || '')
+      .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
+      .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
+      .replace(/[\u2013\u2014]/g, '-')
+      .replace(/[\u00A0\u200B\uFEFF]/g, ' ');
+
     const placeholderPrefix = `__TAMIL_TOKEN_${Date.now()}_`;
     let tokenIndex = 0;
     const tokenMap = {};
     const tokenRegex = /(\/\*[\s\S]*?\*\/)|(\/\/[^\n]*)|(#[^\n]*)|(`(?:\\`|[^`])*`)|("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/g;
 
-    const codeWithoutLiterals = code.replace(tokenRegex, (match) => {
+    const codeWithoutLiterals = normalized.replace(tokenRegex, (match) => {
       const id = `${placeholderPrefix}${tokenIndex++}__`;
       tokenMap[id] = match;
       return id;
@@ -2771,29 +3004,7 @@
     const frame = document.getElementById('idePreviewFrame');
     if (!frame) return;
     
-    const consoleScript = `
-      <script>
-        (function(){
-          function send(type, args){
-            try{
-              var msg = Array.prototype.map.call(args, function(a){
-                try {
-                  if (a === undefined) return 'undefined';
-                  if (a === null) return 'null';
-                  return typeof a === 'object' ? JSON.stringify(a) : String(a);
-                } catch(e) { return String(a); }
-              }).join(' ');
-              window.parent.postMessage({type: 'js-console', logType: type, message: msg}, '*');
-            }catch(e){}
-          }
-          window.console.log = function(){ send('log', arguments); };
-          window.console.error = function(){ send('error', arguments); };
-          window.console.warn = function(){ send('warn', arguments); };
-          window.console.info = function(){ send('info', arguments); };
-          window.onerror = function(msg, url, line){ send('error', [msg + " (line " + line + ")"]); return true; };
-        })();
-      <\/script>
-    `;
+    const consoleScript = `<script>(function(){function send(type,args){try{var msg=Array.prototype.map.call(args,function(a){try{if(a===undefined)return'undefined';if(a===null)return'null';return typeof a==='object'?JSON.stringify(a):String(a);}catch(e){return String(a);}}).join(' ');window.parent.postMessage({type:'js-console',logType:type,message:msg},'*');}catch(e){}}window.console.log=function(){send('log',arguments);};window.console.error=function(){send('error',arguments);};window.console.warn=function(){send('warn',arguments);};window.console.info=function(){send('info',arguments);};window.onerror=function(msg,url,line){send('error',[msg+(line?" (line "+line+")":"")]);return true;};})();<\/script>`;
     
     let htmlContent = code;
     const isFullDoc = /^<!DOCTYPE|<html[\s>]/i.test(code.trim());
@@ -2981,11 +3192,21 @@
       runnerFrame.style.display = 'none';
       document.body.appendChild(runnerFrame);
 
-      let executableCode = code;
-      if (language === 'tamil') {
+      // Pre-sanitize curly quotes, smart dashes, and invisible spaces
+      let executableCode = (code || '')
+        .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
+        .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
+        .replace(/[\u2013\u2014]/g, '-')
+        .replace(/[\u00A0\u200B\uFEFF]/g, ' ');
+
+      // Auto-detect Tamil keywords even if language was set to 'javascript'
+      const hasTamilKeywords = /[\u0B80-\u0BFF]/.test(executableCode) &&
+        /(?:மாறி|நிலைமாறி|மாறிலி|செயல்பாடு|நிரல்பாகம்|செய்|ஒருவேளை|இல்லையென்றால்|இல்லையெனில்|ஆக|வரை|நிறுத்து|தொடர்|திருப்பு)/u.test(executableCode);
+
+      if (language === 'tamil' || (language === 'javascript' && hasTamilKeywords)) {
         appendConsoleLog('தமிழ் நிரல் மொழிபெயர்க்கப்படுகிறது... (Translating Tamil to JavaScript...)', 'info');
         try {
-          executableCode = tamilToJs(code);
+          executableCode = tamilToJs(executableCode);
         } catch(err) {
           appendConsoleLog('மொழிபெயர்ப்பு பிழை (Translation Error): ' + err.message, 'error');
           updateConsoleStatus('Translation Error', true);
@@ -2994,41 +3215,9 @@
         }
       }
       
-      const consoleScript = `
-        <script>
-          (function(){
-            function send(type, args){
-              try{
-                var msg = Array.prototype.map.call(args, function(a){
-                  try {
-                    if (a === undefined) return 'undefined';
-                    if (a === null) return 'null';
-                    return typeof a === 'object' ? JSON.stringify(a) : String(a);
-                  } catch(e) { return String(a); }
-                }).join(' ');
-                window.parent.postMessage({type: 'js-console', logType: type, message: msg}, '*');
-              }catch(e){}
-            }
-            window.console.log = function(){ send('log', arguments); };
-            window.console.error = function(){ send('error', arguments); };
-            window.console.warn = function(){ send('warn', arguments); };
-            window.console.info = function(){ send('info', arguments); };
-            window.onerror = function(msg, url, line){ send('error', [msg + " (line " + line + ")"]); return true; };
-
-            // Tamil built-in functions support
-            window.பதிப்பி = window.console.log;
-            window.எழுது = window.console.log;
-            window.அச்சிடு = window.console.log;
-            window.காட்டு = window.console.log;
-            window.எச்சரி = window.console.warn;
-            window.பிழை = window.console.error;
-            window.உள்ளிடு = window.prompt;
-            window.கணிதம் = Math;
-          })();
-        <\/script>
-      `;
+      const consoleScript = `<script>(function(){function send(type,args){try{var msg=Array.prototype.map.call(args,function(a){try{if(a===undefined)return'undefined';if(a===null)return'null';return typeof a==='object'?JSON.stringify(a):String(a);}catch(e){return String(a);}}).join(' ');window.parent.postMessage({type:'js-console',logType:type,message:msg},'*');}catch(e){}}window.console.log=function(){send('log',arguments);};window.console.error=function(){send('error',arguments);};window.console.warn=function(){send('warn',arguments);};window.console.info=function(){send('info',arguments);};window.onerror=function(msg,url,line){var l=(line&&line>1)?(line-1):line;send('error',[msg+(l?' (line '+l+')':'')]);return true;};window.பதிப்பி=window.console.log;window.எழுது=window.console.log;window.அச்சிடு=window.console.log;window.காட்டு=window.console.log;window.எச்சரி=window.console.warn;window.பிழை=window.console.error;window.உள்ளிடு=window.prompt;window.கணிதம்=Math;})();<\/script>`;
       
-      const htmlContent = `<!DOCTYPE html><html><head>${consoleScript}</head><body><script>${executableCode}<\/script></body></html>`;
+      const htmlContent = '<!DOCTYPE html><html><head>' + consoleScript + '</head><body><script>\n' + executableCode + '\n<\/script></body></html>';
       runnerFrame.srcdoc = htmlContent;
       
       setTimeout(() => {
@@ -3317,6 +3506,13 @@
     if (tamilTranslatorBtn) {
       tamilTranslatorBtn.addEventListener('click', () => {
         openTamilTranslatorModal(note);
+      });
+    }
+
+    const tamilExplainerBtn = document.getElementById('tamilExplainerBtn');
+    if (tamilExplainerBtn) {
+      tamilExplainerBtn.addEventListener('click', () => {
+        openTamilExplainerModal(note);
       });
     }
     
@@ -4193,6 +4389,10 @@
             <button class="ide-btn" id="tamilTranslatorBtn" title="Tamil Programming Language Translator (தமிழ் மொழிபெயர்ப்பாளர்)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
               <span>தமிழ் Translator</span>
+            </button>
+            <button class="ide-btn" id="tamilExplainerBtn" title="Explain Code in Tamil (தமிழில் நிரல் விளக்கம்)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color:#f97316;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <span>விளக்கம் (Explain)</span>
             </button>
             <button class="ide-btn" id="idePreviewToggleBtn" title="Toggle browser preview">
               ${ICONS.fileCode}
@@ -5633,9 +5833,590 @@
         }
       });
     }
+
+    const openExplainerTabBtn = document.getElementById('tamilOpenExplainerTabBtn');
+    if (openExplainerTabBtn) {
+      openExplainerTabBtn.addEventListener('click', () => {
+        const inputArea = document.getElementById('tamilInputArea');
+        const code = inputArea && inputArea.value.trim() ? inputArea.value : null;
+        closeTamilTranslatorModal();
+        openTamilExplainerModal(getActive(), code);
+      });
+    }
+  }
+
+  // ==========================================
+  // தமிழ் நிரல் விளக்கம் (Tamil Code Explanation Engine & Modal)
+  // ==========================================
+
+  function explainCodeLineInTamil(line, lang = 'javascript') {
+    const trimmed = line.trim();
+    if (!trimmed) return null;
+
+    // Closing brace / block end
+    if (/^[}\])]+;?$/.test(trimmed)) {
+      return {
+        type: 'block-end',
+        badge: 'முடிவு',
+        badgeClass: 'badge-statement',
+        tamil: 'முந்தைய குறியீட்டுத் தொகுதியின் (Code Block) நிறைவு / முடிவு.'
+      };
+    }
+
+    // Comments
+    if (trimmed.startsWith('//') || trimmed.startsWith('#')) {
+      const commentText = trimmed.replace(/^(\/\/|#)\s*/, '');
+      return {
+        type: 'comment',
+        badge: 'குறிப்புரை',
+        badgeClass: 'badge-comment',
+        tamil: `குறிப்புரை (Comment): "${escapeHtml(commentText)}" — இது நிரலாளரின் புரிதலுக்கான குறிப்பு, கணினியால் இயக்கப்படாது.`
+      };
+    }
+
+    // Loop: For
+    if (/(?:^|[^\p{L}\p{N}_])(?:for|ஆக|மடக்கு)\s*\(([\s\S]*?)\)/u.test(trimmed) || /^for\s+([a-zA-Z0-9_\u0B80-\u0BFF]+)\s+in\s+([^:]+):/u.test(trimmed)) {
+      const m = trimmed.match(/(?:for|ஆக|மடக்கு)\s*\(([\s\S]*?)\)/u);
+      const pyM = trimmed.match(/^for\s+([a-zA-Z0-9_\u0B80-\u0BFF]+)\s+in\s+([^:]+):/u);
+      if (m) {
+        const parts = m[1].split(';');
+        if (parts.length === 3) {
+          return {
+            type: 'loop',
+            badge: 'மடக்கு (For)',
+            badgeClass: 'badge-loop',
+            tamil: `மடக்கு (For Loop): <code>${escapeHtml(parts[0].trim())}</code> எனத் தொடங்கி, <code>${escapeHtml(parts[1].trim())}</code> வரை, ஒவ்வொரு சுழற்சியிலும் <code>${escapeHtml(parts[2].trim())}</code> என அதிகரித்துத் தொடர்ந்து இயங்கும்.`
+          };
+        }
+      } else if (pyM) {
+        return {
+          type: 'loop',
+          badge: 'மடக்கு (For)',
+          badgeClass: 'badge-loop',
+          tamil: `<code>${escapeHtml(pyM[1])}</code> என்ற மாறியில் <code>${escapeHtml(pyM[2])}</code> தொகுப்பிலுள்ள ஒவ்வொரு உறுப்பாக எடுத்து இயங்கும் பைதான் மடக்கு (For Loop).`
+        };
+      }
+      return {
+        type: 'loop',
+        badge: 'மடக்கு (For)',
+        badgeClass: 'badge-loop',
+        tamil: 'குறிப்பிட்ட எண்ணிக்கையிலான முறை தொடர்ச்சியாக மீண்டும் மீண்டும் இயங்கும் ஒரு மடக்கு (For Loop).'
+      };
+    }
+
+    // Loop: While
+    if (/(?:^|[^\p{L}\p{N}_])(?:while|வரை|இருப்பின்)\s*\(([\s\S]*?)\)/u.test(trimmed) || /^while\s+([^:]+):/u.test(trimmed)) {
+      const m = trimmed.match(/(?:while|வரை|இருப்பின்)\s*\(([\s\S]*?)\)/u) || trimmed.match(/^while\s+([^:]+):/u);
+      const cond = m ? m[1].trim() : '';
+      return {
+        type: 'loop',
+        badge: 'மடக்கு (While)',
+        badgeClass: 'badge-loop',
+        tamil: `<code>${escapeHtml(cond)}</code> என்ற நிபந்தனை உண்மையாக இருக்கும் வரை மீண்டும் மீண்டும் இயங்கும் மடக்கு (While Loop).`
+      };
+    }
+
+    // Print / Console
+    if (/(?:console\.log|print|System\.out\.println|printf|பதிப்பி|எழுது|அச்சிடு|காட்டு)\s*\(/.test(trimmed)) {
+      const m = trimmed.match(/(?:console\.log|print|System\.out\.println|printf|பதிப்பி|எழுது|அச்சிடு|காட்டு)\s*\(([\s\S]*?)\);?$/);
+      const arg = m ? m[1].trim() : '';
+      return {
+        type: 'output',
+        badge: 'வெளியீடு (Print)',
+        badgeClass: 'badge-output',
+        tamil: arg ? `<code>${escapeHtml(arg)}</code> என்ற தகவலை / கணக்கீட்டு மதிப்பை முனையத்தில் (Console Output) அச்சிடுகிறது.` : 'வெற்று வரியை அல்லது தகவலை முனையத்தில் அச்சிடுகிறது.'
+      };
+    }
+
+    // Return statement
+    if (/(?:^|[^\p{L}\p{N}_])(?:return|திருப்பு|பின்கொடு)(?:[^\p{L}\p{N}_]|$)/u.test(trimmed)) {
+      const m = trimmed.match(/(?:return|திருப்பு|பின்கொடு)\s*([^;{}]*)[;}]?/u);
+      const val = m && m[1].trim() ? m[1].trim() : '';
+      return {
+        type: 'return',
+        badge: 'வெளியீடு (Return)',
+        badgeClass: 'badge-return',
+        tamil: val ? `<code>${escapeHtml(val)}</code> என்ற கணக்கீட்டு மதிப்பை இந்தச் செயல்பாட்டின் வெளியீடாகத் திருப்பி அனுப்புகிறது (Return value).` : 'செயல்பாட்டை உடனடியாக முடித்து வெளியேறுகிறது.'
+      };
+    }
+
+    // Function definition
+    if (/(?:function|def|செயல்பாடு|நிரல்பாகம்|செய்)\s+([a-zA-Z0-9_\u0B80-\u0BFF]+)\s*\(([^)]*)\)/u.test(trimmed)) {
+      const m = trimmed.match(/(?:function|def|செயல்பாடு|நிரல்பாகம்|செய்)\s+([a-zA-Z0-9_\u0B80-\u0BFF]+)\s*\(([^)]*)\)/u);
+      const fnName = m ? m[1] : '';
+      const params = m && m[2].trim() ? m[2].trim() : 'உள்ளீடு ஏதுமில்லை';
+      return {
+        type: 'function',
+        badge: 'செயல்பாடு (Function)',
+        badgeClass: 'badge-function',
+        tamil: `<code>${fnName}</code> என்ற புதிய செயல்பாட்டை (Function) <code>${escapeHtml(params)}</code> என்ற அளபுருக்களுடன் (Parameters) வரையறுக்கிறது.`
+      };
+    }
+
+    // If condition
+    if (/(?:^|[^\p{L}\p{N}_])(?:if|ஒருவேளை|ஆனால்|எனில்)\s*\(([\s\S]*?)\)/u.test(trimmed) || /^if\s+([^:]+):/u.test(trimmed)) {
+      const m = trimmed.match(/(?:if|ஒருவேளை|ஆனால்|எனில்)\s*\(([\s\S]*?)\)/u) || trimmed.match(/^if\s+([^:]+):/u);
+      const cond = m ? m[1].trim() : '';
+      
+      if (/continue;?$/u.test(trimmed)) {
+        return {
+          type: 'condition',
+          badge: 'நிபந்தனை + தொடர்',
+          badgeClass: 'badge-condition',
+          tamil: `<code>${escapeHtml(cond)}</code> உண்மையானால், தற்போதைய சுழற்சியைத் தவிர்த்து அடுத்த சுழற்சிக்குச் செல்கிறது (Continue).`
+        };
+      }
+      if (/break;?$/u.test(trimmed)) {
+        return {
+          type: 'condition',
+          badge: 'நிபந்தனை + நிறுத்து',
+          badgeClass: 'badge-condition',
+          tamil: `<code>${escapeHtml(cond)}</code> உண்மையானால், மடக்கை (Loop) உடனடியாக நிறுத்தி வெளியேறுகிறது (Break).`
+        };
+      }
+      if (/return\s*([^;{}]*);?$/u.test(trimmed)) {
+        const retM = trimmed.match(/return\s*([^;{}]*);?$/u);
+        return {
+          type: 'condition',
+          badge: 'நிபந்தனை + திரும்பு',
+          badgeClass: 'badge-condition',
+          tamil: `<code>${escapeHtml(cond)}</code> உண்மையானால், <code>${escapeHtml(retM[1].trim())}</code> மதிப்பைத் திருப்பி அனுப்புகிறது (Return).`
+        };
+      }
+
+      return {
+        type: 'condition',
+        badge: 'நிபந்தனை (If)',
+        badgeClass: 'badge-condition',
+        tamil: `<code>${escapeHtml(cond)}</code> என்ற நிபந்தனை உண்மையா (True) எனச் சோதிக்கிறது; உண்மையெனில் அடுத்த வரிகள் இயங்கும்.`
+      };
+    }
+
+    // Else if condition
+    if (/(?:else\s+if|elif|இல்லையென்றால்|இல்லைஆனால்)\s*\(([\s\S]*?)\)/u.test(trimmed) || /^elif\s+([^:]+):/u.test(trimmed)) {
+      const m = trimmed.match(/(?:else\s+if|elif|இல்லையென்றால்|இல்லைஆனால்)\s*\(([\s\S]*?)\)/u) || trimmed.match(/^elif\s+([^:]+):/u);
+      const cond = m ? m[1].trim() : '';
+      return {
+        type: 'condition',
+        badge: 'மாற்று நிபந்தனை (Else If)',
+        badgeClass: 'badge-condition',
+        tamil: `முந்தைய நிபந்தனை பொய்யானால், <code>${escapeHtml(cond)}</code> என்ற மாற்று நிபந்தனை உண்மையா எனச் சோதிக்கிறது.`
+      };
+    }
+
+    // Else
+    if (/^(?:\}?\s*else\b|\}?\s*இல்லையெனில்|\}?\s*இல்லை|else:)/u.test(trimmed)) {
+      return {
+        type: 'condition',
+        badge: 'மாற்று வழி (Else)',
+        badgeClass: 'badge-condition',
+        tamil: 'முந்தைய நிபந்தனைகள் அனைத்தும் பொய்யானால், இந்த மாற்றுப் பகுதி (Else Block) இயங்கும்.'
+      };
+    }
+
+    // Loop control: break / continue
+    if (/^(?:break|நிறுத்து)[;]?$/u.test(trimmed)) {
+      return {
+        type: 'loop-control',
+        badge: 'மடக்கு நிறுத்தம்',
+        badgeClass: 'badge-statement',
+        tamil: 'மடக்கை (Loop) உடனடியாக நிறுத்திவிட்டு வெளியேறுகிறது (Break).'
+      };
+    }
+    if (/^(?:continue|தொடர்)[;]?$/u.test(trimmed)) {
+      return {
+        type: 'loop-control',
+        badge: 'அடுத்த சுழற்சி',
+        badgeClass: 'badge-statement',
+        tamil: 'தற்போதைய சுழற்சியைத் தவிர்த்து, அடுத்த சுழற்சிக்கு உடனடியாகச் செல்கிறது (Continue).'
+      };
+    }
+
+    // Array push / pop
+    if (/^([a-zA-Z0-9_\u0B80-\u0BFF]+)\.push\((.*?)\);?$/u.test(trimmed)) {
+      const m = trimmed.match(/^([a-zA-Z0-9_\u0B80-\u0BFF]+)\.push\((.*?)\);?$/u);
+      return {
+        type: 'array',
+        badge: 'அணிச் சேர்க்கை (Push)',
+        badgeClass: 'badge-array',
+        tamil: `<code>${m[1]}</code> என்ற அணியின் (Array) இறுதியில் <code>${escapeHtml(m[2].trim())}</code> என்ற புதிய உறுப்பைச் சேர்க்கிறது.`
+      };
+    }
+
+    // Variable declaration
+    if (/(?:let|var|const|மாறி|நிலைமாறி|மாறிலி|int|float|double|String)\s+([a-zA-Z0-9_\u0B80-\u0BFF]+)\s*=\s*([^;]+);?/u.test(trimmed)) {
+      const m = trimmed.match(/(?:let|var|const|மாறி|நிலைமாறி|மாறிலி|int|float|double|String)\s+([a-zA-Z0-9_\u0B80-\u0BFF]+)\s*=\s*([^;]+);?/u);
+      const varName = m ? m[1] : 'மாறி';
+      const val = m ? m[2].trim() : '';
+      const isConst = /(?:const|நிலைமாறி|மாறிலி)/u.test(trimmed);
+
+      if (/(?:prompt|input|உள்ளிடு)\s*\(/.test(val)) {
+        return {
+          type: 'input',
+          badge: 'பயனர் உள்ளீடு',
+          badgeClass: 'badge-input',
+          tamil: `பயனரிடம் உள்ளீட்டைக் கேட்டுப் பெற்று, அதனை <code>${varName}</code> என்ற மாறியில் இருத்துகிறது.`
+        };
+      }
+
+      if (/^\([^)]*\)\s*=>/u.test(val) || /^[a-zA-Z0-9_]+\s*=>/u.test(val)) {
+        return {
+          type: 'function',
+          badge: 'அம்புச் செயல்பாடு',
+          badgeClass: 'badge-function',
+          tamil: `<code>${varName}</code> என்ற மாறியில் <code>${escapeHtml(val)}</code> என்ற புதிய அம்புச் செயல்பாட்டை (Arrow Function) உருவாக்குகிறது.`
+        };
+      }
+
+      return {
+        type: 'variable',
+        badge: isConst ? 'நிலைமாறி (Const)' : 'மாறி (Variable)',
+        badgeClass: 'badge-variable',
+        tamil: isConst
+          ? `<code>${varName}</code> என்ற மாற்ற முடியாத நிலையான மாறியில் (Constant) <code>${escapeHtml(val)}</code> என்ற மதிப்பை இருத்துகிறது.`
+          : `<code>${varName}</code> என்ற புதிய மாறியை (Variable) உருவாக்கி, அதில் <code>${escapeHtml(val)}</code> என்ற தொடக்க மதிப்பை இருத்துகிறது.`
+      };
+    }
+
+    // Function Call (standalone)
+    if (/^([a-zA-Z0-9_\u0B80-\u0BFF]+)\s*\(([^)]*)\);?$/u.test(trimmed)) {
+      const m = trimmed.match(/^([a-zA-Z0-9_\u0B80-\u0BFF]+)\s*\(([^)]*)\);?$/u);
+      const fn = m ? m[1] : '';
+      const args = m && m[2].trim() ? m[2].trim() : '';
+      return {
+        type: 'call',
+        badge: 'செயல்பாடு அழைப்பு',
+        badgeClass: 'badge-call',
+        tamil: args
+          ? `<code>${fn}</code> என்ற செயல்பாட்டை <code>${escapeHtml(args)}</code> என்ற உள்ளீடுகளுடன் அழைக்கிறது (Call/Execute).`
+          : `<code>${fn}</code> என்ற செயல்பாட்டை அழைக்கிறது.`
+      };
+    }
+
+    // Variable assignment / modification
+    if (/^([a-zA-Z0-9_\u0B80-\u0BFF]+)\s*(\+\+|--|\+=|-=|\*=|\/=|%=|=)\s*([^;]*);?$/u.test(trimmed)) {
+      const m = trimmed.match(/^([a-zA-Z0-9_\u0B80-\u0BFF]+)\s*(\+\+|--|\+=|-=|\*=|\/=|%=|=)\s*([^;]*);?$/u);
+      const varName = m ? m[1] : '';
+      const op = m ? m[2] : '';
+      const val = m && m[3] ? m[3].trim() : '';
+
+      if (op === '++') return { type: 'operation', badge: 'மதிப்பு உயர்வு', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியின் மதிப்பை 1 அதிகரிக்கிறது (Increment).` };
+      if (op === '--') return { type: 'operation', badge: 'மதிப்பு குறைவு', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியின் மதிப்பை 1 குறைக்கிறது (Decrement).` };
+      if (op === '+=') return { type: 'operation', badge: 'கூட்டுதல்', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியில் <code>${escapeHtml(val)}</code> மதிப்பைக் கூட்டிப் புதுப்பிக்கிறது.` };
+      if (op === '-=') return { type: 'operation', badge: 'கழித்தல்', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியில் இருந்து <code>${escapeHtml(val)}</code> மதிப்பைக் கழிக்கிறது.` };
+      if (op === '*=') return { type: 'operation', badge: 'பெருக்கல்', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியை <code>${escapeHtml(val)}</code> மதிப்பால் பெருக்குகிறது.` };
+      if (op === '=') return { type: 'operation', badge: 'மதிப்பிருத்தல்', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியில் <code>${escapeHtml(val)}</code> என்ற புதிய மதிப்பை இருத்துகிறது.` };
+    }
+
+    return {
+      type: 'statement',
+      badge: 'கூற்று',
+      badgeClass: 'badge-statement',
+      tamil: `<code>${escapeHtml(trimmed)}</code> என்ற கட்டளையை அல்லது கூற்றை இயக்குகிறது.`
+    };
+  }
+
+  function detectProgramPurposeInTamil(code) {
+    const c = code.toLowerCase();
+    
+    if ((c.includes('காரணியியல்') || c.includes('factorial')) && (c.includes('*') || c.includes('திருப்பு') || c.includes('return'))) {
+      return {
+        title: 'காரணியியல் கணக்கீடு (Factorial Program)',
+        desc: 'இந்த நிரல் கொடுக்கப்பட்ட ஓர் முழு எண்ணின் காரணியியலை (Factorial - n!) சுழல்முறை (Recursion) அல்லது மடக்கு வழியாகக் கணக்கிடுகிறது.',
+        category: 'கணிதம் & சுழல்முறை'
+      };
+    }
+
+    if (c.includes('fibonacci') || c.includes('ஃபிபோனாச்சி') || (c.includes('அ + ஆ') || c.includes('a + b'))) {
+      return {
+        title: 'ஃபிபோனாச்சி எண் வரிசை (Fibonacci Series)',
+        desc: 'இந்த நிரல் முந்தைய இரு எண்களின் கூட்டுத்தொகையைக் கொண்டு அடுத்தடுத்த எண்களை உருவாக்கும் ஃபிபோனாச்சி வரிசையைக் கணக்கிட்டு அச்சிடுகிறது.',
+        category: 'எண் வரிசை & மடக்குகள்'
+      };
+    }
+
+    if ((c.includes('% 2') || c.includes('இரட்டை') || c.includes('ஒற்றை')) && (c.includes('even') || c.includes('odd') || c.includes('ஒருவேளை') || c.includes('if'))) {
+      return {
+        title: 'இரட்டை / ஒற்றை எண் சரிபார்த்தல் (Even or Odd Check)',
+        desc: 'ஒரு குறிப்பிட்ட எண்ணை 2-ஆல் வகுத்து மீதி 0 வருகிறதா எனச் சரிபார்த்து, அது இரட்டை எண்ணா அல்லது ஒற்றை எண்ணா என வகைப்படுத்துகிறது.',
+        category: 'நிபந்தனைக் கட்டுப்பாடுகள்'
+      };
+    }
+
+    if (c.includes('கூட்டுத்தொகை') || (c.includes('sum') && (c.includes('+=') || c.includes('+')))) {
+      return {
+        title: 'எண்களின் கூட்டுத்தொகை (Sum Accumulator)',
+        desc: 'ஒரு தொடக்க மதிப்பிலிருந்து முடிவு மதிப்பு வரையிலான அனைத்து எண்களையும் ஒன்றன்பின் ஒன்றாகக் கூட்டி மொத்த மதிப்பைக் கணக்கிடுகிறது.',
+        category: 'கூட்டல் & மடக்குகள்'
+      };
+    }
+
+    if (c.includes('வணக்கம் உலகம்') || c.includes('hello world') || (code.trim().split('\n').length <= 3 && (c.includes('print') || c.includes('console.log') || c.includes('பதிப்பி')))) {
+      return {
+        title: 'தொடக்க நிரல் (Hello World Program)',
+        desc: 'நிரலாக்க மொழியின் அடிப்படைக் கட்டமைப்பைப் புரிந்து கொள்ள திரையில் ஒரு வாழ்த்துச் செய்தியை அச்சிடும் எளிய தொடக்க நிரல்.',
+        category: 'அடிப்படை வெளியீடு'
+      };
+    }
+
+    return {
+      title: 'விருப்ப நிரல் / வழிமுறை (Custom Algorithm)',
+      desc: 'மாறிகள், கணக்கீடுகள் மற்றும் கட்டுப்பாட்டு அமைப்புகளைக் கொண்டு குறிப்பிட்ட ஒரு பணியை நிறைவேற்றும் நிரல்.',
+      category: 'பொது நிரலாக்கம்'
+    };
+  }
+
+  let currentExplainerData = null;
+  let isExplainerSpeaking = false;
+
+  function openTamilExplainerModal(note, overrideCode) {
+    const modal = document.getElementById('tamilExplainerModal');
+    if (!modal) return;
+
+    let code = overrideCode || (monacoEditorInstance ? monacoEditorInstance.getValue() : (note ? note.content : ''));
+    if (!code || !code.trim()) {
+      code = TAMIL_SAMPLE_PROGRAMS.factorial;
+    }
+
+    const language = (note && note.language) ? note.language : 'javascript';
+    const purpose = detectProgramPurposeInTamil(code);
+    const rawLines = code.split('\n');
+
+    const linesData = [];
+    let varCount = 0;
+    let fnCount = 0;
+    let loopCount = 0;
+    let condCount = 0;
+    let printCount = 0;
+
+    rawLines.forEach((l, idx) => {
+      const expl = explainCodeLineInTamil(l, language);
+      if (expl) {
+        linesData.push({
+          lineNum: idx + 1,
+          code: l.trim(),
+          ...expl
+        });
+        if (expl.type === 'variable') varCount++;
+        if (expl.type === 'function') fnCount++;
+        if (expl.type === 'loop') loopCount++;
+        if (expl.type === 'condition') condCount++;
+        if (expl.type === 'output') printCount++;
+      }
+    });
+
+    currentExplainerData = {
+      code,
+      language,
+      purpose,
+      linesData,
+      stats: {
+        totalLines: rawLines.length,
+        codeLines: linesData.length,
+        varCount,
+        fnCount,
+        loopCount,
+        condCount,
+        printCount
+      }
+    };
+
+    // Render Summary Card
+    const summaryEl = document.getElementById('tamilExplainerSummary');
+    if (summaryEl) {
+      summaryEl.innerHTML = `
+        <div class="tamil-explainer-purpose-header">
+          <h4 class="tamil-explainer-title">
+            <span>🎯</span> ${purpose.title}
+          </h4>
+          <span class="tamil-explainer-category-badge">${purpose.category}</span>
+        </div>
+        <p class="tamil-explainer-desc">${purpose.desc}</p>
+        <div class="tamil-explainer-stats-row">
+          <div class="tamil-explainer-stat-pill">வரிகள்: <b>${rawLines.length}</b></div>
+          <div class="tamil-explainer-stat-pill">மாறிகள்: <b>${varCount}</b></div>
+          <div class="tamil-explainer-stat-pill">செயல்பாடுகள்: <b>${fnCount}</b></div>
+          <div class="tamil-explainer-stat-pill">மடக்குகள்: <b>${loopCount}</b></div>
+          <div class="tamil-explainer-stat-pill">நிபந்தனைகள்: <b>${condCount}</b></div>
+          <div class="tamil-explainer-stat-pill">வெளியீடுகள்: <b>${printCount}</b></div>
+        </div>
+      `;
+    }
+
+    // Render Lines List
+    const lineCountEl = document.getElementById('tamilExplainerLineCount');
+    if (lineCountEl) {
+      lineCountEl.textContent = `${linesData.length} செயல்பாட்டு வரிகள் பகுப்பாய்வு செய்யப்பட்டன`;
+    }
+
+    const linesListEl = document.getElementById('tamilExplainerLinesList');
+    if (linesListEl) {
+      if (linesData.length === 0) {
+        linesListEl.innerHTML = '<div style="padding:20px; text-align:center; color:var(--ink-faint);">பகுப்பாய்வு செய்ய வரிகள் ஏதுமில்லை.</div>';
+      } else {
+        linesListEl.innerHTML = linesData.map(item => `
+          <div class="tamil-explainer-line-card">
+            <div class="tamil-explainer-line-top">
+              <span class="tamil-explainer-line-num">வரி ${item.lineNum}</span>
+              <span class="tamil-explainer-badge ${item.badgeClass}">${item.badge}</span>
+            </div>
+            <div class="tamil-explainer-line-content">
+              <div class="tamil-explainer-code-snippet">${escapeHtml(item.code)}</div>
+              <div class="tamil-explainer-explanation-text">${item.tamil}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    modal.style.display = 'flex';
+  }
+
+  function closeTamilExplainerModal() {
+    const modal = document.getElementById('tamilExplainerModal');
+    if (modal) modal.style.display = 'none';
+    if (isExplainerSpeaking && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      isExplainerSpeaking = false;
+      const speechBtnText = document.getElementById('tamilSpeechBtnText');
+      if (speechBtnText) speechBtnText.textContent = 'வாசி (Listen)';
+    }
+  }
+
+  function toggleExplainerSpeech() {
+    if (!('speechSynthesis' in window)) {
+      showToast('உலாவியில் ஒலி வாசிப்பு வசதி இல்லை (Speech synthesis not supported)');
+      return;
+    }
+
+    const speechBtnText = document.getElementById('tamilSpeechBtnText');
+
+    if (isExplainerSpeaking) {
+      window.speechSynthesis.cancel();
+      isExplainerSpeaking = false;
+      if (speechBtnText) speechBtnText.textContent = 'வாசி (Listen)';
+      showToast('வாசிப்பு நிறுத்தப்பட்டது');
+      return;
+    }
+
+    if (!currentExplainerData) return;
+
+    let textToSpeak = `${currentExplainerData.purpose.title}. ${currentExplainerData.purpose.desc}. `;
+    currentExplainerData.linesData.slice(0, 15).forEach(item => {
+      const cleanTamil = item.tamil.replace(/<[^>]*>/g, '');
+      textToSpeak += `வரி ${item.lineNum}: ${cleanTamil}. `;
+    });
+
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(textToSpeak);
+    const voices = window.speechSynthesis.getVoices();
+    const tamilVoice = voices.find(v => (v.lang && v.lang.startsWith('ta')) || (v.name && v.name.toLowerCase().includes('tamil')));
+    if (tamilVoice) utter.voice = tamilVoice;
+    utter.rate = 0.95;
+
+    utter.onend = () => {
+      isExplainerSpeaking = false;
+      if (speechBtnText) speechBtnText.textContent = 'வாசி (Listen)';
+    };
+    utter.onerror = () => {
+      isExplainerSpeaking = false;
+      if (speechBtnText) speechBtnText.textContent = 'வாசி (Listen)';
+    };
+
+    isExplainerSpeaking = true;
+    if (speechBtnText) speechBtnText.textContent = 'நிறுத்து (Stop)';
+    window.speechSynthesis.speak(utter);
+    showToast('தமிழில் வாசிக்கப்படுகிறது...');
+  }
+
+  function copyTamilExplanation() {
+    if (!currentExplainerData) return;
+    const { purpose, stats, linesData } = currentExplainerData;
+
+    let md = `# தமிழ் நிரல் விளக்கம்: ${purpose.title}\n\n`;
+    md += `**வகை**: ${purpose.category}\n`;
+    md += `**நோக்கம்**: ${purpose.desc}\n\n`;
+    md += `### புள்ளிவிவரங்கள்:\n`;
+    md += `- மொத்த வரிகள்: ${stats.totalLines}\n`;
+    md += `- மாறிகள்: ${stats.varCount} | செயல்பாடுகள்: ${stats.fnCount} | மடக்குகள்: ${stats.loopCount} | நிபந்தனைகள்: ${stats.condCount}\n\n`;
+    md += `### வரிவரியான விளக்கம்:\n\n`;
+
+    linesData.forEach(item => {
+      const cleanTamil = item.tamil.replace(/<[^>]*>/g, '');
+      md += `**வரி ${item.lineNum}** [${item.badge}]:\n\`\`\`\n${item.code}\n\`\`\`\n➔ ${cleanTamil}\n\n`;
+    });
+
+    navigator.clipboard.writeText(md).then(() => {
+      showToast('விளக்கம் நகலெடுக்கப்பட்டது (Markdown copied)');
+    }).catch(() => {
+      showToast('நகலெடுக்க இயலவில்லை');
+    });
+  }
+
+  function insertTamilExplanationAsNote() {
+    if (!currentExplainerData) return;
+    const { purpose, linesData } = currentExplainerData;
+
+    let html = `<h2>🎯 ${purpose.title}</h2>`;
+    html += `<p><b>பிரிவு:</b> ${purpose.category}</p>`;
+    html += `<p>${purpose.desc}</p>`;
+    html += `<hr><h3>வரிவரியான விளக்கம் (Line-by-Line):</h3>`;
+
+    linesData.forEach(item => {
+      html += `<p><b>வரி ${item.lineNum} (${item.badge}):</b><br><code>${escapeHtml(item.code)}</code><br>➔ ${item.tamil}</p>`;
+    });
+
+    const newNote = {
+      id: uid(),
+      title: `விளக்கம்: ${purpose.title}`,
+      content: html,
+      type: 'note',
+      tags: ['விளக்கம்', 'tamil-code'],
+      pinned: false,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+
+    notes.unshift(newNote);
+    persistNote(newNote);
+    persistIndex();
+    activeId = newNote.id;
+    closeTamilExplainerModal();
+    renderSidebar();
+    renderEditor();
+    showToast('விளக்கம் புதிய குறிப்பாகச் சேர்க்கப்பட்டது! (Added as companion note)');
+  }
+
+  function bindTamilExplainerModal() {
+    const modal = document.getElementById('tamilExplainerModal');
+    if (!modal || modal.dataset.bound === '1') return;
+    modal.dataset.bound = '1';
+
+    const closeBtn = document.getElementById('tamilExplainerCloseBtn');
+    if (closeBtn) closeBtn.addEventListener('click', closeTamilExplainerModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeTamilExplainerModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeTamilExplainerModal();
+      }
+    });
+
+    const speechBtn = document.getElementById('tamilExplainerSpeechBtn');
+    if (speechBtn) speechBtn.addEventListener('click', toggleExplainerSpeech);
+
+    const copyBtn = document.getElementById('tamilExplainerCopyBtn');
+    if (copyBtn) copyBtn.addEventListener('click', copyTamilExplanation);
+
+    const insertBtn = document.getElementById('tamilExplainerInsertBtn');
+    if (insertBtn) insertBtn.addEventListener('click', insertTamilExplanationAsNote);
   }
 
   bindTamilTranslatorModal();
+  bindTamilExplainerModal();
   loadAll();
 })();
 </script>

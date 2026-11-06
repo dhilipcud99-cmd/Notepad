@@ -1,0 +1,73 @@
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+
+const root = path.resolve(__dirname, '..');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+
+// 1. Verify UI Elements exist
+console.log('Testing HTML markup for Tamil Code Explainer...');
+assert(html.includes('id="tamilExplainerModal"'), 'Explainer modal should exist');
+assert(html.includes('id="tamilExplainerBtn"'), 'IDE toolbar button should exist');
+assert(html.includes('id="tamilOpenExplainerTabBtn"'), 'Translator modal tab button should exist');
+assert(html.includes('id="tamilExplainerSpeechBtn"'), 'Speech button should exist');
+assert(html.includes('id="tamilExplainerCopyBtn"'), 'Copy button should exist');
+assert(html.includes('id="tamilExplainerInsertBtn"'), 'Insert into Note button should exist');
+assert(html.includes('id="tamilExplainerSummary"'), 'Summary card container should exist');
+assert(html.includes('id="tamilExplainerLinesList"'), 'Lines list container should exist');
+console.log('✓ UI elements verified.');
+
+// 2. Extract and test JavaScript logic
+console.log('Testing JavaScript functions...');
+assert(html.includes('function explainCodeLineInTamil'), 'explainCodeLineInTamil should be defined');
+assert(html.includes('function detectProgramPurposeInTamil'), 'detectProgramPurposeInTamil should be defined');
+assert(html.includes('function openTamilExplainerModal'), 'openTamilExplainerModal should be defined');
+assert(html.includes('function closeTamilExplainerModal'), 'closeTamilExplainerModal should be defined');
+assert(html.includes('function bindTamilExplainerModal'), 'bindTamilExplainerModal should be defined');
+console.log('✓ Function definitions verified.');
+
+// 3. Test functional behavior of explainer functions
+console.log('Testing code explanation logic...');
+const fnStart = html.indexOf('function explainCodeLineInTamil');
+const fnEnd = html.indexOf('let currentExplainerData = null;');
+const codeSnippet = html.slice(fnStart, fnEnd);
+
+// Mock escapeHtml if needed in scope
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+eval(codeSnippet);
+
+// Test 1: Tamil Factorial
+const factPurpose = detectProgramPurposeInTamil('செயல்பாடு காரணியியல்(எண்) { return எண் * காரணியியல்(எண் - 1); }');
+assert(factPurpose.title.includes('காரணியியல்'), 'Should detect Factorial program in Tamil');
+
+const l1 = explainCodeLineInTamil('செயல்பாடு காரணியியல்(எண்) {');
+assert(l1 && l1.type === 'function', 'Should detect function');
+assert(l1.tamil.includes('காரணியியல்'), 'Tamil explanation should contain function name');
+
+const l2 = explainCodeLineInTamil('ஒருவேளை (எண் <= 1) {');
+assert(l2 && l2.type === 'condition', 'Should detect if condition');
+
+const l3 = explainCodeLineInTamil('திருப்பு 1;');
+assert(l3 && l3.type === 'return', 'Should detect return statement in Tamil');
+
+// Test 2: JavaScript
+const l4 = explainCodeLineInTamil('let total = 0;');
+assert(l4 && l4.type === 'variable', 'Should detect let variable');
+
+const l5 = explainCodeLineInTamil('for (let i = 0; i < 10; i++) {');
+assert(l5 && l5.type === 'loop', 'Should detect for loop');
+
+const l6 = explainCodeLineInTamil('console.log("வணக்கம் உலகம்");');
+assert(l6 && l6.type === 'output', 'Should detect console.log');
+
+// Test 3: Verify sanitize of smart quotes
+console.log('Testing smart quotes and tokenization sanitize...');
+assert(html.includes('[\\u201C\\u201D\\u201E\\u201F\\u2033\\u2036]'), 'Curly quotes should be sanitized');
+assert(html.includes('hasTamilKeywords'), 'Tamil keywords should be auto-detected in JS runner');
+console.log('✓ Tokenization and runner sanitization verified.');
+
+console.log('✓ All Tamil Code Explainer tests passed successfully!');
+
