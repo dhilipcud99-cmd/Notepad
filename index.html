@@ -1626,6 +1626,275 @@
   .run-btn.running .run-icon { display: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ---------- Tamil Programming Language Translator Modal ---------- */
+  .tamil-modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: tamilFadeIn 0.15s ease;
+  }
+  @keyframes tamilFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .tamil-modal-dialog {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 980px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+    animation: tamilPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes tamilPopIn {
+    from { transform: scale(0.96); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .tamil-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-sidebar);
+  }
+  .tamil-modal-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tamil-modal-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  }
+  .tamil-modal-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+  }
+  .tamil-modal-sub {
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+  .tamil-modal-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .tamil-mode-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-sidebar);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .tamil-mode-tab {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tamil-mode-tab:hover {
+    color: var(--ink);
+    background: var(--accent-soft);
+  }
+  .tamil-mode-tab.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .tamil-modal-body {
+    display: flex;
+    flex: 1;
+    min-height: 340px;
+    overflow: hidden;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg);
+  }
+  .tamil-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-surface);
+    overflow: hidden;
+  }
+  .tamil-pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .tamil-pane-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .tamil-small-btn {
+    padding: 4px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--bg-surface);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .tamil-small-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .tamil-small-btn.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .tamil-small-btn.primary:hover {
+    opacity: 0.92;
+  }
+  .tamil-small-btn.success {
+    background: #10b981;
+    color: #fff;
+    border-color: #10b981;
+  }
+  .tamil-small-btn.success:hover {
+    opacity: 0.92;
+  }
+  .tamil-code-box {
+    flex: 1;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 12px 14px;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    background: transparent;
+    color: var(--ink);
+    resize: none;
+    overflow-y: auto;
+  }
+  .tamil-center-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tamil-translate-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-surface);
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .tamil-translate-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: scale(1.04);
+  }
+  .tamil-cheat-sheet {
+    padding: 8px 16px 12px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  .tamil-cheat-sheet summary {
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--ink);
+    user-select: none;
+  }
+  .tamil-keywords-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    gap: 5px;
+    font-size: 11px;
+    padding-top: 8px;
+  }
+  .tamil-kw-item {
+    background: var(--bg-surface);
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .tamil-kw-item code {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 11.5px;
+  }
+  .tamil-kw-item span {
+    color: var(--ink-faint);
+    font-size: 10.5px;
+  }
+  @media (max-width: 760px) {
+    .tamil-modal-body {
+      flex-direction: column;
+      min-height: 480px;
+    }
+    .tamil-center-action {
+      flex-direction: row;
+    }
+    .tamil-translate-btn {
+      flex-direction: row;
+    }
+  }
+
+
 
 </style>
 </head>
@@ -1773,6 +2042,99 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="tamil-modal-backdrop" id="tamilTranslatorModal" style="display:none;">
+  <div class="tamil-modal-dialog">
+    <div class="tamil-modal-header">
+      <div class="tamil-modal-title-wrap">
+        <div class="tamil-modal-icon">த</div>
+        <div>
+          <h3 class="tamil-modal-title">தமிழ் நிரலாக்க மொழிபெயர்ப்பாளர்</h3>
+          <span class="tamil-modal-sub">Tamil Programming Language Translator & Transpiler</span>
+        </div>
+      </div>
+      <button class="icon-btn" id="tamilModalCloseBtn" title="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    
+    <div class="tamil-modal-toolbar">
+      <div class="tamil-mode-tabs" id="tamilModeTabs">
+        <button class="tamil-mode-tab active" data-mode="tamil-to-js">தமிழ் ➔ JavaScript</button>
+        <button class="tamil-mode-tab" data-mode="js-to-tamil">JavaScript ➔ தமிழ்</button>
+        <button class="tamil-mode-tab" data-mode="tamil-to-py">தமிழ் ➔ Python</button>
+        <button class="tamil-mode-tab" data-mode="py-to-tamil">Python ➔ தமிழ்</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <select class="ide-select" id="tamilExampleSelect" title="Load Example" style="padding:4px 8px; font-size:11.5px;">
+          <option value="">-- மாதிரி நிரல்கள் (Examples) --</option>
+          <option value="hello">வணக்கம் உலகம் (Hello World)</option>
+          <option value="evenodd">இரட்டை / ஒற்றை எண் (Even or Odd)</option>
+          <option value="sum">1 முதல் 10 வரை கூட்டுதல் (Sum 1 to 10)</option>
+          <option value="factorial">காரணியியல் (Factorial)</option>
+          <option value="fibonacci">ஃபிபோனாச்சி (Fibonacci)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tamil-modal-body">
+      <div class="tamil-pane">
+        <div class="tamil-pane-header">
+          <span id="tamilInputLabel">தமிழ் நிரல் (Tamil Code)</span>
+          <div class="tamil-pane-actions">
+            <button class="tamil-small-btn" id="tamilLoadFromEditorBtn" title="Load current editor code">Load from Editor</button>
+            <button class="tamil-small-btn" id="tamilClearInputBtn">Clear</button>
+          </div>
+        </div>
+        <textarea class="tamil-code-box" id="tamilInputArea" placeholder="இங்கே நிரலை உள்ளிடவும் அல்லது ஒட்டவும் (Type or paste code here)..." spellcheck="false"></textarea>
+      </div>
+
+      <div class="tamil-center-action">
+        <button class="tamil-translate-btn" id="tamilDoTranslateBtn" title="Translate code">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+          <span>மொழிபெயர்</span>
+        </button>
+      </div>
+
+      <div class="tamil-pane">
+        <div class="tamil-pane-header">
+          <span id="tamilOutputLabel">JavaScript குறியீடு (Output)</span>
+          <div class="tamil-pane-actions">
+            <button class="tamil-small-btn" id="tamilCopyOutputBtn">Copy</button>
+            <button class="tamil-small-btn primary" id="tamilInsertEditorBtn">Insert into Editor</button>
+            <button class="tamil-small-btn success" id="tamilRunTranslatedBtn">Run (இயக்கு)</button>
+          </div>
+        </div>
+        <textarea class="tamil-code-box" id="tamilOutputArea" readonly placeholder="மொழிபெயர்க்கப்பட்ட குறியீடு இங்கே தோன்றும் (Translated output will appear here)..." spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <div class="tamil-cheat-sheet">
+      <details>
+        <summary>📖 தமிழ் நிரலாக்க சொற்கள் அகராதி (Tamil Programming Keywords Cheat Sheet)</summary>
+        <div class="tamil-keywords-grid">
+          <div class="tamil-kw-item"><code>பதிப்பி / எழுது</code> <span>➔ console.log / print</span></div>
+          <div class="tamil-kw-item"><code>மாறி</code> <span>➔ let / var</span></div>
+          <div class="tamil-kw-item"><code>நிலைமாறி / மாறிலி</code> <span>➔ const</span></div>
+          <div class="tamil-kw-item"><code>செயல்பாடு / செய்</code> <span>➔ function / def</span></div>
+          <div class="tamil-kw-item"><code>திருப்பு / பின்கொடு</code> <span>➔ return</span></div>
+          <div class="tamil-kw-item"><code>ஒருவேளை / ஆனால்</code> <span>➔ if</span></div>
+          <div class="tamil-kw-item"><code>இல்லையென்றால்</code> <span>➔ else if</span></div>
+          <div class="tamil-kw-item"><code>இல்லையெனில்</code> <span>➔ else</span></div>
+          <div class="tamil-kw-item"><code>ஆக / மடக்கு</code> <span>➔ for</span></div>
+          <div class="tamil-kw-item"><code>வரை / இருப்பின்</code> <span>➔ while</span></div>
+          <div class="tamil-kw-item"><code>நிறுத்து / தொடர்</code> <span>➔ break / continue</span></div>
+          <div class="tamil-kw-item"><code>உண்மை / பொய்</code> <span>➔ true / false</span></div>
+          <div class="tamil-kw-item"><code>வெற்றிடம்</code> <span>➔ null / None</span></div>
+          <div class="tamil-kw-item"><code>கணிதம்</code> <span>➔ Math</span></div>
+          <div class="tamil-kw-item"><code>நீளம்</code> <span>➔ length</span></div>
+          <div class="tamil-kw-item"><code>உள்ளிடு</code> <span>➔ prompt / input</span></div>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
 <div id="pdfExportArea"></div>
 
 <script>
@@ -1916,8 +2278,355 @@
   let runAbortController = null;
   let previewDebounceTimer = null;
 
+
+  // ==========================================
+  // தமிழ் நிரலாக்க மொழிபெயர்ப்பாளர் (Tamil Programming Language Translation Engine)
+  // ==========================================
+
+  function tokenizeCode(code) {
+    const placeholderPrefix = `__TAMIL_TOKEN_${Date.now()}_`;
+    let tokenIndex = 0;
+    const tokenMap = {};
+    const tokenRegex = /(\/\*[\s\S]*?\*\/)|(\/\/[^\n]*)|(#[^\n]*)|(`(?:\\`|[^`])*`)|("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/g;
+
+    const codeWithoutLiterals = code.replace(tokenRegex, (match) => {
+      const id = `${placeholderPrefix}${tokenIndex++}__`;
+      tokenMap[id] = match;
+      return id;
+    });
+
+    return { codeWithoutLiterals, tokenMap };
+  }
+
+  function restoreCodeTokens(code, tokenMap) {
+    let result = code;
+    for (const [id, original] of Object.entries(tokenMap)) {
+      result = result.replace(id, original);
+    }
+    return result;
+  }
+
+  function createTamilWordRegex(keyword, isFunc = false) {
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (isFunc) {
+      return new RegExp(`(^|[^\\p{L}\\p{N}_])${escaped}\\s*\\(`, 'gu');
+    }
+    return new RegExp(`(^|[^\\p{L}\\p{N}_])${escaped}(?=[^\\p{L}\\p{N}_]|$)`, 'gu');
+  }
+
+  const TAMIL_TO_JS_RULES = [
+    { kw: 'பதிப்பி', isFunc: true, repl: '$1console.log(' },
+    { kw: 'எழுது', isFunc: true, repl: '$1console.log(' },
+    { kw: 'அச்சிடு', isFunc: true, repl: '$1console.log(' },
+    { kw: 'காட்டு', isFunc: true, repl: '$1console.log(' },
+    { kw: 'எச்சரி', isFunc: true, repl: '$1console.warn(' },
+    { kw: 'பிழை', isFunc: true, repl: '$1console.error(' },
+    { kw: 'உள்ளிடு', isFunc: true, repl: '$1prompt(' },
+
+    { kw: 'நிலைமாறி', isFunc: false, repl: '$1const' },
+    { kw: 'மாறிலி', isFunc: false, repl: '$1const' },
+    { kw: 'மாறி', isFunc: false, repl: '$1let' },
+
+    { kw: 'செயல்பாடு', isFunc: false, repl: '$1function' },
+    { kw: 'நிரல்பாகம்', isFunc: false, repl: '$1function' },
+    { kw: 'செய்', isFunc: false, repl: '$1function' },
+    { kw: 'திருப்பு', isFunc: false, repl: '$1return' },
+    { kw: 'பின்கொடு', isFunc: false, repl: '$1return' },
+
+    { kw: 'இல்லையென்றால்', isFunc: false, repl: '$1else if' },
+    { kw: 'இல்லைஆனால்', isFunc: false, repl: '$1else if' },
+    { kw: 'இல்லையெனில்', isFunc: false, repl: '$1else' },
+    { kw: 'ஒருவேளை', isFunc: false, repl: '$1if' },
+    { kw: 'ஆனால்', isFunc: false, repl: '$1if' },
+    { kw: 'எனில்', isFunc: false, repl: '$1if' },
+    { kw: 'இல்லை', isFunc: false, repl: '$1else' },
+
+    { kw: 'ஆக', isFunc: false, repl: '$1for' },
+    { kw: 'மடக்கு', isFunc: false, repl: '$1for' },
+    { kw: 'ஒவ்வொரு', isFunc: false, repl: '$1for' },
+    { kw: 'இருப்பின்', isFunc: false, repl: '$1while' },
+    { kw: 'வரை', isFunc: false, repl: '$1while' },
+    { kw: 'நிறுத்து', isFunc: false, repl: '$1break' },
+    { kw: 'தொடர்', isFunc: false, repl: '$1continue' },
+
+    { kw: 'உண்மை', isFunc: false, repl: '$1true' },
+    { kw: 'பொய்', isFunc: false, repl: '$1false' },
+    { kw: 'வெற்றிடம்', isFunc: false, repl: '$1null' },
+    { kw: 'வரையறுக்கப்படாதது', isFunc: false, repl: '$1undefined' },
+
+    { kw: 'புதிய', isFunc: false, repl: '$1new' },
+    { kw: 'வகுப்பு', isFunc: false, repl: '$1class' },
+    { kw: 'நீட்டிப்பு', isFunc: false, repl: '$1extends' },
+    { kw: 'இது', isFunc: false, repl: '$1this' },
+
+    { kw: 'கணிதம்.வர்க்கமூலம்', isFunc: false, repl: '$1Math.sqrt' },
+    { kw: 'கணிதம்.முழுவெண்', isFunc: false, repl: '$1Math.floor' },
+    { kw: 'கணிதம்.தோராய', isFunc: false, repl: '$1Math.round' },
+    { kw: 'கணிதம்.சீரற்ற', isFunc: false, repl: '$1Math.random' },
+    { kw: 'கணிதம்.அதிகபட்சம்', isFunc: false, repl: '$1Math.max' },
+    { kw: 'கணிதம்.குறைந்தபட்சம்', isFunc: false, repl: '$1Math.min' },
+    { kw: 'கணிதம்', isFunc: false, repl: '$1Math' },
+    { kw: 'நீளம்', isFunc: false, repl: '$1length' },
+    { kw: 'உரை', isFunc: true, repl: '$1String(' },
+    { kw: 'எண்', isFunc: true, repl: '$1Number(' },
+    { kw: 'அணி', isFunc: true, repl: '$1Array(' }
+  ];
+
+  const JS_TO_TAMIL_RULES = [
+    { pattern: /\bconsole\.log\s*\(/g, repl: 'பதிப்பி(' },
+    { pattern: /\bconsole\.warn\s*\(/g, repl: 'எச்சரி(' },
+    { pattern: /\bconsole\.error\s*\(/g, repl: 'பிழை(' },
+    { pattern: /\bprompt\s*\(/g, repl: 'உள்ளிடு(' },
+    { pattern: /\bconst\b/g, repl: 'நிலைமாறி' },
+    { pattern: /\blet\b/g, repl: 'மாறி' },
+    { pattern: /\bvar\b/g, repl: 'மாறி' },
+    { pattern: /\bfunction\b/g, repl: 'செயல்பாடு' },
+    { pattern: /\breturn\b/g, repl: 'திருப்பு' },
+    { pattern: /\belse\s+if\b/g, repl: 'இல்லையென்றால்' },
+    { pattern: /\bif\b/g, repl: 'ஒருவேளை' },
+    { pattern: /\belse\b/g, repl: 'இல்லையெனில்' },
+    { pattern: /\bfor\b/g, repl: 'ஆக' },
+    { pattern: /\bwhile\b/g, repl: 'வரை' },
+    { pattern: /\bbreak\b/g, repl: 'நிறுத்து' },
+    { pattern: /\bcontinue\b/g, repl: 'தொடர்' },
+    { pattern: /\btrue\b/g, repl: 'உண்மை' },
+    { pattern: /\bfalse\b/g, repl: 'பொய்' },
+    { pattern: /\bnull\b/g, repl: 'வெற்றிடம்' },
+    { pattern: /\bundefined\b/g, repl: 'வரையறுக்கப்படாதது' },
+    { pattern: /\bnew\b/g, repl: 'புதிய' },
+    { pattern: /\bclass\b/g, repl: 'வகுப்பு' },
+    { pattern: /\bextends\b/g, repl: 'நீட்டிப்பு' },
+    { pattern: /\bthis\b/g, repl: 'இது' },
+    { pattern: /\bMath\.sqrt\b/g, repl: 'கணிதம்.வர்க்கமூலம்' },
+    { pattern: /\bMath\.floor\b/g, repl: 'கணிதம்.முழுவெண்' },
+    { pattern: /\bMath\.round\b/g, repl: 'கணிதம்.தோராய' },
+    { pattern: /\bMath\.random\b/g, repl: 'கணிதம்.சீரற்ற' },
+    { pattern: /\bMath\.max\b/g, repl: 'கணிதம்.அதிகபட்சம்' },
+    { pattern: /\bMath\.min\b/g, repl: 'கணிதம்.குறைந்தபட்சம்' },
+    { pattern: /\bMath\b/g, repl: 'கணிதம்' }
+  ];
+
+  function tamilToJs(tamilCode) {
+    if (!tamilCode) return '';
+    const { codeWithoutLiterals, tokenMap } = tokenizeCode(tamilCode);
+    let translated = codeWithoutLiterals;
+    for (const rule of TAMIL_TO_JS_RULES) {
+      translated = translated.replace(createTamilWordRegex(rule.kw, rule.isFunc), rule.repl);
+    }
+    return restoreCodeTokens(translated, tokenMap);
+  }
+
+  function jsToTamil(jsCode) {
+    if (!jsCode) return '';
+    const { codeWithoutLiterals, tokenMap } = tokenizeCode(jsCode);
+    let translated = codeWithoutLiterals;
+    for (const rule of JS_TO_TAMIL_RULES) {
+      translated = translated.replace(rule.pattern, rule.repl);
+    }
+    return restoreCodeTokens(translated, tokenMap);
+  }
+
+  function tamilToPython(tamilCode) {
+    if (!tamilCode) return '';
+    const { codeWithoutLiterals, tokenMap } = tokenizeCode(tamilCode);
+    let translated = codeWithoutLiterals;
+    
+    translated = translated.replace(createTamilWordRegex('பதிப்பி', true), '$1print(');
+    translated = translated.replace(createTamilWordRegex('எழுது', true), '$1print(');
+    translated = translated.replace(createTamilWordRegex('அச்சிடு', true), '$1print(');
+    translated = translated.replace(createTamilWordRegex('காட்டு', true), '$1print(');
+    translated = translated.replace(createTamilWordRegex('உள்ளிடு', true), '$1input(');
+
+    translated = translated.replace(createTamilWordRegex('நிலைமாறி'), '$1');
+    translated = translated.replace(createTamilWordRegex('மாறிலி'), '$1');
+    translated = translated.replace(createTamilWordRegex('மாறி'), '$1');
+
+    translated = translated.replace(createTamilWordRegex('செயல்பாடு'), '$1def');
+    translated = translated.replace(createTamilWordRegex('நிரல்பாகம்'), '$1def');
+    translated = translated.replace(createTamilWordRegex('செய்'), '$1def');
+    translated = translated.replace(createTamilWordRegex('திருப்பு'), '$1return');
+    translated = translated.replace(createTamilWordRegex('பின்கொடு'), '$1return');
+
+    translated = translated.replace(createTamilWordRegex('இல்லையென்றால்'), '$1elif');
+    translated = translated.replace(createTamilWordRegex('இல்லைஆனால்'), '$1elif');
+    translated = translated.replace(createTamilWordRegex('இல்லையெனில்'), '$1else');
+    translated = translated.replace(createTamilWordRegex('ஒருவேளை'), '$1if');
+    translated = translated.replace(createTamilWordRegex('ஆனால்'), '$1if');
+    translated = translated.replace(createTamilWordRegex('எனில்'), '$1if');
+    translated = translated.replace(createTamilWordRegex('இல்லை'), '$1else');
+
+    translated = translated.replace(createTamilWordRegex('ஆக'), '$1for');
+    translated = translated.replace(createTamilWordRegex('மடக்கு'), '$1for');
+    translated = translated.replace(createTamilWordRegex('இருப்பின்'), '$1while');
+    translated = translated.replace(createTamilWordRegex('வரை'), '$1while');
+    translated = translated.replace(createTamilWordRegex('நிறுத்து'), '$1break');
+    translated = translated.replace(createTamilWordRegex('தொடர்'), '$1continue');
+
+    translated = translated.replace(createTamilWordRegex('உண்மை'), '$1True');
+    translated = translated.replace(createTamilWordRegex('பொய்'), '$1False');
+    translated = translated.replace(createTamilWordRegex('வெற்றிடம்'), '$1None');
+
+    translated = translated.replace(/\s+மற்றும்\s+/gu, ' and ');
+    translated = translated.replace(/\s+அல்லது\s+/gu, ' or ');
+
+    return restoreCodeTokens(translated, tokenMap);
+  }
+
+  function pyToTamil(pyCode) {
+    if (!pyCode) return '';
+    const { codeWithoutLiterals, tokenMap } = tokenizeCode(pyCode);
+    let translated = codeWithoutLiterals;
+    
+    translated = translated.replace(/\bprint\s*\(/g, 'பதிப்பி(');
+    translated = translated.replace(/\binput\s*\(/g, 'உள்ளிடு(');
+    translated = translated.replace(/\bdef\b/g, 'செயல்பாடு');
+    translated = translated.replace(/\breturn\b/g, 'திருப்பு');
+    translated = translated.replace(/\belif\b/g, 'இல்லையென்றால்');
+    translated = translated.replace(/\bif\b/g, 'ஒருவேளை');
+    translated = translated.replace(/\belse\b/g, 'இல்லையெனில்');
+    translated = translated.replace(/\bfor\b/g, 'ஆக');
+    translated = translated.replace(/\bwhile\b/g, 'வரை');
+    translated = translated.replace(/\bbreak\b/g, 'நிறுத்து');
+    translated = translated.replace(/\bcontinue\b/g, 'தொடர்');
+    translated = translated.replace(/\bTrue\b/g, 'உண்மை');
+    translated = translated.replace(/\bFalse\b/g, 'பொய்');
+    translated = translated.replace(/\bNone\b/g, 'வெற்றிடம்');
+    translated = translated.replace(/\band\b/g, 'மற்றும்');
+    translated = translated.replace(/\bor\b/g, 'அல்லது');
+
+    return restoreCodeTokens(translated, tokenMap);
+  }
+
+  const TAMIL_SAMPLE_PROGRAMS = {
+    hello: `// வணக்கம் உலகம் (Hello World)
+மாறி செய்தி = "வணக்கம் உலகம் (Hello World)!";
+பதிப்பி(செய்தி);`,
+
+    evenodd: `// இரட்டை / ஒற்றை எண் சரிபார்த்தல்
+செயல்பாடு சரிபார்(எண்) {
+  ஒருவேளை (எண் % 2 === 0) {
+    பதிப்பி(எண் + " என்பது இரட்டை எண் (Even Number)");
+  } இல்லையெனில் {
+    பதிப்பி(எண் + " என்பது ஒற்றை எண் (Odd Number)");
+  }
+}
+
+சரிபார்(12);
+சரிபார்(19);`,
+
+    sum: `// 1 முதல் 10 வரை எண்களின் கூட்டுத்தொகை
+மாறி கூட்டுத்தொகை = 0;
+ஆக (மாறி i = 1; i <= 10; i++) {
+  கூட்டுத்தொகை += i;
+}
+பதிப்பி("1 முதல் 10 வரை கூட்டுத்தொகை: " + கூட்டுத்தொகை);`,
+
+    factorial: `// காரணியியல் (Factorial)
+செயல்பாடு காரணியியல்(எண்) {
+  ஒருவேளை (எண் <= 1) {
+    திருப்பு 1;
+  }
+  திருப்பு எண் * காரணியியல்(எண் - 1);
+}
+
+மாறி n = 5;
+பதிப்பி(n + "! காரணியியல் மதிப்பு = " + காரணியியல்(n));`,
+
+    fibonacci: `// ஃபிபோனாச்சி வரிசை (Fibonacci Series)
+மாறி அ = 0;
+மாறி ஆ = 1;
+பதிப்பி("ஃபிபோனாச்சி எண்கள்:");
+பதிப்பி(அ);
+பதிப்பி(ஆ);
+
+ஆக (மாறி i = 2; i < 8; i++) {
+  மாறி இ = அ + ஆ;
+  பதிப்பி(இ);
+  அ = ஆ;
+  ஆ = இ;
+}`
+  };
+
+  function registerTamilMonacoLanguage(monaco) {
+    if (!monaco || !monaco.languages) return;
+    if (monaco.languages.getLanguages().some(l => l.id === 'tamil')) return;
+    monaco.languages.register({ id: 'tamil' });
+    monaco.languages.setMonarchTokensProvider('tamil', {
+      keywords: [
+        'மாறி', 'நிலைமாறி', 'மாறிலி', 'செயல்பாடு', 'நிரல்பாகம்', 'செய்', 'பதிப்பி', 'எழுது', 'அச்சிடு', 'காட்டு', 'எச்சரி', 'பிழை', 'உள்ளிடு',
+        'ஒருவேளை', 'ஆனால்', 'எனில்', 'இல்லையென்றால்', 'இல்லைஆனால்', 'இல்லையெனில்', 'இல்லை',
+        'ஆக', 'மடக்கு', 'ஒவ்வொரு', 'இருப்பின்', 'வரை', 'நிறுத்து', 'தொடர்', 'திருப்பு', 'பின்கொடு',
+        'உண்மை', 'பொய்', 'வெற்றிடம்', 'வரையறுக்கப்படாதது', 'புதிய', 'வகுப்பு', 'நீட்டிப்பு', 'இது',
+        'கணிதம்', 'நீளம்', 'உரை', 'எண்', 'அணி'
+      ],
+      operators: [
+        '=', '>', '<', '!', '~', '?', ':', '==', '<=', '>=', '!=', '===', '!==',
+        '&&', '||', '++', '--', '+', '-', '*', '/', '&', '|', '^', '%', '<<',
+        '>>', '>>>', '+=', '-=', '*=', '/=', '&=', '|=', '^=', '%=', '<<=', '>>=', '>>>='
+      ],
+      symbols: /[=><!~?:&|+\-*\/\^%]+/,
+      escapes: /\\(?:[abfnrtv\\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+      tokenizer: {
+        root: [
+          [/[\u0B80-\u0BFF\w]+/, {
+            cases: {
+              '@keywords': 'keyword',
+              '@default': 'identifier'
+            }
+          }],
+          { include: '@whitespace' },
+          [/[{}()\[\]]/, '@brackets'],
+          [/[<>](?!@symbols)/, '@brackets'],
+          [/@symbols/, {
+            cases: {
+              '@operators': 'operator',
+              '@default': ''
+            }
+          }],
+          [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+          [/0[xX][0-9a-fA-F]+/, 'number.hex'],
+          [/\d+/, 'number'],
+          [/[;,.]/, 'delimiter'],
+          [/"([^"\\]|\\.)*$/, 'string.invalid'],
+          [/'([^'\\]|\\.)*$/, 'string.invalid'],
+          [/"/, 'string', '@string_double'],
+          [/'/, 'string', '@string_single'],
+          [/`/, 'string', '@string_backtick'],
+        ],
+        whitespace: [
+          [/[ \t\r\n]+/, 'white'],
+          [/\/\*/, 'comment', '@comment'],
+          [/\/\/.*$/, 'comment'],
+        ],
+        comment: [
+          [/[^\/*]+/, 'comment'],
+          [/\*\//, 'comment', '@pop'],
+          [/[\/*]/, 'comment']
+        ],
+        string_double: [
+          [/[^\\"]+/, 'string'],
+          [/@escapes/, 'string.escape'],
+          [/\\./, 'string.escape.invalid'],
+          [/"/, 'string', '@pop']
+        ],
+        string_single: [
+          [/[^\\']+/, 'string'],
+          [/@escapes/, 'string.escape'],
+          [/\\./, 'string.escape.invalid'],
+          [/'/, 'string', '@pop']
+        ],
+        string_backtick: [
+          [/[^\\`$]+/, 'string'],
+          [/@escapes/, 'string.escape'],
+          [/\\./, 'string.escape.invalid'],
+          [/`/, 'string', '@pop']
+        ],
+      }
+    });
+  }
+
   function loadMonaco() {
-    if (window.monaco) return Promise.resolve(window.monaco);
+    if (window.monaco) { registerTamilMonacoLanguage(window.monaco); return Promise.resolve(window.monaco); }
     if (monacoLoadingPromise) return monacoLoadingPromise;
     monacoLoadingPromise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
@@ -1925,6 +2634,7 @@
       script.onload = () => {
         require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
         require(['vs/editor/editor.main'], () => {
+          registerTamilMonacoLanguage(window.monaco);
           resolve(window.monaco);
         }, (err) => {
           reject(err);
@@ -2180,6 +2890,7 @@
     if (!note) return;
     const value = monacoEditorInstance ? monacoEditorInstance.getValue() : note.content;
     const extMap = { 
+      tamil: 'ta',
       javascript: 'js', 
       html: 'html', 
       python: 'py',
@@ -2258,7 +2969,7 @@
     isExecuting = true;
     updateConsoleStatus('Running...');
     
-    if (language === 'javascript') {
+    if (language === 'javascript' || language === 'tamil') {
       const startTime = performance.now();
       window.lastJsExecutionStart = startTime;
       
@@ -2269,6 +2980,19 @@
       runnerFrame.id = 'jsRunnerFrame';
       runnerFrame.style.display = 'none';
       document.body.appendChild(runnerFrame);
+
+      let executableCode = code;
+      if (language === 'tamil') {
+        appendConsoleLog('தமிழ் நிரல் மொழிபெயர்க்கப்படுகிறது... (Translating Tamil to JavaScript...)', 'info');
+        try {
+          executableCode = tamilToJs(code);
+        } catch(err) {
+          appendConsoleLog('மொழிபெயர்ப்பு பிழை (Translation Error): ' + err.message, 'error');
+          updateConsoleStatus('Translation Error', true);
+          isExecuting = false;
+          return;
+        }
+      }
       
       const consoleScript = `
         <script>
@@ -2290,11 +3014,21 @@
             window.console.warn = function(){ send('warn', arguments); };
             window.console.info = function(){ send('info', arguments); };
             window.onerror = function(msg, url, line){ send('error', [msg + " (line " + line + ")"]); return true; };
+
+            // Tamil built-in functions support
+            window.பதிப்பி = window.console.log;
+            window.எழுது = window.console.log;
+            window.அச்சிடு = window.console.log;
+            window.காட்டு = window.console.log;
+            window.எச்சரி = window.console.warn;
+            window.பிழை = window.console.error;
+            window.உள்ளிடு = window.prompt;
+            window.கணிதம் = Math;
           })();
         <\/script>
       `;
       
-      const htmlContent = `<!DOCTYPE html><html><head>${consoleScript}</head><body><script>${code}<\/script></body></html>`;
+      const htmlContent = `<!DOCTYPE html><html><head>${consoleScript}</head><body><script>${executableCode}<\/script></body></html>`;
       runnerFrame.srcdoc = htmlContent;
       
       setTimeout(() => {
@@ -2578,6 +3312,13 @@
     if (copyBtn) copyBtn.addEventListener('click', copyCode);
     if (pasteBtn) pasteBtn.addEventListener('click', pasteCode);
     if (downloadBtn) downloadBtn.addEventListener('click', downloadCodeFile);
+
+    const tamilTranslatorBtn = document.getElementById('tamilTranslatorBtn');
+    if (tamilTranslatorBtn) {
+      tamilTranslatorBtn.addEventListener('click', () => {
+        openTamilTranslatorModal(note);
+      });
+    }
     
     if (themeSelect) {
       themeSelect.addEventListener('change', (e) => {
@@ -3416,6 +4157,7 @@
           </div>
           <div class="project-toolbar-right">
             <select class="ide-select" id="ideLanguageSelect" title="Select language">
+              <option value="tamil" ${note.language === 'tamil' ? 'selected' : ''}>Tamil (தமிழ்)</option>
               <option value="javascript" ${note.language === 'javascript' ? 'selected' : ''}>JavaScript</option>
               <option value="html" ${note.language === 'html' ? 'selected' : ''}>HTML/CSS/JS</option>
               <option value="python" ${note.language === 'python' ? 'selected' : ''}>Python</option>
@@ -3447,6 +4189,10 @@
             <button class="ide-btn" id="codeDeleteBtn" title="Delete snippet">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color: var(--danger);"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18.333 20.333A2 2 0 0 1 16.333 22H7.667a2 2 0 0 1-1.999-1.667L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
               <span>Delete</span>
+            </button>
+            <button class="ide-btn" id="tamilTranslatorBtn" title="Tamil Programming Language Translator (தமிழ் மொழிபெயர்ப்பாளர்)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+              <span>தமிழ் Translator</span>
             </button>
             <button class="ide-btn" id="idePreviewToggleBtn" title="Toggle browser preview">
               ${ICONS.fileCode}
@@ -4371,6 +5117,7 @@
 
   async function createCode(lang = 'javascript') {
     const starterTemplates = {
+      tamil: `// தமிழ் நிரலாக்க மொழி (Tamil Programming Language)\n// எளிய வணக்கம் உலகம் நிரல்:\n\nமாறி செய்தி = "வணக்கம் உலகம் (Hello World)!";\nபதிப்பி(செய்தி);\n\n// இரட்டை / ஒற்றை எண் சரிபார்த்தல்:\nசெயல்பாடு சரிபார்(எண்) {\n  ஒருவேளை (எண் % 2 === 0) {\n    பதிப்பி(எண் + " என்பது இரட்டை எண் (Even Number)");\n  } இல்லையெனில் {\n    பதிப்பி(எண் + " என்பது ஒற்றை எண் (Odd Number)");\n  }\n}\n\nசரிபார்(10);\nசரிபார்(7);\n`,
       javascript: '// Start coding here\nconsole.log("Hello from Notepad");',
       html: '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>Notepad Preview</title>\n</head>\n<body>\n  <h1>Hello from Notepad</h1>\n</body>\n</html>',
       python: '# Start coding here\nprint("Hello from Notepad")',
@@ -4663,6 +5410,232 @@
     }
   });
 
+
+  // ---------- Tamil Translator Modal Controller ----------
+  let currentTamilMode = 'tamil-to-js';
+
+  function openTamilTranslatorModal(note) {
+    const modal = document.getElementById('tamilTranslatorModal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+
+    const inputArea = document.getElementById('tamilInputArea');
+    const outputArea = document.getElementById('tamilOutputArea');
+    const currentCode = monacoEditorInstance ? monacoEditorInstance.getValue() : (note ? note.content : '');
+
+    // Set default mode based on note language
+    if (note && note.language === 'tamil') {
+      setTamilTranslatorMode('tamil-to-js');
+    } else if (note && note.language === 'python') {
+      setTamilTranslatorMode('py-to-tamil');
+    } else {
+      setTamilTranslatorMode('tamil-to-js');
+    }
+
+    if (currentCode && inputArea) {
+      inputArea.value = currentCode;
+      doTamilTranslation();
+    } else if (inputArea && !inputArea.value) {
+      inputArea.value = TAMIL_SAMPLE_PROGRAMS.hello;
+      doTamilTranslation();
+    }
+  }
+
+  function closeTamilTranslatorModal() {
+    const modal = document.getElementById('tamilTranslatorModal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function setTamilTranslatorMode(mode) {
+    currentTamilMode = mode;
+    document.querySelectorAll('.tamil-mode-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.getAttribute('data-mode') === mode);
+    });
+
+    const inLabel = document.getElementById('tamilInputLabel');
+    const outLabel = document.getElementById('tamilOutputLabel');
+
+    if (mode === 'tamil-to-js') {
+      if (inLabel) inLabel.textContent = 'தமிழ் நிரல் (Tamil Code)';
+      if (outLabel) outLabel.textContent = 'JavaScript குறியீடு (Output)';
+    } else if (mode === 'js-to-tamil') {
+      if (inLabel) inLabel.textContent = 'JavaScript குறியீடு (Source)';
+      if (outLabel) outLabel.textContent = 'தமிழ் நிரல் (Tamil Output)';
+    } else if (mode === 'tamil-to-py') {
+      if (inLabel) inLabel.textContent = 'தமிழ் நிரல் (Tamil Code)';
+      if (outLabel) outLabel.textContent = 'Python குறியீடு (Output)';
+    } else if (mode === 'py-to-tamil') {
+      if (inLabel) inLabel.textContent = 'Python குறியீடு (Source)';
+      if (outLabel) outLabel.textContent = 'தமிழ் நிரல் (Tamil Output)';
+    }
+    doTamilTranslation();
+  }
+
+  function doTamilTranslation() {
+    const inputArea = document.getElementById('tamilInputArea');
+    const outputArea = document.getElementById('tamilOutputArea');
+    if (!inputArea || !outputArea) return;
+
+    const source = inputArea.value;
+    let result = '';
+
+    try {
+      if (currentTamilMode === 'tamil-to-js') {
+        result = tamilToJs(source);
+      } else if (currentTamilMode === 'js-to-tamil') {
+        result = jsToTamil(source);
+      } else if (currentTamilMode === 'tamil-to-py') {
+        result = tamilToPython(source);
+      } else if (currentTamilMode === 'py-to-tamil') {
+        result = pyToTamil(source);
+      }
+      outputArea.value = result;
+    } catch (e) {
+      outputArea.value = '// Translation Error: ' + e.message;
+    }
+  }
+
+  function bindTamilTranslatorModal() {
+    const modal = document.getElementById('tamilTranslatorModal');
+    if (!modal || modal.dataset.bound === '1') return;
+    modal.dataset.bound = '1';
+
+    const closeBtn = document.getElementById('tamilModalCloseBtn');
+    if (closeBtn) closeBtn.addEventListener('click', closeTamilTranslatorModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeTamilTranslatorModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeTamilTranslatorModal();
+      }
+    });
+
+    document.querySelectorAll('.tamil-mode-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        setTamilTranslatorMode(tab.getAttribute('data-mode'));
+      });
+    });
+
+    const translateBtn = document.getElementById('tamilDoTranslateBtn');
+    if (translateBtn) translateBtn.addEventListener('click', doTamilTranslation);
+
+    const inputArea = document.getElementById('tamilInputArea');
+    if (inputArea) {
+      inputArea.addEventListener('input', () => {
+        doTamilTranslation();
+      });
+    }
+
+    const clearBtn = document.getElementById('tamilClearInputBtn');
+    if (clearBtn && inputArea) {
+      clearBtn.addEventListener('click', () => {
+        inputArea.value = '';
+        const outputArea = document.getElementById('tamilOutputArea');
+        if (outputArea) outputArea.value = '';
+      });
+    }
+
+    const loadFromEditorBtn = document.getElementById('tamilLoadFromEditorBtn');
+    if (loadFromEditorBtn && inputArea) {
+      loadFromEditorBtn.addEventListener('click', () => {
+        const note = getActive();
+        const code = monacoEditorInstance ? monacoEditorInstance.getValue() : (note ? note.content : '');
+        inputArea.value = code;
+        doTamilTranslation();
+        showToast('Loaded code from editor');
+      });
+    }
+
+    const copyBtn = document.getElementById('tamilCopyOutputBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        const outputArea = document.getElementById('tamilOutputArea');
+        if (outputArea && outputArea.value) {
+          try {
+            await navigator.clipboard.writeText(outputArea.value);
+            showToast('மொழிபெயர்ப்பு நகலெடுக்கப்பட்டது (Copied to clipboard)');
+          } catch(e) {
+            outputArea.select();
+            document.execCommand('copy');
+            showToast('Copied to clipboard');
+          }
+        }
+      });
+    }
+
+    const insertBtn = document.getElementById('tamilInsertEditorBtn');
+    if (insertBtn) {
+      insertBtn.addEventListener('click', () => {
+        const outputArea = document.getElementById('tamilOutputArea');
+        const note = getActive();
+        if (!outputArea || !note) return;
+        const translated = outputArea.value;
+
+        if (monacoEditorInstance) {
+          monacoEditorInstance.setValue(translated);
+        } else {
+          note.content = translated;
+        }
+
+        // Auto-switch language based on mode
+        const langSelect = document.getElementById('ideLanguageSelect');
+        if (currentTamilMode === 'tamil-to-js' || currentTamilMode === 'py-to-tamil') {
+          const targetLang = (currentTamilMode === 'tamil-to-js') ? 'javascript' : 'tamil';
+          note.language = targetLang;
+          if (langSelect) langSelect.value = targetLang;
+          if (window.monaco && monacoEditorInstance) {
+            window.monaco.editor.setModelLanguage(monacoEditorInstance.getModel(), targetLang);
+          }
+        } else if (currentTamilMode === 'js-to-tamil') {
+          note.language = 'tamil';
+          if (langSelect) langSelect.value = 'tamil';
+          if (window.monaco && monacoEditorInstance) {
+            window.monaco.editor.setModelLanguage(monacoEditorInstance.getModel(), 'tamil');
+          }
+        } else if (currentTamilMode === 'tamil-to-py') {
+          note.language = 'python';
+          if (langSelect) langSelect.value = 'python';
+          if (window.monaco && monacoEditorInstance) {
+            window.monaco.editor.setModelLanguage(monacoEditorInstance.getModel(), 'python');
+          }
+        }
+
+        queueSave(note);
+        closeTamilTranslatorModal();
+        showToast('மொழிபெயர்க்கப்பட்ட குறியீடு எடிட்டரில் செருகப்பட்டது (Inserted into editor)');
+      });
+    }
+
+    const runTranslatedBtn = document.getElementById('tamilRunTranslatedBtn');
+    if (runTranslatedBtn) {
+      runTranslatedBtn.addEventListener('click', () => {
+        const insertBtnEl = document.getElementById('tamilInsertEditorBtn');
+        if (insertBtnEl) insertBtnEl.click();
+        setTimeout(() => {
+          const runBtn = document.getElementById('ideRunBtn');
+          if (runBtn) runBtn.click();
+        }, 100);
+      });
+    }
+
+    const exampleSelect = document.getElementById('tamilExampleSelect');
+    if (exampleSelect && inputArea) {
+      exampleSelect.addEventListener('change', (e) => {
+        const exKey = e.target.value;
+        if (exKey && TAMIL_SAMPLE_PROGRAMS[exKey]) {
+          setTamilTranslatorMode('tamil-to-js');
+          inputArea.value = TAMIL_SAMPLE_PROGRAMS[exKey];
+          doTamilTranslation();
+          showToast('Sample loaded');
+        }
+      });
+    }
+  }
+
+  bindTamilTranslatorModal();
   loadAll();
 })();
 </script>
