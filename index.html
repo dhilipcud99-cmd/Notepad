@@ -2129,6 +2129,149 @@
     outline: none;
   }
 
+  /* IDE Tamil Inspector Bar & Hover Tips */
+  .ide-tamil-inspector-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid #f97316;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    min-height: 44px;
+    overflow: hidden;
+  }
+  .ide-tamil-inspector-bar.hidden {
+    display: none !important;
+  }
+  .ide-inspector-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .ide-inspector-pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(249, 115, 22, 0.12);
+    color: #ea580c;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    flex-shrink: 0;
+  }
+  .ide-inspector-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .ide-inspector-code {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-weight: 600;
+    color: #2563eb;
+    background: rgba(37, 99, 235, 0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+  }
+  [data-theme="dark"] .ide-inspector-code {
+    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.15);
+  }
+  .ide-inspector-desc {
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12.5px;
+    flex: 1;
+    min-width: 0;
+  }
+  .ide-inspector-desc code {
+    background: var(--bg);
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    border: 1px solid var(--border);
+  }
+  .ide-inspector-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .ide-inspector-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 11.5px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .ide-inspector-btn:hover {
+    background: var(--bg-hover, var(--bg-sidebar));
+    border-color: var(--accent);
+  }
+  .ide-inspector-btn-primary {
+    background: rgba(249, 115, 22, 0.1);
+    color: #ea580c;
+    border-color: rgba(249, 115, 22, 0.35);
+  }
+  .ide-inspector-btn-primary:hover {
+    background: #ea580c;
+    color: #ffffff;
+  }
+  .ide-btn.active#tamilTipsToggleBtn {
+    background: rgba(234, 179, 8, 0.15);
+    color: #b45309;
+    border-color: rgba(234, 179, 8, 0.4);
+  }
+  [data-theme="dark"] .ide-btn.active#tamilTipsToggleBtn {
+    background: rgba(234, 179, 8, 0.2);
+    color: #facc15;
+    border-color: rgba(234, 179, 8, 0.5);
+  }
+  .ide-btn.off#tamilTipsToggleBtn {
+    opacity: 0.6;
+  }
+  @media (max-width: 768px) {
+    .ide-tamil-inspector-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .ide-inspector-content {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .ide-inspector-actions {
+      align-self: flex-end;
+    }
+  }
+
 
 
 </style>
@@ -2943,7 +3086,11 @@
   }
 
   function loadMonaco() {
-    if (window.monaco) { registerTamilMonacoLanguage(window.monaco); return Promise.resolve(window.monaco); }
+    if (window.monaco) {
+      registerTamilMonacoLanguage(window.monaco);
+      registerTamilMonacoHover(window.monaco);
+      return Promise.resolve(window.monaco);
+    }
     if (monacoLoadingPromise) return monacoLoadingPromise;
     monacoLoadingPromise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
@@ -2952,6 +3099,7 @@
         require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
         require(['vs/editor/editor.main'], () => {
           registerTamilMonacoLanguage(window.monaco);
+          registerTamilMonacoHover(window.monaco);
           resolve(window.monaco);
         }, (err) => {
           reject(err);
@@ -3486,6 +3634,12 @@
       if (language === 'html') {
         updatePreview(note.content || '');
       }
+
+      monacoEditorInstance.onDidChangeCursorPosition(e => {
+        if (e && e.position) {
+          updateTamilInspectorForPosition(e.position.lineNumber);
+        }
+      });
       
       monacoEditorInstance.onDidChangeModelContent(() => {
         const val = monacoEditorInstance.getValue();
@@ -3495,6 +3649,11 @@
         
         if (note.language === 'html') {
           debounceUpdatePreview(note);
+        }
+
+        const pos = monacoEditorInstance.getPosition();
+        if (pos) {
+          updateTamilInspectorForPosition(pos.lineNumber);
         }
       });
       
@@ -3514,6 +3673,8 @@
       
       monacoEditorInstance.focus();
       bindIDEControls(note);
+      updateTamilTipsUIState();
+      updateTamilInspectorForPosition(1);
     }).catch(err => {
       console.error("Monaco Editor failed to load:", err);
       const container = document.getElementById('monacoEditorContainer');
@@ -3598,6 +3759,21 @@
       tamilExplainerBtn.addEventListener('click', () => {
         openTamilExplainerModal(note);
       });
+    }
+
+    const tamilTipsToggleBtn = document.getElementById('tamilTipsToggleBtn');
+    if (tamilTipsToggleBtn) {
+      tamilTipsToggleBtn.addEventListener('click', toggleTamilTips);
+    }
+
+    const ideInspectorSpeakBtn = document.getElementById('ideInspectorSpeakBtn');
+    if (ideInspectorSpeakBtn) {
+      ideInspectorSpeakBtn.addEventListener('click', speakCurrentInspectorLine);
+    }
+
+    const ideInspectorReplaceBtn = document.getElementById('ideInspectorReplaceBtn');
+    if (ideInspectorReplaceBtn) {
+      ideInspectorReplaceBtn.addEventListener('click', replaceCurrentLineWithTamil);
     }
     
     if (themeSelect) {
@@ -4478,6 +4654,10 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color:#f97316;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
               <span>விளக்கம் (Explain)</span>
             </button>
+            <button class="ide-btn ${tamilTipsActive ? 'active' : 'off'}" id="tamilTipsToggleBtn" title="Toggle Tamil Hover Tips & Line Inspector (தமிழ் குறிப்புகள்)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color:#eab308;"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2v1"/><path d="M12 15a5 5 0 1 0-5-5c0 1.5.5 2.5 1.5 3.5.7.7 1.5 1.5 1.5 2.5z"/></svg>
+              <span id="tamilTipsToggleText">${tamilTipsActive ? 'தமிழ் Tips: ON' : 'தமிழ் Tips: OFF'}</span>
+            </button>
             <button class="ide-btn" id="idePreviewToggleBtn" title="Toggle browser preview">
               ${ICONS.fileCode}
               <span>Preview</span>
@@ -4496,6 +4676,24 @@
             <div class="project-editor-side">
               <div class="project-editor-container" id="monacoEditorContainer">
                 <!-- Monaco editor mounts here -->
+              </div>
+              <div class="ide-tamil-inspector-bar ${tamilTipsActive ? '' : 'hidden'}" id="ideTamilInspectorBar" title="Tamil Line Inspector (வரி விளக்கம் & நேரடி மொழிபெயர்ப்பு)">
+                <div class="ide-inspector-content">
+                  <span class="ide-inspector-pill" id="ideInspectorLinePill">வரி 1</span>
+                  <span class="ide-inspector-tag badge-statement" id="ideInspectorTag">குறியீடு</span>
+                  <code class="ide-inspector-code" id="ideInspectorCode" title="தமிழ் குறியீடு">...</code>
+                  <span class="ide-inspector-desc" id="ideInspectorDesc">வரியை தேர்ந்தெடுக்கவும் (Click any code line)</span>
+                </div>
+                <div class="ide-inspector-actions">
+                  <button class="ide-inspector-btn" id="ideInspectorSpeakBtn" title="Listen to Line Explanation in Tamil (தமிழில் விளக்கம் கேட்க)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    <span>கேள்</span>
+                  </button>
+                  <button class="ide-inspector-btn ide-inspector-btn-primary" id="ideInspectorReplaceBtn" title="Replace this line with Tamil code in editor (இந்த வரியை தமிழில் மாற்ற)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>தமிழில் மாற்று</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -6747,6 +6945,221 @@
           if (runBtn) runBtn.click();
         }, 150);
       });
+    }
+  }
+
+  // ==========================================
+  // தமிழ் வரி குறிப்புகள் & நேரடி ஆய்வாளர் (Tamil Hover Tips & Live Line Inspector)
+  // ==========================================
+
+  let tamilHoverRegistered = false;
+  let tamilTipsActive = (function() {
+    try {
+      const saved = localStorage.getItem('notepad_tamil_tips_active');
+      return saved !== null ? saved === 'true' : true;
+    } catch(e) {
+      return true;
+    }
+  })();
+
+  let currentInspectorLineNum = 1;
+  let currentInspectorTamilCode = '';
+  let currentInspectorCasualDesc = '';
+
+  function isTamilTipsEnabled() {
+    return tamilTipsActive;
+  }
+
+  function speakTamilText(textToSpeak) {
+    if (!('speechSynthesis' in window)) {
+      showToast('உலாவியில் ஒலி வாசிப்பு வசதி இல்லை (Speech synthesis not supported)');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(textToSpeak);
+    const voices = window.speechSynthesis.getVoices();
+    const tamilVoice = voices.find(v => (v.lang && v.lang.startsWith('ta')) || (v.name && v.name.toLowerCase().includes('tamil')));
+    if (tamilVoice) utter.voice = tamilVoice;
+    utter.rate = 0.95;
+    window.speechSynthesis.speak(utter);
+    showToast('வரியின் விளக்கம் வாசிக்கப்படுகிறது...');
+  }
+
+  function registerTamilMonacoHover(monaco) {
+    if (!monaco || !monaco.languages) return;
+    if (tamilHoverRegistered) return;
+    tamilHoverRegistered = true;
+
+    const supportedLanguages = [
+      'tamil', 'javascript', 'html', 'python', 'typescript',
+      'c', 'cpp', 'java', 'csharp', 'go', 'rust',
+      'kotlin', 'php', 'ruby', 'sql', 'shell', 'css', 'json', '*'
+    ];
+
+    supportedLanguages.forEach(lang => {
+      try {
+        monaco.languages.registerHoverProvider(lang, {
+          provideHover: function (model, position) {
+            if (!isTamilTipsEnabled()) return null;
+            const lineNum = position.lineNumber;
+            const lineContent = model.getLineContent(lineNum);
+            if (!lineContent || !lineContent.trim()) return null;
+
+            const langId = model.getLanguageId ? model.getLanguageId() : lang;
+            const exp = explainCodeLineInTamil(lineContent, langId);
+            if (!exp) return null;
+
+            const plainCasual = (exp.casual || '').replace(/<[^>]+>/g, '');
+            const badgeText = exp.badge || 'விளக்கம்';
+            const tamilCode = exp.tamilCode || lineContent.trim();
+
+            const contents = [
+              { value: `**💡 தமிழ் நிரல் குறிப்பு (${badgeText} • வரி ${lineNum})**` },
+              { value: '```tamil\n' + tamilCode + '\n```' },
+              { value: plainCasual }
+            ];
+
+            return {
+              range: new monaco.Range(lineNum, 1, lineNum, model.getLineMaxColumn(lineNum)),
+              contents: contents
+            };
+          }
+        });
+      } catch (err) {
+        // Skip silently if a specific language identifier is not loaded
+      }
+    });
+  }
+
+  function updateTamilInspectorForPosition(lineNum) {
+    const inspector = document.getElementById('ideTamilInspectorBar');
+    if (!inspector) return;
+    if (!isTamilTipsEnabled()) {
+      inspector.classList.add('hidden');
+      return;
+    }
+    inspector.classList.remove('hidden');
+
+    if (!monacoEditorInstance) return;
+    const model = monacoEditorInstance.getModel();
+    if (!model) return;
+
+    const totalLines = model.getLineCount();
+    const validLine = Math.max(1, Math.min(lineNum || 1, totalLines));
+    currentInspectorLineNum = validLine;
+    const lineText = model.getLineContent(validLine);
+
+    const linePill = document.getElementById('ideInspectorLinePill');
+    const tagPill = document.getElementById('ideInspectorTag');
+    const codeSpan = document.getElementById('ideInspectorCode');
+    const descSpan = document.getElementById('ideInspectorDesc');
+
+    if (!lineText || !lineText.trim()) {
+      if (linePill) linePill.textContent = `வரி ${validLine}`;
+      if (tagPill) { tagPill.textContent = 'வெற்றிடம்'; tagPill.className = 'ide-inspector-tag badge-statement'; }
+      if (codeSpan) { codeSpan.textContent = '// வெற்று வரி (Empty line)'; codeSpan.title = ''; }
+      if (descSpan) descSpan.innerHTML = 'இந்த வரியில் குறியீடு எதுவும் இல்லை.';
+      currentInspectorTamilCode = '';
+      currentInspectorCasualDesc = 'வெற்று வரி';
+      return;
+    }
+
+    const langId = model.getLanguageId ? model.getLanguageId() : 'javascript';
+    const exp = explainCodeLineInTamil(lineText, langId);
+
+    if (exp) {
+      currentInspectorTamilCode = exp.tamilCode || lineText.trim();
+      currentInspectorCasualDesc = (exp.casual || '').replace(/<[^>]+>/g, '');
+
+      if (linePill) linePill.textContent = `வரி ${validLine}`;
+      if (tagPill) {
+        tagPill.textContent = exp.badge || 'கட்டளை';
+        tagPill.className = `ide-inspector-tag ${exp.badgeClass || 'badge-statement'}`;
+      }
+      if (codeSpan) {
+        codeSpan.textContent = exp.tamilCode || lineText.trim();
+        codeSpan.title = exp.tamilCode || '';
+      }
+      if (descSpan) {
+        descSpan.innerHTML = exp.casual || exp.formal || '';
+      }
+    } else {
+      currentInspectorTamilCode = lineText.trim();
+      currentInspectorCasualDesc = lineText.trim();
+      if (linePill) linePill.textContent = `வரி ${validLine}`;
+      if (tagPill) { tagPill.textContent = 'குறியீடு'; tagPill.className = 'ide-inspector-tag badge-statement'; }
+      if (codeSpan) { codeSpan.textContent = lineText.trim(); codeSpan.title = lineText.trim(); }
+      if (descSpan) descSpan.textContent = 'நிரல் வரி.';
+    }
+  }
+
+  function speakCurrentInspectorLine() {
+    if (!currentInspectorCasualDesc && !currentInspectorTamilCode) return;
+    const textToSpeak = `வரி ${currentInspectorLineNum}. ${currentInspectorTamilCode}. விளக்கம்: ${currentInspectorCasualDesc}`;
+    speakTamilText(textToSpeak);
+  }
+
+  function replaceCurrentLineWithTamil() {
+    if (!monacoEditorInstance || !window.monaco) return;
+    const model = monacoEditorInstance.getModel();
+    if (!model) return;
+    const lineNum = currentInspectorLineNum;
+    if (!lineNum || lineNum < 1 || lineNum > model.getLineCount()) return;
+
+    const originalLine = model.getLineContent(lineNum);
+    const indentMatch = originalLine.match(/^(\s*)/);
+    const indent = indentMatch ? indentMatch[1] : '';
+    const trimmed = originalLine.trim();
+    if (!trimmed) return;
+
+    const translatedLine = translateCodeToTamil(trimmed);
+    const newFullLine = indent + translatedLine;
+
+    const maxCol = model.getLineMaxColumn(lineNum);
+    const range = new window.monaco.Range(lineNum, 1, lineNum, maxCol);
+    monacoEditorInstance.executeEdits('tamil-replace-line', [
+      { range: range, text: newFullLine, forceMoveMarkers: true }
+    ]);
+    monacoEditorInstance.pushUndoStop();
+    showToast(`வரி ${lineNum} தமிழ் குறியீடாக மாற்றப்பட்டது!`);
+    updateTamilInspectorForPosition(lineNum);
+  }
+
+  function toggleTamilTips() {
+    tamilTipsActive = !tamilTipsActive;
+    try {
+      localStorage.setItem('notepad_tamil_tips_active', tamilTipsActive ? 'true' : 'false');
+    } catch (e) {}
+
+    updateTamilTipsUIState();
+
+    if (monacoEditorInstance) {
+      const pos = monacoEditorInstance.getPosition();
+      const lineNum = pos ? pos.lineNumber : 1;
+      updateTamilInspectorForPosition(lineNum);
+    }
+
+    showToast(tamilTipsActive ? 'தமிழ் குறிப்புகள் (Tamil Tips) இயக்கப்பட்டது' : 'தமிழ் குறிப்புகள் முடக்கப்பட்டது');
+  }
+
+  function updateTamilTipsUIState() {
+    const toggleBtn = document.getElementById('tamilTipsToggleBtn');
+    const toggleText = document.getElementById('tamilTipsToggleText');
+    const inspector = document.getElementById('ideTamilInspectorBar');
+
+    if (toggleBtn) {
+      toggleBtn.classList.toggle('active', !!tamilTipsActive);
+      toggleBtn.classList.toggle('off', !tamilTipsActive);
+    }
+    if (toggleText) {
+      toggleText.textContent = tamilTipsActive ? 'தமிழ் Tips: ON' : 'தமிழ் Tips: OFF';
+    }
+    if (inspector) {
+      if (tamilTipsActive) {
+        inspector.classList.remove('hidden');
+      } else {
+        inspector.classList.add('hidden');
+      }
     }
   }
 

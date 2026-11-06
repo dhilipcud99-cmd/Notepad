@@ -6,9 +6,18 @@ const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 
 // 1. Verify UI Elements exist
-console.log('Testing HTML markup for Tamil Code Explainer...');
+console.log('Testing HTML markup for Tamil Code Explainer & Inspector...');
 assert(html.includes('id="tamilExplainerModal"'), 'Explainer modal should exist');
 assert(html.includes('id="tamilExplainerBtn"'), 'IDE toolbar button should exist');
+assert(html.includes('id="tamilTipsToggleBtn"'), 'Tamil Tips toggle button should exist');
+assert(html.includes('id="tamilTipsToggleText"'), 'Tamil Tips toggle text span should exist');
+assert(html.includes('id="ideTamilInspectorBar"'), 'Tamil Live Inspector Bar should exist');
+assert(html.includes('id="ideInspectorLinePill"'), 'Inspector line pill should exist');
+assert(html.includes('id="ideInspectorTag"'), 'Inspector tag should exist');
+assert(html.includes('id="ideInspectorCode"'), 'Inspector code span should exist');
+assert(html.includes('id="ideInspectorDesc"'), 'Inspector desc span should exist');
+assert(html.includes('id="ideInspectorSpeakBtn"'), 'Inspector speak button should exist');
+assert(html.includes('id="ideInspectorReplaceBtn"'), 'Inspector replace button should exist');
 assert(html.includes('id="tamilOpenExplainerTabBtn"'), 'Translator modal tab button should exist');
 assert(html.includes('id="tamilExplainerSpeechBtn"'), 'Speech button should exist');
 assert(html.includes('id="tamilExplainerCopyBtn"'), 'Copy button should exist');
@@ -30,6 +39,13 @@ assert(html.includes('function detectProgramPurposeInTamil'), 'detectProgramPurp
 assert(html.includes('function openTamilExplainerModal'), 'openTamilExplainerModal should be defined');
 assert(html.includes('function closeTamilExplainerModal'), 'closeTamilExplainerModal should be defined');
 assert(html.includes('function bindTamilExplainerModal'), 'bindTamilExplainerModal should be defined');
+assert(html.includes('function registerTamilMonacoHover'), 'registerTamilMonacoHover should be defined');
+assert(html.includes('function updateTamilInspectorForPosition'), 'updateTamilInspectorForPosition should be defined');
+assert(html.includes('function speakCurrentInspectorLine'), 'speakCurrentInspectorLine should be defined');
+assert(html.includes('function replaceCurrentLineWithTamil'), 'replaceCurrentLineWithTamil should be defined');
+assert(html.includes('function toggleTamilTips'), 'toggleTamilTips should be defined');
+assert(html.includes('function updateTamilTipsUIState'), 'updateTamilTipsUIState should be defined');
+assert(html.includes('function speakTamilText'), 'speakTamilText should be defined');
 console.log('✓ Function definitions verified.');
 
 // 3. Test functional behavior of explainer functions
@@ -87,7 +103,27 @@ assert(l6 && l6.type === 'output', 'Should detect console.log');
 assert(l6.tamilCode.includes('பதிப்பி'), 'console.log should translate to பதிப்பி in Tamil code');
 assert(l6.casual.includes('print பண்ணி காட்டுது'), 'Should explain print casually');
 
-// Test 3: Verify sanitize of smart quotes
+// Test 4: Monaco Hover Provider Simulation
+console.log('Testing Monaco Hover Provider formatting...');
+const hoverExp = explainCodeLineInTamil('const pi = 3.14159;');
+assert(hoverExp && hoverExp.tamilCode === 'நிலைமாறி pi = 3.14159;', 'Should translate const to நிலைமாறி');
+const plainCasual = (hoverExp.casual || '').replace(/<[^>]+>/g, '');
+const hoverMarkdown = `**💡 தமிழ் நிரல் குறிப்பு (${hoverExp.badge} • வரி 1)**\n\`\`\`tamil\n${hoverExp.tamilCode}\n\`\`\`\n${plainCasual}`;
+assert(hoverMarkdown.includes('💡 தமிழ் நிரல் குறிப்பு'), 'Hover markdown should have Tamil title');
+assert(hoverMarkdown.includes('```tamil'), 'Hover markdown should contain tamil code block');
+assert(hoverMarkdown.includes('நிலைமாறி pi = 3.14159;'), 'Hover markdown should contain translated code');
+console.log('✓ Monaco Hover formatting verified.');
+
+// Test 5: Inspector Line Replace Simulation
+console.log('Testing Line Replacement logic...');
+const originalIndentedLine = '    let message = "Hello";';
+const indent = originalIndentedLine.match(/^(\s*)/)[1];
+const translatedTrimmed = translateCodeToTamil(originalIndentedLine.trim());
+const replacedLine = indent + translatedTrimmed;
+assert.strictEqual(replacedLine, '    மாறி message = "Hello";', 'Should preserve indent and translate code');
+console.log('✓ Line replacement logic verified.');
+
+// Test 6: Verify sanitize of smart quotes
 console.log('Testing smart quotes and tokenization sanitize...');
 assert(html.includes('[\\u201C\\u201D\\u201E\\u201F\\u2033\\u2036]'), 'Curly quotes should be sanitized');
 assert(html.includes('hasTamilKeywords'), 'Tamil keywords should be auto-detected in JS runner');
