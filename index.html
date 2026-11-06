@@ -87,13 +87,11 @@
     opacity:0;
     pointer-events:none;
   }
-  .app.project-active .sidebar,
   .app.code-active .sidebar{
     margin-left:calc(-1 * var(--sidebar-w));
     opacity:0;
     pointer-events:none;
   }
-  .app.project-active .topbar,
   .app.code-active .topbar{
     display:none;
   }
@@ -291,7 +289,6 @@
   .type-dot{ width:6px; height:6px; border-radius:50%; flex-shrink:0; }
   .type-dot.note{ background:#7C9BC7; }
   .type-dot.code{ background:#7FAE8C; }
-  .type-dot.project{ background:#D48265; }
   .type-dot.todo{ background:#D6A94E; }
   .type-dot.journal{ background:#B6789E; }
 
@@ -472,22 +469,11 @@
     flex:1;
     overflow-y:auto;
   }
-  .editor-scroll.project-mode {
+  .editor-scroll.code-mode {
     overflow: hidden;
     display: flex;
     flex-direction: column;
     height: 100%;
-  }
-  .editor-scroll.project-mode .editor-inner:not(.code-layout) {
-    flex: 1;
-    min-height: 0;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
   }
   .editor-inner.code-layout {
     width: 88%;
@@ -1305,17 +1291,7 @@
   }
 
 
-  /* ---------- Project IDE Workspace ---------- */
-  .project-ide {
-    display: flex;
-    flex: 1;
-    min-height: 0;
-    background: var(--bg);
-    overflow: hidden;
-    position: relative;
-    align-items: stretch;
-    gap: 10px;
-  }
+  /* ---------- Code Editor Workspace ---------- */
 
   .project-toolbar {
     display: flex !important;
@@ -1374,278 +1350,7 @@
     display: none;
   }
 
-  .project-toolbar .project-title-input{
-    font-size:16px;
-    font-weight:700;
-    color:var(--ink);
-    padding:6px 10px;
-    border:1px solid transparent;
-    border-radius:6px;
-    background:transparent;
-    text-align:left;
-    width:240px;
-  }
-  .project-toolbar .project-title-input:hover{
-    background:var(--bg-surface);
-  }
-  .project-toolbar .project-title-input:focus{
-    outline:none;
-    border-color:var(--border);
-    background:var(--bg-surface);
-  }
 
-  .project-explorer {
-    flex: 0 0 240px;
-    width: 240px;
-    min-width: 240px;
-    background: var(--bg-sidebar);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    user-select: none;
-    height: 100%;
-    min-height: 0;
-    transition: background 0.15s, outline 0.15s;
-  }
-
-  .project-explorer.drag-over {
-    background: var(--accent-soft) !important;
-    outline: 2px dashed var(--accent) !important;
-    outline-offset: -4px;
-  }
-
-  .project-center-pane {
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-    min-height: 0;
-  }
-
-  .project-explorer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 36px;
-    padding: 0 14px;
-    border-bottom: 1px solid var(--border);
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--ink-soft);
-    flex-shrink: 0;
-    box-sizing: border-box;
-    background: var(--bg-sidebar);
-  }
-
-  .project-explorer-actions {
-    display: flex;
-    gap: 6px;
-  }
-
-  .project-explorer-action-btn {
-    background: transparent;
-    border: none;
-    padding: 2px;
-    cursor: pointer;
-    color: var(--ink-faint);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .project-explorer-action-btn:hover {
-    background: var(--accent-soft);
-    color: var(--accent);
-  }
-
-  .project-explorer-action-btn svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  .project-explorer-tree {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px 0;
-  }
-
-  .explorer-item {
-    display: flex;
-    align-items: center;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--ink-soft);
-    gap: 8px;
-    transition: background 0.1s;
-    position: relative;
-    border-left: 2px solid transparent;
-  }
-
-  .explorer-item:hover {
-    background: var(--accent-soft);
-    color: var(--ink);
-  }
-
-  .explorer-item.active {
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-weight: 500;
-    border-left-color: var(--accent);
-  }
-
-  .explorer-item-actions {
-    margin-left: auto;
-    display: none;
-    gap: 4px;
-  }
-
-  .explorer-item:hover .explorer-item-actions {
-    display: flex;
-  }
-
-  .explorer-item-btn {
-    background: transparent;
-    border: none;
-    color: var(--ink-faint);
-    padding: 2px;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-
-  .explorer-item-btn:hover {
-    background: rgba(0,0,0,0.05);
-    color: var(--danger);
-  }
-
-  [data-theme="dark"] .explorer-item-btn:hover {
-    background: rgba(255,255,255,0.08);
-  }
-
-  .explorer-item-btn svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  .explorer-indent {
-    width: 12px;
-    flex-shrink: 0;
-  }
-
-  .explorer-item .icon svg {
-    width: 14px;
-    height: 14px;
-    color: var(--ink-faint);
-    flex-shrink: 0;
-  }
-
-  .explorer-item.active .icon svg {
-    color: var(--accent);
-  }
-
-  /* Right Editor Pane */
-  .project-editor-pane {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    min-height: 0;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .project-tabs-bar {
-    height: 36px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg-sidebar);
-    display: flex;
-    overflow-x: auto;
-    scrollbar-width: none;
-    flex-shrink: 0;
-  }
-
-  .project-tabs-bar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .project-tab {
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    border-right: 1px solid var(--border);
-    cursor: pointer;
-    font-size: 12px;
-    color: var(--ink-soft);
-    gap: 8px;
-    height: 100%;
-    background: var(--bg-sidebar);
-    transition: background 0.15s, color 0.15s;
-    user-select: none;
-    position: relative;
-  }
-
-  .project-tab:hover {
-    background: var(--bg);
-    color: var(--ink);
-  }
-
-  .project-tab.active {
-    background: var(--bg);
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .project-tab.active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--accent);
-  }
-
-  .project-tab-close {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ink-faint);
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .project-tab-close:hover {
-    background: rgba(0,0,0,0.1);
-    color: var(--ink);
-  }
-
-  [data-theme="dark"] .project-tab-close:hover {
-    background: rgba(255,255,255,0.15);
-  }
-
-  .project-tab-close svg {
-    width: 10px;
-    height: 10px;
-    stroke-width: 3px;
-  }
-
-  .project-main-area {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    min-height: 0;
-    position: relative;
-    overflow: hidden;
-  }
 
   .project-editor-side {
     display: flex;
@@ -1670,41 +1375,7 @@
     padding: 0;
   }
 
-  #projectMonacoContainer {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-  }
 
-  .project-h-divider {
-    width: 1px !important;
-    background: var(--border) !important;
-    cursor: ew-resize;
-    flex-shrink: 0;
-    position: relative;
-    transition: background 0.15s;
-    z-index: 10;
-    min-height: 0;
-    align-self: stretch;
-    margin: 0 4px;
-  }
-  .project-h-divider::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: -6px;
-    width: 13px;
-    cursor: ew-resize;
-    background: transparent;
-  }
-  .project-h-divider:hover, .project-h-divider.dragging {
-    background: var(--accent) !important;
-  }
 
   .project-preview-panel {
     flex: 0 0 min(38vw, 380px);
@@ -1955,23 +1626,7 @@
   .run-btn.running .run-icon { display: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .project-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: var(--ink-faint);
-    gap: 12px;
-    font-size: 14px;
-    user-select: none;
-  }
 
-  .project-empty-state svg {
-    width: 48px;
-    height: 48px;
-    stroke-width: 1.5;
-  }
 </style>
 </head>
 <body>
@@ -2017,10 +1672,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h8M8 12h8M8 18h8"/><path d="M4 4h16v16H4z"/></svg>
         Code Editor
       </button>
-      <button class="sidebar-action-btn" id="newProjectBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        New project
-      </button>
+
     </div>
 
     <div class="filters" id="filterTabs">
@@ -2185,16 +1837,13 @@
   };
 
   function persistAppState() {
-    const previewPanel = document.getElementById('projectPreviewPanel');
+    const previewPanel = document.getElementById('idePreviewWrapper');
     const previewCollapsed = previewPanel ? previewPanel.classList.contains('collapsed') : false;
-    const active = getActive();
     const appState = {
       activeId,
       filter,
       activeTagFilter,
-      previewCollapsed,
-      activeFile: active && active.type === 'project' ? active.activeFile : null,
-      openTabs: active && active.type === 'project' ? active.openTabs || [] : []
+      previewCollapsed
     };
 
     try {
@@ -2239,14 +1888,12 @@
     filePlus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>'
   };
 
-  const TYPE_LABEL = { note: 'Note', code: 'Code', project: 'Project', todo: 'To-do', journal: 'Journal' };
+  const TYPE_LABEL = { note: 'Note', code: 'Code', todo: 'To-do', journal: 'Journal' };
 
   let notes = [];        // array of note objects, in list order
-  let projects = [];     // array of project objects, in list order
   let codes = [];        // array of code snippet objects, in list order
   let activeId = null;
   let lastNotesActiveId = null;
-  let lastProjectActiveId = null;
   let lastCodeActiveId = null;
   let filter = 'all';
   let activeTagFilter = null;
@@ -2262,12 +1909,11 @@
   function setCodeView(id, v){ codeViewByNote[id] = v; }
 
   let monacoEditorInstance = null;  // used by single-file code notes
-  let projectMonacoInstance = null; // used by project IDE
   let pyodideInstance = null;
   let pyodideLoadingPromise = null;
   let monacoLoadingPromise = null;
   let isExecuting = false;
-  let projectRunAbortController = null;
+  let runAbortController = null;
   let previewDebounceTimer = null;
 
   function loadMonaco() {
@@ -2398,9 +2044,9 @@
 
   function stopExecution() {
     isExecuting = false;
-    if (projectRunAbortController) {
-      projectRunAbortController.abort();
-      projectRunAbortController = null;
+    if (runAbortController) {
+      runAbortController.abort();
+      runAbortController = null;
     }
     updateConsoleStatus('Stopped', false);
     const runnerFrame = document.getElementById('jsRunnerFrame');
@@ -2721,10 +2367,13 @@
         const stdinEl = document.getElementById('ideConsoleStdin');
         const stdin = stdinEl ? stdinEl.value : '';
         
+        if (runAbortController) runAbortController.abort();
+        runAbortController = new AbortController();
         const response = await fetch(backendUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code, language, stdin })
+          body: JSON.stringify({ code, language, stdin }),
+          signal: runAbortController.signal
         });
         
         if (!response.ok) {
@@ -2865,1254 +2514,6 @@
         container.innerHTML = `<div style="padding:20px;color:var(--danger)">Error loading code editor. Please check your internet connection.</div>`;
       }
     });
-  }
-
-  const collapsedFolders = new Set();
-  
-  function getFileLanguage(filename) {
-    const ext = filename.split('.').pop().toLowerCase();
-    const map = {
-      js: 'javascript',
-      html: 'html',
-      css: 'css',
-      py: 'python',
-      ts: 'typescript',
-      cpp: 'cpp',
-      cc: 'cpp',
-      c: 'c',
-      cs: 'csharp',
-      go: 'go',
-      rs: 'rust',
-      kt: 'kotlin',
-      php: 'php',
-      rb: 'ruby',
-      sql: 'sql',
-      sh: 'shell',
-      json: 'json',
-      md: 'markdown'
-    };
-    return map[ext] || 'plaintext';
-  }
-
-  function getFileIcon(filename) {
-    const ext = filename.split('.').pop().toLowerCase();
-    switch (ext) {
-      case 'html':
-      case 'htm':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #e34f26; width: 14px; height: 14px;"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16"/></svg>`;
-      case 'css':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #0288d1; width: 14px; height: 14px;"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg>`;
-      case 'js':
-      case 'jsx':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f5b041; width: 14px; height: 14px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 15c.5-.8 1-.8 1.5 0 .5.7 0 2-1.5 2s-1.5-.5-1.5-1.5M14 17.5c.8.5 2 0 2-1s-1.5-1.5-1.5-2.5 1-1 1.5.5"/></svg>`;
-      case 'ts':
-      case 'tsx':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #2980b9; width: 14px; height: 14px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M7 8h4M9 8v8M13 14c.5.5 1 .8 1.5.8.8 0 1.5-.5 1.5-1.2s-1-1-1.5-1.5-.5-1-.5-1.5.8-1.2 1.5-1.2.8.5 1 .8"/></svg>`;
-      case 'py':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #3572a5; width: 14px; height: 14px;"><path d="M12 9V2H8C5.8 2 4 3.8 4 6v4c0 2.2 1.8 4 4 4h4v-5z"/><path d="M12 15v7h4c2.2 0 4-1.8 4-6v-4c0-2.2-1.8-4-4-4-4-4h-4v5z"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="16" cy="18" r="1" fill="currentColor"/></svg>`;
-      case 'c':
-      case 'cpp':
-      case 'cc':
-      case 'h':
-      case 'hpp':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #5c8cbc; width: 14px; height: 14px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M14 10a3 3 0 1 0 0 6M17 11h2M18 10v2"/></svg>`;
-      case 'cs':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #9b4993; width: 14px; height: 14px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M10 10a3 3 0 1 0 0 6M13 9l1 6M15 9l1 6M12 11h5M12 13h5"/></svg>`;
-      case 'go':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #00add8; width: 14px; height: 14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M15 13H11v4h4v-2h-2"/></svg>`;
-      case 'rs':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #d35400; width: 14px; height: 14px;"><circle cx="12" cy="12" r="9"/><path d="M9 16V8h3a2 2 0 0 1 0 4H9m3 0 3 4"/></svg>`;
-      case 'kt':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #7f52ff; width: 14px; height: 14px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M7 7v10M7 12l5-5M7 12l5 5"/></svg>`;
-      case 'sql':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #00758f; width: 14px; height: 14px;"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>`;
-      case 'json':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #cfaa15; width: 14px; height: 14px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M8 9a1.5 1.5 0 0 0 1.5-1.5V6m0 12v-1.5A1.5 1.5 0 0 0 8 15m8-6a1.5 1.5 0 0 1-1.5-1.5V6m0 12v-1.5A1.5 1.5 0 0 1 16 15"/></svg>`;
-      case 'md':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #4285f4; width: 14px; height: 14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M7 12v4M7 12l2 2 2-2v4M13 13h3m-1.5-1.5v3"/></svg>`;
-      case 'png':
-      case 'jpg':
-      case 'jpeg':
-      case 'gif':
-      case 'svg':
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #4caf50; width: 14px; height: 14px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
-      default:
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #7f8c8d; width: 14px; height: 14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
-    }
-  }
-
-  function initializeProjectIDE(note) {
-    if (!note) return;
-    if (!note.openTabs) note.openTabs = [];
-    if (!note.files) note.files = {};
-
-    if (projectMonacoInstance) {
-      projectMonacoInstance.dispose();
-      projectMonacoInstance = null;
-    }
-
-    const treeEl = document.getElementById('projectExplorerTree');
-    const tabsBar = document.getElementById('projectTabsBar');
-    const emptyState = document.getElementById('projectEmptyState');
-    const editorContainer = document.getElementById('projectEditorContainer');
-
-    function saveProjectState() {
-      queueSave(note);
-    }
-
-    function renderTabs() {
-      if (!tabsBar) return;
-      const tabs = note.openTabs || [];
-      const active = note.activeFile;
-      
-      tabsBar.innerHTML = tabs.map(tab => {
-        const isActive = tab === active;
-        const filename = tab.split('/').pop();
-        return `
-          <div class="project-tab ${isActive ? 'active' : ''}" data-path="${tab}">
-            <span>${escapeHtml(filename)}</span>
-            <span class="project-tab-close" data-path="${tab}">${ICONS.x}</span>
-          </div>
-        `;
-      }).join('');
-
-      // Add click listeners to tabs
-      tabsBar.querySelectorAll('.project-tab').forEach(el => {
-        el.addEventListener('click', (e) => {
-          if (e.target.closest('.project-tab-close')) return;
-          const path = el.getAttribute('data-path');
-          openFile(path);
-        });
-      });
-
-      // Add click listeners to close buttons
-      tabsBar.querySelectorAll('.project-tab-close').forEach(el => {
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const path = el.getAttribute('data-path');
-          closeTab(path);
-        });
-      });
-    }
-
-    function renderExplorer() {
-      if (!treeEl) return;
-      const files = note.files || {};
-      const paths = Object.keys(files).sort();
-
-      const tree = { name: "", isFolder: true, children: {} };
-
-      paths.forEach(p => {
-        const parts = p.split('/').filter(x => x);
-        let current = tree;
-        for (let i = 0; i < parts.length; i++) {
-          const part = parts[i];
-          const isLast = i === parts.length - 1;
-          const isFolder = !isLast || p.endsWith('/') || files[p].isFolder;
-
-          if (!current.children[part]) {
-            current.children[part] = {
-              name: part,
-              path: parts.slice(0, i + 1).join('/') + (isFolder ? '/' : ''),
-              isFolder: isFolder,
-              children: {}
-            };
-          }
-          current = current.children[part];
-        }
-      });
-
-      function renderNode(node, depth) {
-        if (node.name === "" && depth === 0) {
-          return Object.values(node.children)
-            .sort((a, b) => {
-              if (a.isFolder && !b.isFolder) return -1;
-              if (!a.isFolder && b.isFolder) return 1;
-              return a.name.localeCompare(b.name);
-            })
-            .map(child => renderNode(child, depth + 1))
-            .join('');
-        }
-
-        const indent = `<span class="explorer-indent" style="width: ${depth * 12}px"></span>`;
-        const isFolder = node.isFolder;
-        const path = node.path;
-        const isActive = note.activeFile === path;
-        const isCollapsed = collapsedFolders.has(path);
-
-        const folderIcon = isCollapsed ? ICONS.folderClosed : ICONS.folderOpen;
-        const fileIcon = getFileIcon(node.name);
-
-        const icon = isFolder ? folderIcon : fileIcon;
-        const itemClass = `explorer-item ${isFolder ? 'is-dir' : 'is-file'} ${isActive ? 'active' : ''}`;
-
-        let childrenHtml = '';
-        if (isFolder && !isCollapsed) {
-          childrenHtml = Object.values(node.children)
-            .sort((a, b) => {
-              if (a.isFolder && !b.isFolder) return -1;
-              if (!a.isFolder && b.isFolder) return 1;
-              return a.name.localeCompare(b.name);
-            })
-            .map(child => renderNode(child, depth + 1))
-            .join('');
-        }
-
-        const actionButtons = `
-          <span class="explorer-item-actions">
-            <button class="explorer-item-btn" data-action="rename" data-path="${path}" title="Rename">${ICONS.rename}</button>
-            <button class="explorer-item-btn" data-action="delete" data-path="${path}" title="Delete">${ICONS.trash}</button>
-          </span>
-        `;
-
-        return `
-          <div class="${itemClass}" data-path="${path}">
-            ${indent}
-            <span class="icon">${icon}</span>
-            <span class="name">${escapeHtml(node.name)}</span>
-            ${actionButtons}
-          </div>
-          ${childrenHtml}
-        `;
-      }
-
-      treeEl.innerHTML = renderNode(tree, 0);
-
-      // Add click listeners to explorer items
-      treeEl.querySelectorAll('.explorer-item').forEach(el => {
-        el.addEventListener('click', (e) => {
-          if (e.target.closest('.explorer-item-btn')) return;
-          const path = el.getAttribute('data-path');
-          const isDir = el.classList.contains('is-dir');
-          
-          if (isDir) {
-            if (collapsedFolders.has(path)) {
-              collapsedFolders.delete(path);
-            } else {
-              collapsedFolders.add(path);
-            }
-            renderExplorer();
-          } else {
-            openFile(path);
-          }
-        });
-      });
-
-      // Add explorer action listeners
-      treeEl.querySelectorAll('.explorer-item-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const action = btn.getAttribute('data-action');
-          const path = btn.getAttribute('data-path');
-          if (action === 'rename') {
-            renamePath(path);
-          } else if (action === 'delete') {
-            deletePath(path);
-          }
-        });
-      });
-    }
-
-    function openFile(path) {
-      if (!note.files[path]) return;
-      note.activeFile = path;
-      if (!note.openTabs.includes(path)) {
-        note.openTabs.push(path);
-      }
-      saveProjectState();
-      renderTabs();
-      renderExplorer();
-
-      if (emptyState) emptyState.style.display = 'none';
-      if (editorContainer) editorContainer.style.display = 'block';
-
-      loadMonaco().then(monaco => {
-        const monacoContainer = document.getElementById('projectMonacoContainer');
-        if (!monacoContainer) return;
-
-        if (!projectMonacoInstance) {
-          const mTheme = getMonacoTheme(note);
-          projectMonacoInstance = monaco.editor.create(monacoContainer, {
-            theme: mTheme,
-            automaticLayout: true,
-            lineNumbers: 'on',
-            minimap: { enabled: true },
-            folding: true,
-            bracketPairColorization: { enabled: true },
-            autoClosingBrackets: 'always',
-            suggestOnTriggerCharacters: true,
-            wordBasedSuggestions: 'allDocuments',
-            fontSize: 14,
-            fontFamily: "'JetBrains Mono', Consolas, monospace",
-            roundedSelection: true,
-            scrollBeyondLastLine: false,
-            cursorBlinking: 'smooth',
-            cursorSmoothCaretAnimation: 'on',
-            padding: { top: 10, bottom: 10 }
-          });
-
-          projectMonacoInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-            runProject();
-          });
-          projectMonacoInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.S, () => {
-            clearTimeout(saveTimer);
-            note.updatedAt = Date.now();
-            persistNote(note);
-            persistIndex();
-            setSaveStatus('saved', note);
-            renderSidebarCardOnly(note);
-            showToast('Saved project');
-          });
-        }
-
-        const language = getFileLanguage(path);
-        let model = monaco.editor.getModels().find(m => m && m.uri && m.uri.path === '/' + path);
-        if (!model) {
-          model = monaco.editor.createModel(note.files[path].content, language, monaco.Uri.parse('file:///' + path));
-          model.onDidChangeContent(() => {
-            if (note.files[path]) {
-              note.files[path].content = model.getValue();
-              saveProjectState();
-              schedulePreviewRefresh();
-            }
-          });
-        } else {
-          if (model.getValue() !== note.files[path].content) {
-            model.setValue(note.files[path].content);
-          }
-        }
-        projectMonacoInstance.setModel(model);
-        projectMonacoInstance.focus();
-        setTimeout(() => { if (projectMonacoInstance) projectMonacoInstance.layout(); }, 50);
-        setTimeout(() => { if (projectMonacoInstance) projectMonacoInstance.layout(); }, 200);
-      });
-    }
-
-    function closeTab(path) {
-      note.openTabs = note.openTabs.filter(t => t !== path);
-      if (note.activeFile === path) {
-        note.activeFile = note.openTabs.length > 0 ? note.openTabs[note.openTabs.length - 1] : null;
-      }
-      saveProjectState();
-      renderTabs();
-      renderExplorer();
-
-      if (!note.activeFile) {
-        if (emptyState) emptyState.style.display = 'flex';
-        if (editorContainer) editorContainer.style.display = 'none';
-        if (projectMonacoInstance) { projectMonacoInstance.setModel(null); }
-      } else {
-        openFile(note.activeFile);
-      }
-    }
-
-    function createNewFile() {
-      const baseFolder = getProjectCreationBaseFolder();
-      const name = prompt("Enter file name (e.g. script.js or src/main.py):");
-      if (!name) return;
-      const sanitizedName = sanitizeProjectPath(name).replace(/^\/+/, '');
-      if (!sanitizedName) return;
-      const fullPath = baseFolder ? (baseFolder.endsWith('/') ? baseFolder + sanitizedName : baseFolder + '/' + sanitizedName) : sanitizedName;
-      if (note.files[fullPath]) {
-        alert("A file or directory with this name already exists.");
-        return;
-      }
-      note.files[fullPath] = { content: "" };
-      ensureProjectFolderStructure(note.files, fullPath);
-      note.activeFile = fullPath;
-      if (!note.openTabs.includes(fullPath)) {
-        note.openTabs.push(fullPath);
-      }
-      saveProjectState();
-      renderExplorer();
-      openFile(fullPath);
-      showToast(`Created file ${fullPath}`);
-    }
-
-    function createNewFolder() {
-      const baseFolder = getProjectCreationBaseFolder();
-      let name = prompt("Enter folder name (e.g. src or assets/images):");
-      if (!name) return;
-      const sanitizedName = sanitizeProjectPath(name).replace(/^\/+/, '');
-      if (!sanitizedName) return;
-      let folderName = sanitizedName;
-      if (!folderName.endsWith('/')) folderName += '/';
-      const fullPath = baseFolder ? (baseFolder.endsWith('/') ? baseFolder + folderName : baseFolder + '/' + folderName) : folderName;
-      if (note.files[fullPath]) {
-        alert("A folder with this name already exists.");
-        return;
-      }
-      note.files[fullPath] = { isFolder: true };
-      ensureProjectFolderStructure(note.files, fullPath);
-      saveProjectState();
-      renderExplorer();
-      showToast(`Created folder ${fullPath}`);
-    }
-
-    function renamePath(oldPath) {
-      const filename = oldPath.endsWith('/') ? oldPath.slice(0, -1).split('/').pop() + '/' : oldPath.split('/').pop();
-      let newName = prompt(`Rename ${filename} to:`, filename);
-      if (!newName) return;
-      
-      const isFolder = oldPath.endsWith('/');
-      if (isFolder && !newName.endsWith('/')) newName += '/';
-
-      const dirParts = oldPath.split('/');
-      dirParts.pop();
-      if (isFolder) dirParts.pop();
-      const parentDir = dirParts.length > 0 ? dirParts.join('/') + '/' : '';
-      const newPath = parentDir + newName;
-
-      if (note.files[newPath]) {
-        alert("A file or folder with this name already exists.");
-        return;
-      }
-
-      const oldKeys = Object.keys(note.files);
-      oldKeys.forEach(k => {
-        if (k === oldPath) {
-          note.files[newPath] = note.files[oldPath];
-          delete note.files[oldPath];
-        } else if (isFolder && k.startsWith(oldPath)) {
-          const relativePart = k.slice(oldPath.length);
-          const childNewPath = newPath + relativePart;
-          note.files[childNewPath] = note.files[k];
-          delete note.files[k];
-        }
-      });
-
-      note.openTabs = note.openTabs.map(t => {
-        if (t === oldPath) return newPath;
-        if (isFolder && t.startsWith(oldPath)) return newPath + t.slice(oldPath.length);
-        return t;
-      });
-
-      if (note.activeFile === oldPath) {
-        note.activeFile = newPath;
-      } else if (isFolder && note.activeFile && note.activeFile.startsWith(oldPath)) {
-        note.activeFile = newPath + note.activeFile.slice(oldPath.length);
-      }
-
-      if (window.monaco) {
-        try {
-          const model = monaco.editor.getModels().find(m => m && m.uri && m.uri.path === '/' + oldPath);
-          if (model) model.dispose();
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      saveProjectState();
-      renderExplorer();
-      renderTabs();
-      if (note.activeFile) {
-        openFile(note.activeFile);
-      }
-      showToast(`Renamed to ${newName}`);
-    }
-
-    function deletePath(path) {
-      const isFolder = path.endsWith('/');
-      const msg = isFolder 
-        ? `Are you sure you want to delete folder '${path}' and all of its contents?`
-        : `Are you sure you want to delete file '${path}'?`;
-      if (!confirm(msg)) return;
-
-      const oldKeys = Object.keys(note.files);
-      oldKeys.forEach(k => {
-        if (k === path || (isFolder && k.startsWith(path))) {
-          delete note.files[k];
-          note.openTabs = note.openTabs.filter(t => t !== k);
-          if (note.activeFile === k) note.activeFile = null;
-          if (window.monaco) {
-            try {
-              const model = monaco.editor.getModels().find(m => m && m.uri && m.uri.path === '/' + k);
-              if (model) model.dispose();
-            } catch (e) {
-              console.error(e);
-            }
-          }
-        }
-      });
-
-      if (!note.activeFile && note.openTabs.length > 0) {
-        note.activeFile = note.openTabs[note.openTabs.length - 1];
-      }
-
-      saveProjectState();
-      renderExplorer();
-      renderTabs();
-      if (note.activeFile) {
-        openFile(note.activeFile);
-      } else {
-        if (emptyState) emptyState.style.display = 'flex';
-        if (editorContainer) editorContainer.style.display = 'none';
-        if (projectMonacoInstance) projectMonacoInstance.setModel(null);
-      }
-      showToast(`Deleted ${isFolder ? 'folder' : 'file'}`);
-    }
-
-    function sanitizeProjectPath(path) {
-      if (!path) return '';
-      let cleanPath = String(path).replace(/\\/g, '/');
-      cleanPath = cleanPath.replace(/^\/+/, '');
-      cleanPath = cleanPath.replace(/^\.\//, '');
-      cleanPath = cleanPath.replace(/\/+/g, '/');
-      return cleanPath;
-    }
-
-    function getFileSystemPath(file) {
-      const raw = file && (
-        file.webkitRelativePath ||
-        file.relativePath ||
-        file.path ||
-        file.name ||
-        ''
-      );
-      const safe = sanitizeProjectPath(raw);
-      if (!safe) return file && file.name ? sanitizeProjectPath(file.name) : '';
-      return safe;
-    }
-
-    function ensureProjectFolderStructure(fileMap, filePath) {
-      if (!filePath) return;
-      const parts = filePath.split('/');
-      let currentDir = '';
-      for (let i = 0; i < parts.length - 1; i++) {
-        currentDir += (currentDir ? '/' : '') + parts[i];
-        const folderPath = currentDir + '/';
-        if (!note.files[folderPath]) {
-          note.files[folderPath] = { isFolder: true };
-        }
-      }
-    }
-
-    function getProjectCreationBaseFolder() {
-      if (!note || !note.files) return '';
-      if (note.activeFile && note.files[note.activeFile] && note.files[note.activeFile].isFolder) {
-        return note.activeFile;
-      }
-      if (note.activeFile) {
-        const parts = note.activeFile.split('/');
-        if (parts.length > 1) {
-          return parts.slice(0, -1).join('/') + '/';
-        }
-      }
-      return '';
-    }
-
-    function attachProjectPicker(inputId, options = {}) {
-      const input = document.getElementById(inputId) || document.createElement('input');
-      if (!input.id) {
-        input.id = inputId;
-        input.type = 'file';
-        input.style.display = 'none';
-        input.multiple = !!options.multiple;
-        if (options.accept) input.accept = options.accept;
-        if (options.directory) {
-          input.webkitdirectory = true;
-          input.directory = true;
-        }
-        document.body.appendChild(input);
-      }
-      input.value = '';
-      input.multiple = !!options.multiple;
-      if (options.accept) input.accept = options.accept;
-      if (options.directory) {
-        input.webkitdirectory = true;
-        input.directory = true;
-      }
-      input.onchange = (e) => {
-        const files = e.target.files;
-        if (files && files.length) {
-          importFilesToWorkspace(files, options.importMode || 'merge');
-        }
-        setTimeout(() => { input.value = ''; }, 0);
-      };
-      return input;
-    }
-
-    function triggerFileImport() {
-      attachProjectPicker('projectImportFileInput', { multiple: true, accept: '*/*' });
-      const input = document.getElementById('projectImportFileInput');
-      if (input) input.click();
-    }
-
-    function triggerFolderImport() {
-      attachProjectPicker('projectImportFolderInput', { multiple: true, directory: true });
-      const input = document.getElementById('projectImportFolderInput');
-      if (input) input.click();
-    }
-
-    function triggerAddFileToWorkspace() {
-      attachProjectPicker('projectAddFileInput', { multiple: true, accept: '*/*' });
-      const input = document.getElementById('projectAddFileInput');
-      if (input) input.click();
-    }
-
-    function triggerAddFolderToWorkspace() {
-      attachProjectPicker('projectAddFolderInput', { multiple: true, directory: true });
-      const input = document.getElementById('projectAddFolderInput');
-      if (input) input.click();
-    }
-
-    window.triggerFileImport = triggerFileImport;
-    window.triggerFolderImport = triggerFolderImport;
-    window.triggerAddFileToWorkspace = triggerAddFileToWorkspace;
-    window.triggerAddFolderToWorkspace = triggerAddFolderToWorkspace;
-    window.importFilesToWorkspace = importFilesToWorkspace;
-
-    async function importFilesToWorkspace(fileList) {
-      const files = Array.from(fileList);
-      if (files.length === 0) return;
-
-      function readText(file){
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = () => reject(reader.error);
-          reader.readAsText(file);
-        });
-      }
-
-      const importedFiles = {};
-      const first = files[0];
-
-      const addImportedFile = (path, content) => {
-        const cleanPath = sanitizeProjectPath(path);
-        if (!cleanPath) return;
-        importedFiles[cleanPath] = { content };
-        ensureProjectFolderStructure(importedFiles, cleanPath);
-      };
-
-      if (files.length === 1 && first.name.toLowerCase().endsWith('.zip')) {
-        try {
-          showToast('Extracting project from zip archive...');
-          if (!window.JSZip) {
-            await new Promise((resolve, reject) => {
-              const script = document.createElement('script');
-              script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-              script.onload = resolve;
-              script.onerror = reject;
-              document.head.appendChild(script);
-            });
-          }
-          const zip = await window.JSZip.loadAsync(first);
-          const promises = [];
-          zip.forEach((relativePath, zipEntry) => {
-            if (!zipEntry.dir) {
-              promises.push(
-                zipEntry.async('string').then(text => {
-                  addImportedFile(relativePath, text);
-                })
-              );
-            }
-          });
-          await Promise.all(promises);
-
-          let cleanedFiles = importedFiles;
-          const paths = Object.keys(importedFiles);
-          if (paths.length > 0) {
-            const firstParts = paths[0].split('/');
-            if (firstParts.length > 1) {
-              const rootCandidate = firstParts[0] + '/';
-              const allShareRoot = paths.every(p => p.startsWith(rootCandidate));
-              if (allShareRoot) {
-                cleanedFiles = {};
-                for (const [p, val] of Object.entries(importedFiles)) {
-                  cleanedFiles[p.substring(rootCandidate.length)] = val;
-                }
-              }
-            }
-          }
-          
-          if (!note.files) note.files = {};
-          for (const [path, data] of Object.entries(cleanedFiles)) {
-            note.files[path] = data;
-            ensureParentFolders(path);
-          }
-        } catch (err) {
-          alert('Failed to parse zip archive: ' + err.message);
-          return;
-        }
-      } else {
-        for (const file of files) {
-          try {
-            const text = await readText(file);
-            const path = getFileSystemPath(file);
-            if (path) {
-              addImportedFile(path, text);
-            }
-          } catch (err) {
-            console.warn('Could not read file', file.name, err);
-          }
-        }
-
-        if (Object.keys(importedFiles).length === 0) {
-          showToast('No files were imported');
-          return;
-        }
-
-        if (!note.files) note.files = {};
-        for (const [path, data] of Object.entries(importedFiles)) {
-          const cleanPath = sanitizeProjectPath(path);
-          if (!cleanPath) continue;
-          note.files[cleanPath] = data;
-          ensureProjectFolderStructure(note.files, cleanPath);
-        }
-      }
-
-      const importedPaths = Object.keys(importedFiles).filter(p => !p.endsWith('/'));
-      if (!note.openTabs) note.openTabs = [];
-      importedPaths.forEach(path => {
-        if (!note.openTabs.includes(path)) {
-          note.openTabs.push(path);
-        }
-      });
-
-      if (importedPaths.length > 0) {
-        note.activeFile = importedPaths[0];
-      }
-
-      saveProjectState();
-      renderExplorer();
-      renderTabs();
-      if (note.activeFile) {
-        openFile(note.activeFile);
-      }
-      showToast(`Imported ${importedPaths.length} file(s)`);
-    }
-
-    const explorerEl = document.querySelector('.project-explorer');
-    if (explorerEl) {
-      explorerEl.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        explorerEl.classList.add('drag-over');
-      });
-
-      explorerEl.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        explorerEl.classList.remove('drag-over');
-      });
-
-      explorerEl.addEventListener('drop', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        explorerEl.classList.remove('drag-over');
-
-        const items = e.dataTransfer.items;
-        if (!items || items.length === 0) return;
-
-        const entries = [];
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (item.kind === 'file') {
-            const entry = item.webkitGetAsEntry();
-            if (entry) {
-              entries.push(entry);
-            }
-          }
-        }
-
-        if (entries.length === 0) return;
-
-        showToast('Reading dropped files...');
-        
-        const importedFiles = {};
-
-        async function readEntry(entry, currentPath = '') {
-          if (entry.isFile) {
-            const file = await new Promise((resolve, reject) => {
-              entry.file(resolve, reject);
-            });
-            const text = await new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onload = () => resolve(reader.result);
-              reader.onerror = () => reject(reader.error);
-              reader.readAsText(file);
-            });
-            const fullPath = currentPath ? currentPath + '/' + entry.name : entry.name;
-            importedFiles[fullPath] = { content: text };
-          } else if (entry.isDirectory) {
-            const dirReader = entry.createReader();
-            const nextPath = currentPath ? currentPath + '/' + entry.name : entry.name;
-            
-            const readAllEntries = async () => {
-              let allEntries = [];
-              while (true) {
-                const batch = await new Promise((resolve, reject) => {
-                  dirReader.readEntries(resolve, reject);
-                });
-                if (batch.length === 0) break;
-                allEntries = allEntries.concat(batch);
-              }
-              return allEntries;
-            };
-
-            const childEntries = await readAllEntries();
-            for (const child of childEntries) {
-              await readEntry(child, nextPath);
-            }
-          }
-        }
-
-        for (const entry of entries) {
-          try {
-            await readEntry(entry);
-          } catch (err) {
-            console.warn('Failed to read entry', entry.name, err);
-          }
-        }
-
-        const importedPaths = Object.keys(importedFiles).filter(p => !p.endsWith('/'));
-        if (importedPaths.length === 0) {
-          showToast('No files were read');
-          return;
-        }
-
-        if (!note.files) note.files = {};
-        for (const [path, data] of Object.entries(importedFiles)) {
-          note.files[path] = data;
-          ensureParentFolders(path);
-        }
-
-        function ensureParentFolders(path) {
-          const parts = path.split('/');
-          let currentDir = '';
-          for (let i = 0; i < parts.length - 1; i++) {
-            currentDir += parts[i] + '/';
-            if (!note.files[currentDir]) {
-              note.files[currentDir] = { isFolder: true };
-            }
-          }
-        }
-
-        if (!note.openTabs) note.openTabs = [];
-        importedPaths.forEach(path => {
-          if (!note.openTabs.includes(path)) {
-            note.openTabs.push(path);
-          }
-        });
-
-        if (importedPaths.length > 0) {
-          note.activeFile = importedPaths[0];
-        }
-
-        saveProjectState();
-        renderExplorer();
-        renderTabs();
-        if (note.activeFile) {
-          openFile(note.activeFile);
-        }
-        showToast(`Imported ${importedPaths.length} file(s)`);
-      });
-    }
-
-    const newFileBtn = document.getElementById('projectNewFileBtn');
-    const newFolderBtn = document.getElementById('projectNewFolderBtn');
-    const expNewFileBtn = document.getElementById('explorerNewFileBtn');
-    const expNewFolderBtn = document.getElementById('explorerNewFolderBtn');
-    const expAddFileBtn = document.getElementById('explorerAddFileBtn');
-    const expAddFolderBtn = document.getElementById('explorerAddFolderBtn');
-    const runBtn = document.getElementById('projectRunBtn');
-    const stopBtn = document.getElementById('projectStopBtn');
-    const previewToggleBtn = document.getElementById('projectPreviewToggleBtn');
-    const themeSelect = document.getElementById('projectThemeSelect');
-    const consoleClearBtn = document.getElementById('projectConsoleClearBtn');
-
-    if (newFileBtn) newFileBtn.onclick = createNewFile;
-    if (expNewFileBtn) expNewFileBtn.onclick = createNewFile;
-    if (expAddFileBtn) expAddFileBtn.onclick = triggerAddFileToWorkspace;
-    if (newFolderBtn) newFolderBtn.onclick = createNewFolder;
-    if (expNewFolderBtn) expNewFolderBtn.onclick = createNewFolder;
-    if (expAddFolderBtn) expAddFolderBtn.onclick = triggerAddFolderToWorkspace;
-
-    if (runBtn) runBtn.onclick = runProject;
-    if (stopBtn) stopBtn.onclick = stopExecution;
-    if (previewToggleBtn) {
-      previewToggleBtn.onclick = () => {
-        if (!previewPanel) return;
-        const isCollapsed = previewPanel.classList.contains('collapsed');
-        if (isCollapsed) expandPreview();
-        else collapsePreview();
-      };
-    }
-    if (themeSelect) {
-      themeSelect.onchange = (e) => {
-        note.ideTheme = e.target.value;
-        saveProjectState();
-        applyMonacoThemeForActiveNote();
-      };
-    }
-    if (consoleClearBtn) {
-      consoleClearBtn.onclick = () => {
-        const term = document.getElementById('projectTerminal');
-        if (term) term.innerHTML = '';
-        const statusEl = document.getElementById('projectConsoleStatus');
-        if (statusEl) statusEl.textContent = '';
-        const timeEl = document.getElementById('projectConsoleTime');
-        if (timeEl) timeEl.textContent = '';
-      };
-    }
-
-    // --- Vertical console resizer ---
-    const resizer = document.getElementById('projectConsoleResizer');
-    const consolePanel = document.getElementById('projectConsolePanel');
-    if (resizer && consolePanel) {
-      resizer.onmousedown = (e) => {
-        e.preventDefault();
-        const startY = e.clientY;
-        const startHeight = parseInt(document.defaultView.getComputedStyle(consolePanel).height, 10);
-        function doDrag(ev) {
-          const newHeight = startHeight - (ev.clientY - startY);
-          if (newHeight >= 60 && newHeight <= 500) {
-            consolePanel.style.height = `${newHeight}px`;
-            if (projectMonacoInstance) projectMonacoInstance.layout();
-          }
-        }
-        function stopDrag() {
-          document.documentElement.removeEventListener('mousemove', doDrag);
-          document.documentElement.removeEventListener('mouseup', stopDrag);
-        }
-        document.documentElement.addEventListener('mousemove', doDrag);
-        document.documentElement.addEventListener('mouseup', stopDrag);
-      };
-    }
-
-    // --- Horizontal preview divider ---
-    const hDivider = document.getElementById('projectHDivider');
-    const previewPanel = document.getElementById('projectPreviewPanel');
-    const expandBtn = document.getElementById('projectPreviewExpandBtn');
-    const collapseBtn = document.getElementById('projectPreviewCollapseBtn');
-    const fullscreenBtn = document.getElementById('projectPreviewFullscreenBtn');
-    
-    const sidebar = document.querySelector('.project-explorer');
-    const sidebarDivider = document.getElementById('projectSidebarDivider');
-
-    if (sidebarDivider && sidebar) {
-      sidebarDivider.onmousedown = (e) => {
-        e.preventDefault();
-        sidebarDivider.classList.add('dragging');
-        const startX = e.clientX;
-        const startW = parseInt(document.defaultView.getComputedStyle(sidebar).width, 10);
-        function doDragSidebar(ev) {
-          const newW = startW + (ev.clientX - startX);
-          if (newW >= 120 && newW <= 500) {
-            sidebar.style.width = `${newW}px`;
-            if (projectMonacoInstance) projectMonacoInstance.layout();
-          }
-        }
-        function stopDragSidebar() {
-          sidebarDivider.classList.remove('dragging');
-          document.documentElement.removeEventListener('mousemove', doDragSidebar);
-          document.documentElement.removeEventListener('mouseup', stopDragSidebar);
-        }
-        document.documentElement.addEventListener('mousemove', doDragSidebar);
-        document.documentElement.addEventListener('mouseup', stopDragSidebar);
-      };
-    }
-
-    function collapsePreview() {
-      if (!previewPanel) return;
-      previewPanel.classList.add('collapsed');
-      previewPanel.style.width = '0';
-      if (hDivider) hDivider.style.display = 'none';
-      if (expandBtn) expandBtn.style.display = 'flex';
-      if (projectMonacoInstance) projectMonacoInstance.layout();
-    }
-    function expandPreview() {
-      if (!previewPanel) return;
-      previewPanel.classList.remove('collapsed');
-      previewPanel.style.width = '380px';
-      if (hDivider) hDivider.style.display = '';
-      if (expandBtn) expandBtn.style.display = 'none';
-      if (projectMonacoInstance) projectMonacoInstance.layout();
-    }
-    function openFullscreen() {
-      const iframe = document.getElementById('projectPreviewFrame');
-      if (iframe) {
-        if (iframe.requestFullscreen) {
-          iframe.requestFullscreen();
-        } else if (iframe.webkitRequestFullscreen) { /* Safari */
-          iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) { /* IE11 */
-          iframe.msRequestFullscreen();
-        }
-      }
-    }
-
-    if (collapseBtn) collapseBtn.onclick = collapsePreview;
-    if (expandBtn) expandBtn.onclick = expandPreview;
-    if (fullscreenBtn) fullscreenBtn.onclick = openFullscreen;
-
-    if (hDivider && previewPanel) {
-      hDivider.onmousedown = (e) => {
-        e.preventDefault();
-        hDivider.classList.add('dragging');
-        const startX = e.clientX;
-        const startW = parseInt(document.defaultView.getComputedStyle(previewPanel).width, 10);
-        function doDragH(ev) {
-          const newW = startW - (ev.clientX - startX);
-          if (newW >= 160 && newW <= 900) {
-            previewPanel.style.width = `${newW}px`;
-            if (projectMonacoInstance) projectMonacoInstance.layout();
-          }
-        }
-        function stopDragH() {
-          hDivider.classList.remove('dragging');
-          document.documentElement.removeEventListener('mousemove', doDragH);
-          document.documentElement.removeEventListener('mouseup', stopDragH);
-        }
-        document.documentElement.addEventListener('mousemove', doDragH);
-        document.documentElement.addEventListener('mouseup', stopDragH);
-      };
-    }
-
-    // --- Auto-refresh preview on file change ---
-    let previewRefreshTimer = null;
-    function schedulePreviewRefresh() {
-      if (!previewPanel || previewPanel.classList.contains('collapsed')) return;
-      if (!note.files) return;
-      
-      let entryPoint = 'index.html';
-      if (!note.files['index.html']) {
-        if (note.activeFile && note.activeFile.endsWith('.html')) {
-          entryPoint = note.activeFile;
-        } else {
-          const htmlFiles = Object.keys(note.files).filter(f => f.endsWith('.html'));
-          if (htmlFiles.length > 0) {
-            entryPoint = htmlFiles[0];
-          } else {
-            return;
-          }
-        }
-      }
-      
-      clearTimeout(previewRefreshTimer);
-      previewRefreshTimer = setTimeout(() => {
-        const frame = document.getElementById('projectPreviewFrame');
-        if (frame) frame.srcdoc = bundleProject(note.files, entryPoint);
-      }, 600);
-    }
-
-
-
-    renderExplorer();
-    renderTabs();
-    if (note.activeFile) {
-      openFile(note.activeFile);
-    } else {
-      if (emptyState) emptyState.style.display = 'flex';
-      if (editorContainer) editorContainer.style.display = 'none';
-    }
-  }
-
-  async function runProject() {
-    const note = getActive();
-    if (!note || note.type !== 'project') return;
-
-    const term = document.getElementById('projectTerminal');
-    const statusEl = document.getElementById('projectConsoleStatus');
-    const timeEl = document.getElementById('projectConsoleTime');
-    const previewFrame = document.getElementById('projectPreviewFrame');
-    
-    function logTerm(msg, type = 'log') {
-      if (!term) return;
-      const line = document.createElement('div');
-      line.className = 'ide-console-line ' + (type === 'error' ? 'is-error' : type === 'warn' ? 'is-warn' : type === 'info' ? 'is-info' : '');
-      line.textContent = msg;
-      term.appendChild(line);
-      term.scrollTop = term.scrollHeight;
-    }
-
-    if (term) term.innerHTML = '';
-    if (statusEl) statusEl.textContent = 'Running...';
-    if (timeEl) timeEl.textContent = '';
-
-    const activeFile = note.activeFile;
-    const activeLang = activeFile ? getFileLanguage(activeFile) : '';
-    const isBackendLang = ['python', 'c', 'cpp', 'java', 'csharp', 'go', 'rust', 'kotlin', 'sql'].includes(activeLang);
-
-    if (isBackendLang) {
-      if (!activeFile) {
-        if (statusEl) statusEl.textContent = 'Failed';
-        logTerm('Error: No active file open to run.', 'error');
-        return;
-      }
-
-      const tabTerm = document.getElementById('projectTabTerminal');
-      if (tabTerm) tabTerm.click();
-
-      const code = note.files[activeFile].content;
-      const language = activeLang;
-
-      if (language === 'sql') {
-        const startTime = performance.now();
-        try {
-          if (statusEl) statusEl.textContent = 'Initializing SQLite...';
-          if (!window.initSqlJs) {
-            logTerm('Loading sql.js from jsDelivr CDN...', 'info');
-            await new Promise((resolve, reject) => {
-              const script = document.createElement('script');
-              script.src = 'https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/sql-wasm.js';
-              script.onload = () => resolve();
-              script.onerror = () => reject(new Error("Failed to load sql.js."));
-              document.head.appendChild(script);
-            });
-          }
-
-          if (statusEl) statusEl.textContent = 'Running SQL...';
-          const SQL = await window.initSqlJs({
-            locateFile: file => `https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/${file}`
-          });
-          const db = new SQL.Database();
-          const results = db.exec(code);
-          const duration = (performance.now() - startTime).toFixed(0);
-          if (timeEl) timeEl.textContent = `${duration}ms`;
-
-          if (results.length === 0) {
-            logTerm('Query executed successfully. (No results returned)', 'info');
-          } else {
-            results.forEach((res, idx) => {
-              if (results.length > 1) {
-                logTerm(`--- Result Set ${idx + 1} ---`, 'info');
-              }
-              const tableStr = formatQueryResult(res.columns, res.values);
-              logTerm(tableStr, 'log');
-              logTerm(`(${res.values.length} rows)`, 'info');
-            });
-          }
-          if (statusEl) statusEl.textContent = 'Finished';
-        } catch (err) {
-          const duration = (performance.now() - startTime).toFixed(0);
-          if (timeEl) timeEl.textContent = `${duration}ms`;
-          if (statusEl) statusEl.textContent = 'Failed';
-          logTerm(`Error: ${err.message}`, 'error');
-        }
-      } else {
-        const backendUrl = await getBackendUrl();
-        projectRunAbortController = new AbortController();
-
-        try {
-          if (statusEl) statusEl.textContent = 'Compiling / Running on server...';
-          const response = await fetch(backendUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code, language, stdin: '' }),
-            signal: projectRunAbortController.signal
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const result = await response.json();
-          
-          if (result.compileError) {
-            if (statusEl) statusEl.textContent = 'Compilation Failed';
-            logTerm('--- Compilation Output ---', 'error');
-            logTerm(result.compileError, 'error');
-            if (result.duration && timeEl) timeEl.textContent = `${result.duration}ms`;
-            return;
-          }
-
-          if (result.stdout) {
-            logTerm(result.stdout, 'log');
-          }
-          if (result.stderr) {
-            logTerm(result.stderr, 'error');
-          }
-
-          if (result.duration && timeEl) {
-            timeEl.textContent = `${result.duration}ms`;
-          }
-
-          if (result.exitCode !== 0) {
-            if (statusEl) statusEl.textContent = `Failed (Exit Code ${result.exitCode})`;
-          } else {
-            if (statusEl) statusEl.textContent = 'Finished';
-          }
-        } catch (err) {
-          if (err.name === 'AbortError') {
-            if (statusEl) statusEl.textContent = 'Stopped';
-            logTerm('Execution cancelled.', 'info');
-          } else {
-            if (statusEl) statusEl.textContent = 'Server Connection Error';
-            logTerm('Error: Could not connect to the backend server.', 'error');
-            logTerm('Please verify that the backend execution server is running locally (run "npm start" in the Notepad folder) or that the remote server is active.', 'info');
-          }
-        } finally {
-          projectRunAbortController = null;
-        }
-      }
-    } else {
-      if (statusEl) statusEl.textContent = 'Bundling...';
-      const startTime = performance.now();
-      
-      let entryPoint = 'index.html';
-      if (note.files && !note.files['index.html']) {
-        if (activeFile && activeFile.endsWith('.html')) {
-          entryPoint = activeFile;
-        } else {
-          const htmlFiles = Object.keys(note.files).filter(f => f.endsWith('.html'));
-          if (htmlFiles.length > 0) {
-            entryPoint = htmlFiles[0];
-          }
-        }
-      }
-
-      const bundledHtml = bundleProject(note.files, entryPoint);
-      if (previewFrame) {
-        previewFrame.srcdoc = bundledHtml;
-      }
-      const duration = (performance.now() - startTime).toFixed(0);
-      if (timeEl) timeEl.textContent = `${duration}ms`;
-      if (statusEl) statusEl.textContent = 'Browser Preview Updated';
-    }
-  }
-
-  function resolveRelativePath(basePath, relativePath) {
-    if (relativePath.startsWith('/') || relativePath.includes('://')) {
-      return relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
-    }
-    let cleanRel = relativePath.replace(/^\.\//, '');
-    const parts = basePath.split('/');
-    parts.pop();
-    while (cleanRel.startsWith('../')) {
-      cleanRel = cleanRel.substring(3);
-      if (parts.length > 0) {
-        parts.pop();
-      }
-    }
-    const dir = parts.join('/');
-    return dir ? `${dir}/${cleanRel}` : cleanRel;
-  }
-
-  function bundleProject(files, entryPoint = 'index.html') {
-    let html = files[entryPoint] ? files[entryPoint].content : '';
-    if (!html) return `<h1>Error: entry point ${entryPoint} not found!</h1>`;
-    
-    html = html.replace(/<link\s+[^>]*rel="stylesheet"\s+[^>]*href="([^"]+)"[^>]*>/gi, (match, href) => {
-      if (href.includes('://') || href.startsWith('//')) return match;
-      const resolvedPath = resolveRelativePath(entryPoint, href);
-      if (files[resolvedPath]) {
-        return `<style data-href="${resolvedPath}">${files[resolvedPath].content}</style>`;
-      }
-      return match;
-    });
-
-    html = html.replace(/<script\s+[^>]*src="([^"]+)"[^>]*><\/script>/gi, (match, src) => {
-      if (src.includes('://') || src.startsWith('//')) return match;
-      const resolvedPath = resolveRelativePath(entryPoint, src);
-      if (files[resolvedPath]) {
-        return `<script data-src="${resolvedPath}">${files[resolvedPath].content}<\/script>`;
-      }
-      return match;
-    });
-
-    return html;
   }
 
   function bindIDEControls(note) {
@@ -4377,37 +2778,17 @@
         }catch(e){ /* skip missing */ }
       }
 
-      // Separate projects, codes, and notes for migration
-      const migratedProjects = [];
+      // Separate codes and notes for migration
       const migratedCodes = [];
       const remainingNotes = [];
       for (const item of loaded) {
-        if (item && item.type === 'project') {
-          migratedProjects.push(item);
-        } else if (item && item.type === 'code') {
+        if (item && item.type === 'code') {
           migratedCodes.push(item);
-        } else {
+        } else if (item && item.type !== 'project') {
           remainingNotes.push(item);
         }
       }
       notes = remainingNotes;
-
-      if (migratedProjects.length > 0) {
-        let existingProjectIndex = [];
-        try {
-          const pIdx = await storage.get('project-index');
-          existingProjectIndex = pIdx ? JSON.parse(pIdx.value) : [];
-        } catch (e) {}
-
-        for (const p of migratedProjects) {
-          if (!existingProjectIndex.includes(p.id)) {
-            existingProjectIndex.push(p.id);
-          }
-          await storage.set('project:' + p.id, JSON.stringify(p));
-          await storage.delete('note:' + p.id);
-        }
-        await storage.set('project-index', JSON.stringify(existingProjectIndex));
-      }
 
       if (migratedCodes.length > 0) {
         let existingCodeIndex = [];
@@ -4424,28 +2805,10 @@
           await storage.delete('note:' + c.id);
         }
         await storage.set('code-index', JSON.stringify(existingCodeIndex));
-      }
-
-      if (migratedProjects.length > 0 || migratedCodes.length > 0) {
         await storage.set('note-index', JSON.stringify(notes.map(n => n.id)));
       }
     }catch(e){
       notes = [];
-    }
-
-    try{
-      const pIdx = await storage.get('project-index');
-      const pIds = pIdx ? JSON.parse(pIdx.value) : [];
-      const loadedProjects = [];
-      for(const id of pIds){
-        try{
-          const rec = await storage.get('project:' + id);
-          if(rec) loadedProjects.push(JSON.parse(rec.value));
-        }catch(e){ /* skip missing */ }
-      }
-      projects = loadedProjects;
-    }catch(e){
-      projects = [];
     }
 
     try{
@@ -4494,18 +2857,7 @@
         if (state && state.previewCollapsed) {
           previewCollapsed = true;
         }
-        if (state && state.activeFile && activeId) {
-          const note = projects.find(n => n.id === activeId);
-          if (note && note.type === 'project' && note.files && note.files[state.activeFile]) {
-            note.activeFile = state.activeFile;
-            if (Array.isArray(state.openTabs)) {
-              note.openTabs = state.openTabs.filter(path => note.files[path]);
-            }
-            if (!note.openTabs || !note.openTabs.length) {
-              note.openTabs = state.activeFile ? [state.activeFile] : [];
-            }
-          }
-        }
+
       }
     } catch (e) {
       console.error('Failed to restore app state', e);
@@ -4549,31 +2901,7 @@
     }
   }
 
-  async function persistProjectIndex(){
-    try{
-      const res = await storage.set('project-index', JSON.stringify(projects.map(p => p.id)));
-      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
-      return true;
-    }catch(e){
-      console.error('project index save failed', e);
-      storageHealthy = false;
-      updateStorageBanner();
-      return false;
-    }
-  }
 
-  async function persistProject(project){
-    try{
-      const res = await storage.set('project:' + project.id, JSON.stringify(project));
-      if(!res){ storageHealthy = false; updateStorageBanner(); return false; }
-      return true;
-    }catch(e){
-      console.error('project save failed', e);
-      storageHealthy = false;
-      updateStorageBanner();
-      return false;
-    }
-  }
 
   async function persistCodeIndex(){
     try{
@@ -4617,9 +2945,7 @@
     try{ await storage.delete('note:' + id); }catch(e){ /* ignore */ }
   }
 
-  async function deleteProjectStorage(id){
-    try{ await storage.delete('project:' + id); }catch(e){ /* ignore */ }
-  }
+
 
   async function deleteCodeStorage(id){
     try{ await storage.delete('code:' + id); }catch(e){ /* ignore */ }
@@ -4632,10 +2958,7 @@
       item.updatedAt = Date.now();
       let okItem = false;
       let okIndex = false;
-      if (item.type === 'project') {
-        okItem = await persistProject(item);
-        okIndex = await persistProjectIndex();
-      } else if (item.type === 'code') {
+      if (item.type === 'code') {
         okItem = await persistCode(item);
         okIndex = await persistCodeIndex();
       } else {
@@ -4648,10 +2971,10 @@
         setSaveStatus('error');
         showToast('Save failed — your data may not be persisting. Back up now from the sidebar.');
       }
-      if (item.type !== 'project' && item.type !== 'code') {
-        renderSidebarCardOnly(item);
-      } else if (item.type === 'code') {
+      if (item.type === 'code') {
         renderCodeSidebar();
+      } else {
+        renderSidebarCardOnly(item);
       }
     }, 450);
   }
@@ -4665,7 +2988,6 @@
         version: 1,
         exportedAt: new Date().toISOString(),
         notes: notes,
-        projects: projects,
         codes: codes,
         settings: { theme, rulesOn, accentColor }
       };
@@ -4702,48 +3024,31 @@
       }
 
       const restoredNotes = [];
-      const restoredProjects = [];
       const restoredCodes = [];
 
       if (Array.isArray(payload.codes)) {
         restoredCodes.push(...payload.codes);
       }
 
-      if (Array.isArray(payload.projects)) {
-        restoredProjects.push(...payload.projects);
-        for (const item of rawRestored) {
-          if (item && item.type !== 'project' && item.type !== 'code') {
-            restoredNotes.push(item);
-          } else if (item && item.type === 'code' && !payload.codes) {
-            restoredCodes.push(item);
-          }
-        }
-      } else {
-        // Legacy support
-        for (const item of rawRestored) {
-          if (item && item.type === 'project') {
-            restoredProjects.push(item);
-          } else if (item && item.type === 'code') {
-            restoredCodes.push(item);
-          } else if (item) {
-            restoredNotes.push(item);
-          }
+      for (const item of rawRestored) {
+        if (item && item.type === 'code') {
+          if (!payload.codes) restoredCodes.push(item);
+        } else if (item && item.type !== 'project') {
+          restoredNotes.push(item);
         }
       }
 
-      const proceed = confirm(`Restore ${restoredNotes.length} note(s), ${restoredProjects.length} project(s), and ${restoredCodes.length} code snippet(s) from this backup? This replaces the notes, projects, and snippets currently shown in the app.`);
+      const proceed = confirm(`Restore ${restoredNotes.length} note(s) and ${restoredCodes.length} code snippet(s) from this backup? This replaces the notes and snippets currently shown in the app.`);
       if(!proceed) return;
 
       // Delete existing storage items to clean up
       for(const n of notes){ await deleteNoteStorage(n.id); }
-      for(const p of projects){ await deleteProjectStorage(p.id); }
       for(const c of codes){ await deleteCodeStorage(c.id); }
 
       notes = restoredNotes;
-      projects = restoredProjects;
       codes = restoredCodes;
 
-      const activeNote = notes.find(n => n.type !== 'project' && n.type !== 'code');
+      const activeNote = notes.find(n => n.type !== 'code');
       activeId = activeNote ? activeNote.id : (notes.length ? notes[0].id : null);
 
       if(payload.settings){
@@ -4761,8 +3066,6 @@
 
       for(const n of notes){ await persistNote(n); }
       await persistIndex();
-      for(const p of projects){ await persistProject(p); }
-      await persistProjectIndex();
       for(const c of codes){ await persistCode(c); }
       await persistCodeIndex();
       await persistSettings();
@@ -4778,7 +3081,7 @@
   }
 
   // ---------- Derived helpers ----------
-  function getActive(){ return notes.find(n => n.id === activeId) || projects.find(p => p.id === activeId) || codes.find(c => c.id === activeId) || null; }
+  function getActive(){ return notes.find(n => n.id === activeId) || codes.find(c => c.id === activeId) || null; }
 
   function previewText(note){
     if(note.type === 'todo'){
@@ -4818,10 +3121,7 @@
     return notes;
   }
 
-  function firstNonProjectNoteId(){
-    const note = notes[0] || null;
-    return note ? note.id : null;
-  }
+
 
   function allTags(){
     const set = new Set();
@@ -4995,16 +3295,11 @@
       monacoEditorInstance.dispose();
       monacoEditorInstance = null;
     }
-    if (projectMonacoInstance) {
-      projectMonacoInstance.dispose();
-      projectMonacoInstance = null;
-    }
     const note = getActive();
-    app.classList.toggle('project-active', false);
     app.classList.toggle('code-active', false);
     const editorScroll = $('#editorScroll');
     if (editorScroll) {
-      editorScroll.classList.toggle('project-mode', !!note && (note.type === 'project' || note.type === 'code'));
+      editorScroll.classList.toggle('code-mode', !!note && note.type === 'code');
     }
     if (editorInner) {
       editorInner.classList.toggle('code-layout', !!note && note.type === 'code');
@@ -5208,144 +3503,6 @@
               <iframe id="idePreviewFrame" sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups" allowfullscreen></iframe>
             </div>
           </div>
-        </div>
-      `;
-    } else if(note.type === 'project'){
-      if (!note.files) {
-        note.files = {};
-      }
-      if (!note.openTabs) {
-        note.openTabs = [];
-      }
-      
-      toolbarHtml = `
-        <div class="rich-toolbar project-toolbar" id="projectToolbar">
-          <div class="project-toolbar-left">
-            <input type="text" class="title-input project-title-input" id="titleInput" placeholder="Untitled Project" value="${escapeHtml(note.title || '')}">
-          </div>
-          <div class="project-toolbar-right">
-            <select class="ide-select" id="projectThemeSelect" title="Editor Theme">
-              <option value="sync" ${!note.ideTheme || note.ideTheme === 'sync' ? 'selected' : ''}>Sync Mode</option>
-              <option value="vs" ${note.ideTheme === 'vs' ? 'selected' : ''}>vs-light</option>
-              <option value="vs-dark" ${note.ideTheme === 'vs-dark' ? 'selected' : ''}>vs-dark</option>
-            </select>
-            <div style="position:relative;" id="projectMenuWrapIDE">
-              <button class="ide-btn" id="projectMenuBtnIDE" title="Projects">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                <span>Projects</span>
-              </button>
-              <div id="projectDropdownIDE" style="display:none; position:absolute; top:calc(100% + 6px); right:0; width:240px; background:var(--bg-surface); border:1px solid var(--border); border-radius:9px; box-shadow:var(--shadow); z-index:50; padding:5px; flex-direction:column; gap:1px;">
-                <div id="projectDropdownListIDE"></div>
-                <div style="border-top:1px solid var(--border); margin-top:4px; padding-top:4px;">
-                  <button id="projectDropdownNewIDE" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:transparent; color:var(--ink); font-size:12.5px; font-weight:600; cursor:pointer;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M12 5v14M5 12h14"/></svg>
-                    New project
-                  </button>
-                </div>
-              </div>
-            </div>
-            <input type="file" id="projectImportFileInput" style="display:none;" multiple>
-            <input type="file" id="projectImportFolderInput" style="display:none;" webkitdirectory directory multiple>
-            <input type="file" id="projectAddFileInput" style="display:none;" multiple>
-            <input type="file" id="projectAddFolderInput" style="display:none;" webkitdirectory directory multiple>
-            <button class="ide-btn run-btn" id="projectRunBtn" title="Run Project (Ctrl+Enter)">
-              <svg class="run-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <span class="spinner"></span>
-              <span>Run</span>
-            </button>
-            <button class="ide-btn stop-btn" id="projectStopBtn" title="Stop">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-              <span>Stop</span>
-            </button>
-            <button class="ide-btn" id="projectDeleteBtn" title="Delete project">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18.333 20.333A2 2 0 0 1 16.333 22H7.667a2 2 0 0 1-1.999-1.667L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-              <span>Delete</span>
-            </button>
-            <button class="ide-btn" id="projectPreviewToggleBtn" title="Toggle browser preview">
-              ${ICONS.fileCode}
-              <span>Preview</span>
-            </button>
-          </div>
-        </div>`;
-
-      bodyHtml = `
-        <div class="project-ide">
-          <div class="project-explorer">
-            <div class="project-explorer-header">
-              <span>Workspace Files</span>
-              <div class="project-explorer-actions">
-                <button class="project-explorer-action-btn" id="explorerAddFileBtn" title="Add File from local storage">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                </button>
-                <button class="project-explorer-action-btn" id="explorerAddFolderBtn" title="Add Folder from local storage">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
-                </button>
-                <button class="project-explorer-action-btn" id="explorerNewFileBtn" title="New File">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </button>
-                <button class="project-explorer-action-btn" id="explorerNewFolderBtn" title="New Folder">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                </button>
-              </div>
-            </div>
-            <div class="project-explorer-tree" id="projectExplorerTree"></div>
-          </div>
-          
-          <div class="project-h-divider" id="projectSidebarDivider"></div>
-          
-          <div class="project-center-pane">
-            <div class="project-tabs-bar" id="projectTabsBar"></div>
-            
-            <div class="project-editor-side">
-              <div class="project-editor-container" id="projectEditorContainer">
-                <div id="projectMonacoContainer"></div>
-              </div>
-              <div class="project-empty-state" id="projectEmptyState" style="display:none;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
-                <span>No active file open. Select a file from the explorer to edit.</span>
-              </div>
-            </div>
-            
-            <div class="project-console-panel" id="projectConsolePanel">
-              <div class="ide-console-resizer" id="projectConsoleResizer"></div>
-              <div class="project-console-header">
-                <div class="project-console-tabs">
-                  <div class="project-console-tab active" id="projectTabTerminal">Terminal</div>
-                </div>
-                <div class="project-console-actions">
-                  <span class="ide-console-status" id="projectConsoleTime"></span>
-                  <button class="ide-console-clear" id="projectConsoleClearBtn">Clear</button>
-                </div>
-              </div>
-              <div class="project-console-content">
-                <div class="project-terminal" id="projectTerminal"></div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="project-h-divider" id="projectHDivider"></div>
-          
-          <div class="project-preview-panel" id="projectPreviewPanel">
-            <div class="project-preview-header">
-              <span>Browser Preview</span>
-              <div class="project-preview-header-actions">
-                <span class="ide-console-status" id="projectConsoleStatus"></span>
-                <button class="project-preview-fullscreen-btn" id="projectPreviewFullscreenBtn" title="Open in Full Screen">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-                </button>
-                <button class="project-preview-collapse-btn" id="projectPreviewCollapseBtn" title="Collapse preview">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
-              </div>
-            </div>
-            <div class="project-preview-iframe-wrap">
-              <iframe id="projectPreviewFrame" sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups" allowfullscreen></iframe>
-            </div>
-          </div>
-          
-          <button class="project-preview-expand-btn" id="projectPreviewExpandBtn" title="Expand preview" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
         </div>
       `;
     } else {
@@ -5679,26 +3836,6 @@
   }
 
   // ---------- Actions ----------
-  async function createProject(){
-    if (activeId && getActive() && getActive().type !== 'project') {
-      lastNotesActiveId = activeId;
-    }
-    const project = {
-      id: uid(), type:'project', title:'Untitled Project', content:'', todos:[], tags:[], pinned:false,
-      files:{}, openTabs:[], activeFile:null,
-      createdAt: Date.now(), updatedAt: Date.now()
-    };
-    projects.unshift(project);
-    activeId = project.id;
-    lastProjectActiveId = project.id;
-    await persistProject(project);
-    await persistProjectIndex();
-    persistAppState();
-    renderSidebar();
-    renderEditor();
-    showToast('New project created');
-  }
-
   async function createNote(){
     const note = {
       id: uid(), type:'note', title:'', content:'', todos:[], tags:[], pinned:false,
@@ -5721,27 +3858,13 @@
     if(!item) return;
     if(!confirm(`Delete “${item.title || 'Untitled'}”? This can’t be undone.`)) return;
 
-    if (item.type === 'project') {
-      projects = projects.filter(p => p.id !== item.id);
-      await deleteProjectStorage(item.id);
-      await persistProjectIndex();
-
-      activeId = lastNotesActiveId || firstNonProjectNoteId();
-      if (activeId && getActive() && getActive().type === 'project') {
-        const firstNote = notes.find(n => n.type !== 'project');
-        activeId = firstNote ? firstNote.id : null;
-      }
-      persistAppState();
-      renderSidebar();
-      renderEditor();
-      showToast('Project deleted');
-    } else if (item.type === 'code') {
+    if (item.type === 'code') {
       codes = codes.filter(c => c.id !== item.id);
       await deleteCodeStorage(item.id);
       await persistCodeIndex();
 
-      activeId = lastNotesActiveId || firstNonProjectNoteId();
-      if (activeId && getActive() && (getActive().type === 'project' || getActive().type === 'code')) {
+      activeId = lastNotesActiveId || (notes[0] ? notes[0].id : null);
+      if (activeId && getActive() && getActive().type === 'code') {
         const firstNote = notes[0];
         activeId = firstNote ? firstNote.id : null;
       }
@@ -5772,17 +3895,7 @@
     copy.createdAt = Date.now();
     copy.updatedAt = Date.now();
 
-    if (item.type === 'project') {
-      projects.unshift(copy);
-      activeId = copy.id;
-      lastProjectActiveId = copy.id;
-      await persistProject(copy);
-      await persistProjectIndex();
-      persistAppState();
-      renderSidebar();
-      renderEditor();
-      showToast('Project duplicated');
-    } else if (item.type === 'code') {
+    if (item.type === 'code') {
       codes.unshift(copy);
       activeId = copy.id;
       lastCodeActiveId = copy.id;
@@ -5882,14 +3995,7 @@
     let text = `${note.title || 'Untitled'}\n\n`;
     if(note.type === 'todo'){
       text += note.todos.map(t => `${t.done ? '[x]' : '[ ]'} ${t.text}`).join('\n');
-    } else if(note.type === 'project'){
-      text += Object.keys(note.files || {}).map(path => {
-        const item = note.files[path];
-        if (item.isFolder) {
-          return `Folder: ${path}`;
-        }
-        return `File: ${path}\n====================\n${item.content}\n====================`;
-      }).join('\n\n');
+
     } else {
       text += contentAsPlainText(note);
     }
@@ -5897,7 +4003,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    const ext = note.type === 'code' || note.type === 'project' ? 'txt' : 'md';
+    const ext = note.type === 'code' ? 'txt' : 'md';
     a.download = `${(note.title||'untitled').replace(/[^\w\- ]/g,'').trim() || 'untitled'}.${ext}`;
     a.click();
     URL.revokeObjectURL(url);
@@ -5913,14 +4019,7 @@
       bodyHtml = note.todos.map(t => `<p>${t.done ? '☑' : '☐'}&nbsp;&nbsp;${escapeHtml(t.text)}</p>`).join('') || '<p></p>';
     } else if(note.type === 'code'){
       bodyHtml = `<pre style="font-family:'Courier New',monospace;font-size:11pt;white-space:pre-wrap;">${escapeHtml(note.content)}</pre>`;
-    } else if(note.type === 'project'){
-      bodyHtml = Object.keys(note.files || {}).map(path => {
-        const item = note.files[path];
-        if (item.isFolder) {
-          return `<h3>Folder: ${escapeHtml(path)}</h3>`;
-        }
-        return `<h3>File: ${escapeHtml(path)}</h3><pre style="font-family:'Courier New',monospace;font-size:10pt;white-space:pre-wrap;background:#f4f4f4;padding:10px;border:1px solid #ccc;">${escapeHtml(item.content)}</pre>`;
-      }).join('<br>') || '<p></p>';
+
     } else {
       // note/journal content is already the rich editor's own HTML output
       bodyHtml = note.content || '<p></p>';
@@ -5983,14 +4082,7 @@
         </div>`).join('');
     } else if(note.type === 'code'){
       bodyHtml = `<div class="print-body print-code">${escapeHtml(note.content)}</div>`;
-    } else if(note.type === 'project'){
-      bodyHtml = Object.keys(note.files || {}).map(path => {
-        const item = note.files[path];
-        if (item.isFolder) {
-          return `<h3>Folder: ${escapeHtml(path)}</h3>`;
-        }
-        return `<h3>File: ${escapeHtml(path)}</h3><div class="print-body print-code">${escapeHtml(item.content)}</div>`;
-      }).join('<br>') || '<div class="print-body"></div>';
+
     } else {
       // note/journal content is the rich editor's own HTML output
       // (already safe, browser-generated markup) — insert it directly
@@ -6028,7 +4120,7 @@
     const note = getActive();
     if(!note) return;
     if(newType === note.type) return;
-    if(note.type === 'project' || newType === 'project') return;
+    if(note.type === 'code' || newType === 'code') return;
     convertNoteContent(note, note.type, newType);
     note.type = newType;
     queueSave(note);
@@ -6036,41 +4128,12 @@
     renderEditor();
   }
 
-  async function exitProjectWorkspace(){
-    if (activeId && getActive() && getActive().type === 'project') {
-      lastProjectActiveId = activeId;
-    }
-    const target = notes.find(n => n.id === lastNotesActiveId)
-      || notes[0];
-    activeId = target ? target.id : null;
-    persistAppState();
-    renderSidebar();
-    renderEditor();
-  }
 
-  async function openProjectWorkspace(){
-    if (activeId && getActive() && getActive().type !== 'project') {
-      lastNotesActiveId = activeId;
-    }
-    const project = projects.find(n => n.id === lastProjectActiveId)
-      || projects[0];
-    if (!project) {
-      await createProject();
-      return;
-    }
-    activeId = project.id;
-    lastProjectActiveId = project.id;
-    persistAppState();
-    renderSidebar();
-    renderEditor();
-  }
 
   function updateTypeSelectOptions(note){
     const select = $('#typeSelect');
     if(!select) return;
-    if(note && note.type === 'project'){
-      select.innerHTML = `<option value="project">Project</option>`;
-    } else if(note && note.type === 'code'){
+    if(note && note.type === 'code'){
       select.innerHTML = `<option value="code">Code</option>`;
     } else {
       select.innerHTML = `
@@ -6202,9 +4265,6 @@
     });
   }
 
-  let projectMenuBtn = null;
-  let projectDropdown = null;
-  let projectDropdownNew = null;
   let codeMenuBtn = null;
   let codeDropdown = null;
   let codeDropdownNew = null;
@@ -6221,28 +4281,9 @@
       }
     });
   }
-  const newProjectBtn = $('#newProjectBtn');
-  if (newProjectBtn) {
-    newProjectBtn.addEventListener('click', async () => {
-      if (projects.length) {
-        await openProjectWorkspace();
-      } else {
-        await createProject();
-      }
-    });
-  }
   $('#duplicateBtn').addEventListener('click', duplicateActive);
   $('#pinToggle').addEventListener('click', togglePin);
-  const projectEditorBtn = $('#projectEditorBtn');
-  if (projectEditorBtn) projectEditorBtn.addEventListener('click', openProjectWorkspace);
-  bindProjectMenu();
   bindCodeMenu();
-
-  function updateProjectMenuElements() {
-    projectMenuBtn = $('#projectMenuBtn');
-    projectDropdown = $('#projectDropdown');
-    projectDropdownNew = $('#projectDropdownNew');
-  }
 
   function updateCodeMenuElements() {
     codeMenuBtn = $('#codeMenuBtn');
@@ -6300,7 +4341,7 @@
   }
 
   async function openCodeWorkspace(id) {
-    if (activeId && getActive() && getActive().type !== 'project' && getActive().type !== 'code') {
+    if (activeId && getActive() && getActive().type !== 'code') {
       lastNotesActiveId = activeId;
     }
     const snippet = codes.find(c => c.id === id) || codes[0];
@@ -6355,87 +4396,7 @@
     showToast('Created new code snippet');
   }
 
-  function bindProjectMenu() {
-    updateProjectMenuElements();
-    if (!projectMenuBtn) return;
-    if (projectMenuBtn.dataset.bound === '1') return;
-    projectMenuBtn.dataset.bound = '1';
 
-    projectMenuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (projectDropdown && projectDropdown.style.display === 'none') {
-        renderProjectDropdown('projectDropdownList');
-        projectDropdown.style.display = 'flex';
-        projectMenuBtn.classList.add('on');
-      } else if (projectDropdown) {
-        projectDropdown.style.display = 'none';
-        projectMenuBtn.classList.remove('on');
-      } else {
-        openProjectWorkspace();
-      }
-    });
-
-    const dropdownNew = $('#projectDropdownNew');
-    if (dropdownNew) {
-      dropdownNew.addEventListener('click', (e) => {
-        e.stopPropagation();
-        projectDropdown.style.display = 'none';
-        projectMenuBtn.classList.remove('on');
-        createProject();
-      });
-    }
-
-    if (projectDropdown) {
-      projectDropdown.addEventListener('click', (e) => e.stopPropagation());
-    }
-  }
-
-  function bindProjectMenuIDE() {
-    const menuBtn = $('#projectMenuBtnIDE');
-    const dropdown = $('#projectDropdownIDE');
-    const dropdownNew = $('#projectDropdownNewIDE');
-    if (!menuBtn || !dropdown) return;
-
-    menuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (dropdown.style.display === 'none') {
-        renderProjectDropdown('projectDropdownListIDE');
-        dropdown.style.display = 'flex';
-        menuBtn.classList.add('on');
-      } else {
-        dropdown.style.display = 'none';
-        menuBtn.classList.remove('on');
-      }
-    });
-
-    dropdown.addEventListener('click', (e) => e.stopPropagation());
-
-    if (dropdownNew) {
-      dropdownNew.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdown.style.display = 'none';
-        menuBtn.classList.remove('on');
-        createProject();
-      });
-    }
-  }
-
-  function bindProjectToolbarActions() {
-    const newWorkspaceBtn = $('#projectNewWorkspaceBtn');
-    if (newWorkspaceBtn) {
-      newWorkspaceBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        createProject();
-      });
-    }
-    const deleteBtn = $('#projectDeleteBtn');
-    if (deleteBtn) {
-      deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteActive();
-      });
-    }
-  }
 
   function bindCodeToolbarActions() {
     const deleteBtn = $('#codeDeleteBtn');
@@ -6467,20 +4428,20 @@
       return;
     }
     list.innerHTML = codes.map(c => `
-      <div class="project-explorer-item ${c.id === activeId ? 'active' : ''}" data-id="${c.id}" style="display:flex; align-items:center; justify-content:space-between; padding:6px 9px; border-radius:6px; cursor:pointer;">
+      <div class="code-snippet-item ${c.id === activeId ? 'active' : ''}" data-id="${c.id}" style="display:flex; align-items:center; justify-content:space-between; padding:6px 9px; border-radius:6px; cursor:pointer;">
         <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           <span style="font-size:12.5px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color: ${c.id === activeId ? 'var(--accent)' : 'var(--ink)'};">${escapeHtml(c.title || 'Untitled Snippet')}</span>
         </div>
-        <button class="project-explorer-item-delete" data-action="delete" style="border:none; background:transparent; cursor:pointer; opacity:0.6; display:flex; align-items:center; padding:2px;">
+        <button class="code-snippet-delete" data-action="delete" style="border:none; background:transparent; cursor:pointer; opacity:0.6; display:flex; align-items:center; padding:2px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
         </button>
       </div>
     `).join('');
 
-    list.querySelectorAll('.project-explorer-item').forEach(itemEl => {
+    list.querySelectorAll('.code-snippet-item').forEach(itemEl => {
       itemEl.addEventListener('click', (e) => {
-        const deleteBtn = e.target.closest('.project-explorer-item-delete');
+        const deleteBtn = e.target.closest('.code-snippet-delete');
         const id = itemEl.getAttribute('data-id');
         if (deleteBtn) {
           e.stopPropagation();
@@ -6542,134 +4503,13 @@
     renderEditor();
   }
 
-  function bindProjectImportActions() {
-    const importBtn = document.getElementById('projectImportBtn');
-    const importMenu = document.getElementById('projectImportMenu');
-    const filesItem = document.getElementById('importFilesItem');
-    const folderItem = document.getElementById('importFolderItem');
-    const fileInput = document.getElementById('projectImportFileInput');
-    const folderInput = document.getElementById('projectImportFolderInput');
-
-    if (fileInput) {
-      fileInput.onchange = (e) => {
-        const files = e.target.files;
-        if (files && files.length) {
-          importFilesToWorkspace(files);
-        }
-        setTimeout(() => {
-          fileInput.value = '';
-        }, 0);
-      };
-    }
-
-    if (folderInput) {
-      folderInput.onchange = (e) => {
-        const files = e.target.files;
-        if (files && files.length) {
-          importFilesToWorkspace(files);
-        }
-        setTimeout(() => {
-          folderInput.value = '';
-        }, 0);
-      };
-    }
-
-    if (importBtn && importMenu) {
-      importBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        document.querySelectorAll('.export-menu.open').forEach((m) => {
-          if (m !== importMenu) m.classList.remove('open');
-        });
-        importMenu.classList.toggle('open');
-      });
-    }
-    if (filesItem) {
-      filesItem.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (importMenu) importMenu.classList.remove('open');
-        if (fileInput) fileInput.click();
-        else if (typeof window.triggerFileImport === 'function') window.triggerFileImport();
-      });
-    }
-    if (folderItem) {
-      folderItem.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (importMenu) importMenu.classList.remove('open');
-        if (folderInput) folderInput.click();
-        else if (typeof window.triggerFolderImport === 'function') window.triggerFolderImport();
-      });
-    }
-  }
-
-  function renderProjectDropdown(dropdownListId = 'projectDropdownList') {
-    const list = $('#' + dropdownListId);
-    if (!list) return;
-    const projectsList = projects;
-    if (projectsList.length === 0) {
-      list.innerHTML = '<div style="padding:8px 9px; font-size:12px; color:var(--ink-faint);">No projects yet</div>';
-      return;
-    }
-    list.innerHTML = projectsList.map(p => `
-      <button data-id="${p.id}" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 9px; border-radius:6px; border:none; background:${p.id === activeId ? 'var(--accent-soft)' : 'transparent'}; color:${p.id === activeId ? 'var(--accent)' : 'var(--ink)'}; font-size:12.5px; font-weight:500; cursor:pointer;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(p.title || 'Untitled Project')}</span>
-      </button>
-    `).join('');
-    list.querySelectorAll('button[data-id]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if(activeId && getActive() && getActive().type !== 'project') {
-          lastNotesActiveId = activeId;
-        }
-        const id = btn.getAttribute('data-id');
-        activeId = id;
-        lastProjectActiveId = id;
-        persistAppState();
-        closeAllProjectDropdowns();
-        renderSidebar();
-        renderEditor();
-      });
-    });
-  }
-
-  function openProjectDropdown() {
-    if (!projectDropdown || !projectMenuBtn) return;
-    renderProjectDropdown('projectDropdownList');
-    projectDropdown.style.display = 'flex';
-    projectMenuBtn.classList.add('on');
-  }
-
-  function openProjectDropdownIDE() {
-    const dropdownIDE = $('#projectDropdownIDE');
-    const menuBtnIDE = $('#projectMenuBtnIDE');
-    if (!dropdownIDE || !menuBtnIDE) return;
-    renderProjectDropdown('projectDropdownListIDE');
-    dropdownIDE.style.display = 'flex';
-    menuBtnIDE.classList.add('on');
-  }
-
   function closeAllDropdowns() {
-    const dropdown = $('#projectDropdown');
-    const menuBtn = $('#projectMenuBtn');
-    if (dropdown && menuBtn) {
-      dropdown.style.display = 'none';
-      menuBtn.classList.remove('on');
-    }
-    const dropdownIDE = $('#projectDropdownIDE');
-    const menuBtnIDE = $('#projectMenuBtnIDE');
-    if (dropdownIDE && menuBtnIDE) {
-      dropdownIDE.style.display = 'none';
-      menuBtnIDE.classList.remove('on');
-    }
     const dropdownCode = $('#codeDropdown');
     const menuBtnCode = $('#codeMenuBtn');
     if (dropdownCode && menuBtnCode) {
       dropdownCode.style.display = 'none';
       menuBtnCode.classList.remove('on');
     }
-  }
-
-  function closeAllProjectDropdowns() {
-    closeAllDropdowns();
   }
 
   document.addEventListener('click', closeAllDropdowns);
@@ -6770,7 +4610,6 @@
       app.classList.toggle('focus-mode');
       setTimeout(() => {
         if (monacoEditorInstance) monacoEditorInstance.layout();
-        if (projectMonacoInstance) projectMonacoInstance.layout();
       }, 350);
     });
   }
@@ -6785,14 +4624,12 @@
       }
       setTimeout(() => {
         if (monacoEditorInstance) monacoEditorInstance.layout();
-        if (projectMonacoInstance) projectMonacoInstance.layout();
       }, 350);
     });
   }
 
   window.addEventListener('resize', () => {
     if (monacoEditorInstance) monacoEditorInstance.layout();
-    if (projectMonacoInstance) projectMonacoInstance.layout();
   });
 
   function setFilter(next){
