@@ -2071,6 +2071,63 @@
     background: var(--accent-soft);
     color: var(--accent);
   }
+  .tamil-explainer-tamilcode-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 12px;
+    color: var(--ink);
+    background: rgba(249, 115, 22, 0.06);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    padding: 6px 10px;
+    border-radius: 6px;
+    word-break: break-all;
+  }
+  .tamil-code-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #ea580c;
+    background: rgba(249, 115, 22, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .tamil-explainer-fullcode-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 12px;
+    min-height: 420px;
+  }
+  .tamil-explainer-fullcode-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .tamil-explainer-fullcode-textarea {
+    flex: 1;
+    min-height: 400px;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    background: var(--bg-surface);
+    color: var(--ink);
+    resize: none;
+    outline: none;
+  }
 
 
 
@@ -2321,8 +2378,8 @@
       <div class="tamil-modal-title-wrap">
         <div class="tamil-modal-icon" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">வி</div>
         <div>
-          <h3 class="tamil-modal-title">தமிழ் நிரல் விளக்கம் (Code Explanation)</h3>
-          <span class="tamil-modal-sub">Line-by-line breakdown, concepts & purpose in clear Tamil</span>
+          <h3 class="tamil-modal-title">தமிழ் நிரல் விளக்கம் & குறியீடு</h3>
+          <span class="tamil-modal-sub">Casual Tamil Explanation & Full Code Translation</span>
         </div>
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
@@ -2344,18 +2401,45 @@
       </div>
     </div>
 
+    <div class="tamil-modal-toolbar">
+      <div class="tamil-mode-tabs" id="explainerViewTabs">
+        <button class="tamil-mode-tab active" id="explainerViewBreakdownTab" data-view="breakdown">📝 வரிவரியான விளக்கம்</button>
+        <button class="tamil-mode-tab" id="explainerViewFullCodeTab" data-view="fullcode">🇮🇳 முழு தமிழ் நிரல் (Full Tamil Code)</button>
+      </div>
+      <div class="tamil-mode-tabs" id="explainerToneTabs">
+        <button class="tamil-mode-tab active" id="explainerToneCasualTab" data-tone="casual" title="இயல்பான பேச்சுத் தமிழ் விளக்கம்">🗣️ பேச்சுத் தமிழ் (Casual)</button>
+        <button class="tamil-mode-tab" id="explainerToneFormalTab" data-tone="formal" title="தூய தமிழ் விளக்கம்">📖 தூய தமிழ் (Formal)</button>
+      </div>
+    </div>
+
     <div class="tamil-explainer-body" id="tamilExplainerBody">
-      <div class="tamil-explainer-summary-card" id="tamilExplainerSummary">
-        <!-- Rendered dynamically -->
+      <!-- Breakdown View -->
+      <div id="tamilExplainerBreakdownView" style="display:flex; flex-direction:column; gap:16px;">
+        <div class="tamil-explainer-summary-card" id="tamilExplainerSummary">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="tamil-explainer-lines-header">
+          <span>வரிவரியான விளக்கம் & தமிழ் நிரல் (Line-by-Line Breakdown & Tamil Code)</span>
+          <span id="tamilExplainerLineCount" style="font-size:11px; color:var(--ink-faint);"></span>
+        </div>
+
+        <div class="tamil-explainer-lines-list" id="tamilExplainerLinesList">
+          <!-- Rows rendered dynamically -->
+        </div>
       </div>
 
-      <div class="tamil-explainer-lines-header">
-        <span>வரிவரியான விளக்கம் (Line-by-Line Breakdown)</span>
-        <span id="tamilExplainerLineCount" style="font-size:11px; color:var(--ink-faint);"></span>
-      </div>
-
-      <div class="tamil-explainer-lines-list" id="tamilExplainerLinesList">
-        <!-- Rows rendered dynamically -->
+      <!-- Full Tamil Code View -->
+      <div id="tamilExplainerFullCodeView" style="display:none;" class="tamil-explainer-fullcode-panel">
+        <div class="tamil-explainer-fullcode-actions">
+          <span style="font-size:12px; font-weight:700; color:var(--ink);">முழுமையான தமிழ் நிரல் (100% Translated Tamil Program):</span>
+          <div style="display:flex; gap:6px;">
+            <button class="tamil-small-btn" id="tamilExplainerCopyFullCodeBtn">Copy Tamil Code</button>
+            <button class="tamil-small-btn primary" id="tamilExplainerInsertFullCodeBtn">Insert into Editor</button>
+            <button class="tamil-small-btn success" id="tamilExplainerRunFullCodeBtn">Run (இயக்கு)</button>
+          </div>
+        </div>
+        <textarea class="tamil-explainer-fullcode-textarea" id="tamilExplainerFullCodeText" readonly spellcheck="false"></textarea>
       </div>
     </div>
   </div>
@@ -5846,20 +5930,74 @@
   }
 
   // ==========================================
-  // தமிழ் நிரல் விளக்கம் (Tamil Code Explanation Engine & Modal)
+  // தமிழ் நிரல் விளக்கம் & முழு நிரல் மொழிபெயர்ப்பு (Casual Tamil Explainer & Full Code Translator)
   // ==========================================
+
+  function translateCodeToTamil(code) {
+    if (!code) return '';
+    const { codeWithoutLiterals, tokenMap } = tokenizeCode(code);
+    let translated = codeWithoutLiterals;
+
+    const rules = [
+      { p: /\bconsole\.log\s*\(/g, r: 'பதிப்பி(' },
+      { p: /\bconsole\.warn\s*\(/g, r: 'எச்சரி(' },
+      { p: /\bconsole\.error\s*\(/g, r: 'பிழை(' },
+      { p: /\bprint\s*\(/g, r: 'பதிப்பி(' },
+      { p: /\bprompt\s*\(/g, r: 'உள்ளிடு(' },
+      { p: /\binput\s*\(/g, r: 'உள்ளிடு(' },
+      { p: /\bconst\b/g, r: 'நிலைமாறி' },
+      { p: /\blet\b/g, r: 'மாறி' },
+      { p: /\bvar\b/g, r: 'மாறி' },
+      { p: /\bfunction\b/g, r: 'செயல்பாடு' },
+      { p: /\bdef\b/g, r: 'செயல்பாடு' },
+      { p: /\breturn\b/g, r: 'திருப்பு' },
+      { p: /\belse\s+if\b/g, r: 'இல்லையென்றால்' },
+      { p: /\belif\b/g, r: 'இல்லையென்றால்' },
+      { p: /\bif\b/g, r: 'ஒருவேளை' },
+      { p: /\belse\b/g, r: 'இல்லையெனில்' },
+      { p: /\bfor\b/g, r: 'ஆக' },
+      { p: /\bwhile\b/g, r: 'வரை' },
+      { p: /\bbreak\b/g, r: 'நிறுத்து' },
+      { p: /\bcontinue\b/g, r: 'தொடர்' },
+      { p: /\btrue\b/g, r: 'உண்மை' },
+      { p: /\bfalse\b/g, r: 'பொய்' },
+      { p: /\bnull\b/g, r: 'வெற்றிடம்' },
+      { p: /\bundefined\b/g, r: 'வரையறுக்கப்படாதது' },
+      { p: /\bnew\b/g, r: 'புதிய' },
+      { p: /\bclass\b/g, r: 'வகுப்பு' },
+      { p: /\bthis\b/g, r: 'இது' },
+      { p: /\bMath\.sqrt\b/g, r: 'கணிதம்.வர்க்கமூலம்' },
+      { p: /\bMath\.floor\b/g, r: 'கணிதம்.முழுவெண்' },
+      { p: /\bMath\.round\b/g, r: 'கணிதம்.தோராய' },
+      { p: /\bMath\.random\b/g, r: 'கணிதம்.சீரற்ற' },
+      { p: /\bMath\.max\b/g, r: 'கணிதம்.அதிகபட்சம்' },
+      { p: /\bMath\.min\b/g, r: 'கணிதம்.குறைந்தபட்சம்' },
+      { p: /\bMath\b/g, r: 'கணிதம்' },
+      { p: /\band\b/g, r: 'மற்றும்' },
+      { p: /\bor\b/g, r: 'அல்லது' }
+    ];
+
+    for (const r of rules) {
+      translated = translated.replace(r.p, r.r);
+    }
+    return restoreCodeTokens(translated, tokenMap);
+  }
 
   function explainCodeLineInTamil(line, lang = 'javascript') {
     const trimmed = line.trim();
     if (!trimmed) return null;
 
+    const tamilCode = translateCodeToTamil(trimmed);
+
     // Closing brace / block end
     if (/^[}\])]+;?$/.test(trimmed)) {
       return {
         type: 'block-end',
-        badge: 'முடிவு',
+        badge: 'முடிவு (End)',
         badgeClass: 'badge-statement',
-        tamil: 'முந்தைய குறியீட்டுத் தொகுதியின் (Code Block) நிறைவு / முடிவு.'
+        tamilCode,
+        casual: 'இந்த code block இதோட முடியுது.',
+        formal: 'முந்தைய குறியீட்டுத் தொகுதியின் (Code Block) நிறைவு / முடிவு.'
       };
     }
 
@@ -5868,9 +6006,11 @@
       const commentText = trimmed.replace(/^(\/\/|#)\s*/, '');
       return {
         type: 'comment',
-        badge: 'குறிப்புரை',
+        badge: 'குறிப்பு (Comment)',
         badgeClass: 'badge-comment',
-        tamil: `குறிப்புரை (Comment): "${escapeHtml(commentText)}" — இது நிரலாளரின் புரிதலுக்கான குறிப்பு, கணினியால் இயக்கப்படாது.`
+        tamilCode,
+        casual: `நம்ம புரிஞ்சுக்க எழுதுன comment: "${escapeHtml(commentText)}" — code run பண்ணும்போது இது வேலை செய்யாது.`,
+        formal: `குறிப்புரை (Comment): "${escapeHtml(commentText)}" — இது நிரலாளரின் புரிதலுக்கான குறிப்பு, கணினியால் இயக்கப்படாது.`
       };
     }
 
@@ -5883,24 +6023,30 @@
         if (parts.length === 3) {
           return {
             type: 'loop',
-            badge: 'மடக்கு (For)',
+            badge: 'மடக்கு (Loop)',
             badgeClass: 'badge-loop',
-            tamil: `மடக்கு (For Loop): <code>${escapeHtml(parts[0].trim())}</code> எனத் தொடங்கி, <code>${escapeHtml(parts[1].trim())}</code> வரை, ஒவ்வொரு சுழற்சியிலும் <code>${escapeHtml(parts[2].trim())}</code> என அதிகரித்துத் தொடர்ந்து இயங்கும்.`
+            tamilCode,
+            casual: `Loop (மடக்கு): <code>${escapeHtml(parts[0].trim())}</code>-ல ஆரம்பிச்சு, <code>${escapeHtml(parts[1].trim())}</code> வரைக்கும், ஒவ்வொரு தடவையும் <code>${escapeHtml(parts[2].trim())}</code>-னு சுத்தி சுத்தி run பண்ணுது.`,
+            formal: `மடக்கு (For Loop): <code>${escapeHtml(parts[0].trim())}</code> எனத் தொடங்கி <code>${escapeHtml(parts[1].trim())}</code> வரை, ஒவ்வொன்றாக அதிகரித்துத் தொடர்ந்து இயங்கும்.`
           };
         }
       } else if (pyM) {
         return {
           type: 'loop',
-          badge: 'மடக்கு (For)',
+          badge: 'மடக்கு (Loop)',
           badgeClass: 'badge-loop',
-          tamil: `<code>${escapeHtml(pyM[1])}</code> என்ற மாறியில் <code>${escapeHtml(pyM[2])}</code> தொகுப்பிலுள்ள ஒவ்வொரு உறுப்பாக எடுத்து இயங்கும் பைதான் மடக்கு (For Loop).`
+          tamilCode,
+          casual: `<code>${escapeHtml(pyM[1])}</code>-ல <code>${escapeHtml(pyM[2])}</code>-ல இருக்குற ஒவ்வொரு item-ஆ எடுத்து loop பண்ணி run பண்ணுது.`,
+          formal: `<code>${escapeHtml(pyM[1])}</code> என்ற மாறியில் தொகுப்பிலுள்ள உறுப்புகளை எடுத்து இயங்கும் மடக்கு.`
         };
       }
       return {
         type: 'loop',
-        badge: 'மடக்கு (For)',
+        badge: 'மடக்கு (Loop)',
         badgeClass: 'badge-loop',
-        tamil: 'குறிப்பிட்ட எண்ணிக்கையிலான முறை தொடர்ச்சியாக மீண்டும் மீண்டும் இயங்கும் ஒரு மடக்கு (For Loop).'
+        tamilCode,
+        casual: 'திரும்பத் திரும்ப குறிப்பிட்ட தடவை run ஆகுற For Loop (மடக்கு).',
+        formal: 'குறிப்பிட்ட எண்ணிக்கையிலான முறை தொடர்ச்சியாக மீண்டும் மீண்டும் இயங்கும் ஒரு மடக்கு (For Loop).'
       };
     }
 
@@ -5912,7 +6058,9 @@
         type: 'loop',
         badge: 'மடக்கு (While)',
         badgeClass: 'badge-loop',
-        tamil: `<code>${escapeHtml(cond)}</code> என்ற நிபந்தனை உண்மையாக இருக்கும் வரை மீண்டும் மீண்டும் இயங்கும் மடக்கு (While Loop).`
+        tamilCode,
+        casual: `<code>${escapeHtml(cond)}</code> condition உண்மையா (True-வா) இருக்குற வரைக்கும் இந்த loop ஓடிக்கிட்டே இருக்கும்.`,
+        formal: `<code>${escapeHtml(cond)}</code> என்ற நிபந்தனை உண்மையாக இருக்கும் வரை மீண்டும் மீண்டும் இயங்கும் மடக்கு (While Loop).`
       };
     }
 
@@ -5924,7 +6072,9 @@
         type: 'output',
         badge: 'வெளியீடு (Print)',
         badgeClass: 'badge-output',
-        tamil: arg ? `<code>${escapeHtml(arg)}</code> என்ற தகவலை / கணக்கீட்டு மதிப்பை முனையத்தில் (Console Output) அச்சிடுகிறது.` : 'வெற்று வரியை அல்லது தகவலை முனையத்தில் அச்சிடுகிறது.'
+        tamilCode,
+        casual: arg ? `<code>${escapeHtml(arg)}</code>-அ screen-ல / console-ல print பண்ணி காட்டுது.` : 'வெற்று வரியை print பண்ணுது.',
+        formal: arg ? `<code>${escapeHtml(arg)}</code> என்ற தகவலை / கணக்கீட்டு மதிப்பை முனையத்தில் (Console Output) அச்சிடுகிறது.` : 'வெற்று வரியை அல்லது தகவலை முனையத்தில் அச்சிடுகிறது.'
       };
     }
 
@@ -5936,7 +6086,9 @@
         type: 'return',
         badge: 'வெளியீடு (Return)',
         badgeClass: 'badge-return',
-        tamil: val ? `<code>${escapeHtml(val)}</code> என்ற கணக்கீட்டு மதிப்பை இந்தச் செயல்பாட்டின் வெளியீடாகத் திருப்பி அனுப்புகிறது (Return value).` : 'செயல்பாட்டை உடனடியாக முடித்து வெளியேறுகிறது.'
+        tamilCode,
+        casual: val ? `கணக்கு பண்ணின <code>${escapeHtml(val)}</code> மதிப்ப விடையா (result) return பண்ணுது.` : 'இந்த function-அ இதோட முடிச்சு வெளிய வருது.',
+        formal: val ? `<code>${escapeHtml(val)}</code> என்ற கணக்கீட்டு மதிப்பை இந்தச் செயல்பாட்டின் வெளியீடாகத் திருப்பி அனுப்புகிறது (Return value).` : 'செயல்பாட்டை உடனடியாக முடித்து வெளியேறுகிறது.'
       };
     }
 
@@ -5947,9 +6099,11 @@
       const params = m && m[2].trim() ? m[2].trim() : 'உள்ளீடு ஏதுமில்லை';
       return {
         type: 'function',
-        badge: 'செயல்பாடு (Function)',
+        badge: 'Function (செயல்பாடு)',
         badgeClass: 'badge-function',
-        tamil: `<code>${fnName}</code> என்ற புதிய செயல்பாட்டை (Function) <code>${escapeHtml(params)}</code> என்ற அளபுருக்களுடன் (Parameters) வரையறுக்கிறது.`
+        tamilCode,
+        casual: `<code>${fnName}</code>-னு புதுசா ஒரு function-அ <code>${escapeHtml(params)}</code> input-ஓட create பண்ணுது.`,
+        formal: `<code>${fnName}</code> என்ற புதிய செயல்பாட்டை (Function) <code>${escapeHtml(params)}</code> என்ற அளபுருக்களுடன் (Parameters) வரையறுக்கிறது.`
       };
     }
 
@@ -5961,34 +6115,42 @@
       if (/continue;?$/u.test(trimmed)) {
         return {
           type: 'condition',
-          badge: 'நிபந்தனை + தொடர்',
+          badge: 'Condition (நிபந்தனை)',
           badgeClass: 'badge-condition',
-          tamil: `<code>${escapeHtml(cond)}</code> உண்மையானால், தற்போதைய சுழற்சியைத் தவிர்த்து அடுத்த சுழற்சிக்குச் செல்கிறது (Continue).`
+          tamilCode,
+          casual: `<code>${escapeHtml(cond)}</code> உண்மையா இருந்தா, இந்த சுற்ற skip பண்ணிட்டு அடுத்த round-க்கு போயிடும் (continue).`,
+          formal: `<code>${escapeHtml(cond)}</code> உண்மையானால், தற்போதைய சுழற்சியைத் தவிர்த்து அடுத்த சுழற்சிக்குச் செல்கிறது (Continue).`
         };
       }
       if (/break;?$/u.test(trimmed)) {
         return {
           type: 'condition',
-          badge: 'நிபந்தனை + நிறுத்து',
+          badge: 'Condition (நிபந்தனை)',
           badgeClass: 'badge-condition',
-          tamil: `<code>${escapeHtml(cond)}</code> உண்மையானால், மடக்கை (Loop) உடனடியாக நிறுத்தி வெளியேறுகிறது (Break).`
+          tamilCode,
+          casual: `<code>${escapeHtml(cond)}</code> உண்மையா இருந்தா, loop-அ விட்டு உடனே வெளிய வந்துடும் (break).`,
+          formal: `<code>${escapeHtml(cond)}</code> உண்மையானால், மடக்கை (Loop) உடனடியாக நிறுத்தி வெளியேறுகிறது (Break).`
         };
       }
       if (/return\s*([^;{}]*);?$/u.test(trimmed)) {
         const retM = trimmed.match(/return\s*([^;{}]*);?$/u);
         return {
           type: 'condition',
-          badge: 'நிபந்தனை + திரும்பு',
+          badge: 'Condition (நிபந்தனை)',
           badgeClass: 'badge-condition',
-          tamil: `<code>${escapeHtml(cond)}</code> உண்மையானால், <code>${escapeHtml(retM[1].trim())}</code> மதிப்பைத் திருப்பி அனுப்புகிறது (Return).`
+          tamilCode,
+          casual: `<code>${escapeHtml(cond)}</code> உண்மையா இருந்தா, <code>${escapeHtml(retM[1].trim())}</code>-அ உடனே return பண்ணிடும்.`,
+          formal: `<code>${escapeHtml(cond)}</code> உண்மையானால், <code>${escapeHtml(retM[1].trim())}</code> மதிப்பைத் திருப்பி அனுப்புகிறது (Return).`
         };
       }
 
       return {
         type: 'condition',
-        badge: 'நிபந்தனை (If)',
+        badge: 'Condition (நிபந்தனை)',
         badgeClass: 'badge-condition',
-        tamil: `<code>${escapeHtml(cond)}</code> என்ற நிபந்தனை உண்மையா (True) எனச் சோதிக்கிறது; உண்மையெனில் அடுத்த வரிகள் இயங்கும்.`
+        tamilCode,
+        casual: `<code>${escapeHtml(cond)}</code> சரிதானா (True-வா)னு check பண்ணுது; சரியா இருந்தா மட்டும் அடுத்த வரிகள் run ஆகும்.`,
+        formal: `<code>${escapeHtml(cond)}</code> என்ற நிபந்தனை உண்மையா (True) எனச் சோதிக்கிறது; உண்மையெனில் அடுத்த வரிகள் இயங்கும்.`
       };
     }
 
@@ -5998,9 +6160,11 @@
       const cond = m ? m[1].trim() : '';
       return {
         type: 'condition',
-        badge: 'மாற்று நிபந்தனை (Else If)',
+        badge: 'Else If (மாற்று நிபந்தனை)',
         badgeClass: 'badge-condition',
-        tamil: `முந்தைய நிபந்தனை பொய்யானால், <code>${escapeHtml(cond)}</code> என்ற மாற்று நிபந்தனை உண்மையா எனச் சோதிக்கிறது.`
+        tamilCode,
+        casual: `முந்தைய condition சரியா வரலன்னா, <code>${escapeHtml(cond)}</code> சரியா இருக்கானு அடுத்ததா check பண்ணுது.`,
+        formal: `முந்தைய நிபந்தனை பொய்யானால், <code>${escapeHtml(cond)}</code> என்ற மாற்று நிபந்தனை உண்மையா எனச் சோதிக்கிறது.`
       };
     }
 
@@ -6008,9 +6172,11 @@
     if (/^(?:\}?\s*else\b|\}?\s*இல்லையெனில்|\}?\s*இல்லை|else:)/u.test(trimmed)) {
       return {
         type: 'condition',
-        badge: 'மாற்று வழி (Else)',
+        badge: 'Else (இல்லையெனில்)',
         badgeClass: 'badge-condition',
-        tamil: 'முந்தைய நிபந்தனைகள் அனைத்தும் பொய்யானால், இந்த மாற்றுப் பகுதி (Else Block) இயங்கும்.'
+        tamilCode,
+        casual: 'மேல பார்த்த எந்த condition-ம் பொருந்தலனா, கடைசியா இந்த block run ஆகும்.',
+        formal: 'முந்தைய நிபந்தனைகள் அனைத்தும் பொய்யானால், இந்த மாற்றுப் பகுதி (Else Block) இயங்கும்.'
       };
     }
 
@@ -6018,17 +6184,21 @@
     if (/^(?:break|நிறுத்து)[;]?$/u.test(trimmed)) {
       return {
         type: 'loop-control',
-        badge: 'மடக்கு நிறுத்தம்',
+        badge: 'Break (நிறுத்தம்)',
         badgeClass: 'badge-statement',
-        tamil: 'மடக்கை (Loop) உடனடியாக நிறுத்திவிட்டு வெளியேறுகிறது (Break).'
+        tamilCode,
+        casual: 'Loop-அ உடனே நிறுத்திட்டு வெளிய வந்துடுது (Break).',
+        formal: 'மடக்கை (Loop) உடனடியாக நிறுத்திவிட்டு வெளியேறுகிறது (Break).'
       };
     }
     if (/^(?:continue|தொடர்)[;]?$/u.test(trimmed)) {
       return {
         type: 'loop-control',
-        badge: 'அடுத்த சுழற்சி',
+        badge: 'Continue (தொடர்)',
         badgeClass: 'badge-statement',
-        tamil: 'தற்போதைய சுழற்சியைத் தவிர்த்து, அடுத்த சுழற்சிக்கு உடனடியாகச் செல்கிறது (Continue).'
+        tamilCode,
+        casual: 'இந்த சுற்ற விட்டிட்டு, அடுத்த சுற்றுக்கு உடனே போகுது (Continue).',
+        formal: 'தற்போதைய சுழற்சியைத் தவிர்த்து, அடுத்த சுழற்சிக்கு உடனடியாகச் செல்கிறது (Continue).'
       };
     }
 
@@ -6037,9 +6207,11 @@
       const m = trimmed.match(/^([a-zA-Z0-9_\u0B80-\u0BFF]+)\.push\((.*?)\);?$/u);
       return {
         type: 'array',
-        badge: 'அணிச் சேர்க்கை (Push)',
+        badge: 'Array Push (சேர்த்தல்)',
         badgeClass: 'badge-array',
-        tamil: `<code>${m[1]}</code> என்ற அணியின் (Array) இறுதியில் <code>${escapeHtml(m[2].trim())}</code> என்ற புதிய உறுப்பைச் சேர்க்கிறது.`
+        tamilCode,
+        casual: `<code>${m[1]}</code> array-ஓட கடைசில <code>${escapeHtml(m[2].trim())}</code>-அ புதுசா சேர்த்து வைக்குது.`,
+        formal: `<code>${m[1]}</code> என்ற அணியின் (Array) இறுதியில் <code>${escapeHtml(m[2].trim())}</code> என்ற புதிய உறுப்பைச் சேர்க்கிறது.`
       };
     }
 
@@ -6053,26 +6225,34 @@
       if (/(?:prompt|input|உள்ளிடு)\s*\(/.test(val)) {
         return {
           type: 'input',
-          badge: 'பயனர் உள்ளீடு',
+          badge: 'User Input (உள்ளீடு)',
           badgeClass: 'badge-input',
-          tamil: `பயனரிடம் உள்ளீட்டைக் கேட்டுப் பெற்று, அதனை <code>${varName}</code> என்ற மாறியில் இருத்துகிறது.`
+          tamilCode,
+          casual: `User-கிட்ட இருந்து type பண்ண சொல்லி வாங்கி, <code>${varName}</code> variable-ல போட்டு வைக்குது.`,
+          formal: `பயனரிடம் உள்ளீட்டைக் கேட்டுப் பெற்று, அதனை <code>${varName}</code> என்ற மாறியில் இருத்துகிறது.`
         };
       }
 
       if (/^\([^)]*\)\s*=>/u.test(val) || /^[a-zA-Z0-9_]+\s*=>/u.test(val)) {
         return {
           type: 'function',
-          badge: 'அம்புச் செயல்பாடு',
+          badge: 'Arrow Function',
           badgeClass: 'badge-function',
-          tamil: `<code>${varName}</code> என்ற மாறியில் <code>${escapeHtml(val)}</code> என்ற புதிய அம்புச் செயல்பாட்டை (Arrow Function) உருவாக்குகிறது.`
+          tamilCode,
+          casual: `<code>${varName}</code> variable-ல <code>${escapeHtml(val)}</code>-ங்குற Arrow Function-அ போட்டு வைக்குது.`,
+          formal: `<code>${varName}</code> என்ற மாறியில் <code>${escapeHtml(val)}</code> என்ற புதிய அம்புச் செயல்பாட்டை (Arrow Function) உருவாக்குகிறது.`
         };
       }
 
       return {
         type: 'variable',
-        badge: isConst ? 'நிலைமாறி (Const)' : 'மாறி (Variable)',
+        badge: isConst ? 'Const (மாறிலி)' : 'Variable (மாறி)',
         badgeClass: 'badge-variable',
-        tamil: isConst
+        tamilCode,
+        casual: isConst
+          ? `<code>${varName}</code>-ங்குற constant-ல <code>${escapeHtml(val)}</code> value-வ store பண்ணுது (இத அப்புறம் மாத்த முடியாது).`
+          : `<code>${varName}</code>-னு ஒரு variable create பண்ணி, அதுல ஆரம்ப மதிப்பா <code>${escapeHtml(val)}</code>-அ store பண்ணுது.`,
+        formal: isConst
           ? `<code>${varName}</code> என்ற மாற்ற முடியாத நிலையான மாறியில் (Constant) <code>${escapeHtml(val)}</code> என்ற மதிப்பை இருத்துகிறது.`
           : `<code>${varName}</code> என்ற புதிய மாறியை (Variable) உருவாக்கி, அதில் <code>${escapeHtml(val)}</code> என்ற தொடக்க மதிப்பை இருத்துகிறது.`
       };
@@ -6085,9 +6265,13 @@
       const args = m && m[2].trim() ? m[2].trim() : '';
       return {
         type: 'call',
-        badge: 'செயல்பாடு அழைப்பு',
+        badge: 'Function Call (அழைப்பு)',
         badgeClass: 'badge-call',
-        tamil: args
+        tamilCode,
+        casual: args
+          ? `<code>${fn}</code> function-அ <code>${escapeHtml(args)}</code> input கொடுத்து run பண்ணுது (call பண்ணுது).`
+          : `<code>${fn}</code> function-அ call பண்ணி run பண்ணுது.`,
+        formal: args
           ? `<code>${fn}</code> என்ற செயல்பாட்டை <code>${escapeHtml(args)}</code> என்ற உள்ளீடுகளுடன் அழைக்கிறது (Call/Execute).`
           : `<code>${fn}</code> என்ற செயல்பாட்டை அழைக்கிறது.`
       };
@@ -6100,19 +6284,21 @@
       const op = m ? m[2] : '';
       const val = m && m[3] ? m[3].trim() : '';
 
-      if (op === '++') return { type: 'operation', badge: 'மதிப்பு உயர்வு', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியின் மதிப்பை 1 அதிகரிக்கிறது (Increment).` };
-      if (op === '--') return { type: 'operation', badge: 'மதிப்பு குறைவு', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியின் மதிப்பை 1 குறைக்கிறது (Decrement).` };
-      if (op === '+=') return { type: 'operation', badge: 'கூட்டுதல்', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியில் <code>${escapeHtml(val)}</code> மதிப்பைக் கூட்டிப் புதுப்பிக்கிறது.` };
-      if (op === '-=') return { type: 'operation', badge: 'கழித்தல்', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியில் இருந்து <code>${escapeHtml(val)}</code> மதிப்பைக் கழிக்கிறது.` };
-      if (op === '*=') return { type: 'operation', badge: 'பெருக்கல்', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியை <code>${escapeHtml(val)}</code> மதிப்பால் பெருக்குகிறது.` };
-      if (op === '=') return { type: 'operation', badge: 'மதிப்பிருத்தல்', badgeClass: 'badge-operation', tamil: `<code>${varName}</code> மாறியில் <code>${escapeHtml(val)}</code> என்ற புதிய மதிப்பை இருத்துகிறது.` };
+      if (op === '++') return { type: 'operation', badge: 'Increment (+1)', badgeClass: 'badge-operation', tamilCode, casual: `<code>${varName}</code> value-வ 1 ஏத்துது (+1).`, formal: `<code>${varName}</code> மாறியின் மதிப்பை 1 அதிகரிக்கிறது (Increment).` };
+      if (op === '--') return { type: 'operation', badge: 'Decrement (-1)', badgeClass: 'badge-operation', tamilCode, casual: `<code>${varName}</code> value-வ 1 குறைக்குது (-1).`, formal: `<code>${varName}</code> மாறியின் மதிப்பை 1 குறைக்கிறது (Decrement).` };
+      if (op === '+=') return { type: 'operation', badge: 'Add & Assign', badgeClass: 'badge-operation', tamilCode, casual: `<code>${varName}</code>-கூட <code>${escapeHtml(val)}</code>-அ கூட்டி update பண்ணுது.`, formal: `<code>${varName}</code> மாறியில் <code>${escapeHtml(val)}</code> மதிப்பைக் கூட்டிப் புதுப்பிக்கிறது.` };
+      if (op === '-=') return { type: 'operation', badge: 'Subtract & Assign', badgeClass: 'badge-operation', tamilCode, casual: `<code>${varName}</code>-ல இருந்து <code>${escapeHtml(val)}</code>-அ கழிச்சு update பண்ணுது.`, formal: `<code>${varName}</code> மாறியில் இருந்து <code>${escapeHtml(val)}</code> மதிப்பைக் கழிக்கிறது.` };
+      if (op === '*=') return { type: 'operation', badge: 'Multiply & Assign', badgeClass: 'badge-operation', tamilCode, casual: `<code>${varName}</code>-அ <code>${escapeHtml(val)}</code>-ஆல பெருக்கி update பண்ணுது.`, formal: `<code>${varName}</code> மாறியை <code>${escapeHtml(val)}</code> மதிப்பால் பெருக்குகிறது.` };
+      if (op === '=') return { type: 'operation', badge: 'Assign (மதிப்பிருத்தல்)', badgeClass: 'badge-operation', tamilCode, casual: `<code>${varName}</code>-க்கு <code>${escapeHtml(val)}</code>-னு புது value-வ மாத்துது.`, formal: `<code>${varName}</code> மாறியில் <code>${escapeHtml(val)}</code> என்ற புதிய மதிப்பை இருத்துகிறது.` };
     }
 
     return {
       type: 'statement',
-      badge: 'கூற்று',
+      badge: 'Statement (கட்டளை)',
       badgeClass: 'badge-statement',
-      tamil: `<code>${escapeHtml(trimmed)}</code> என்ற கட்டளையை அல்லது கூற்றை இயக்குகிறது.`
+      tamilCode,
+      casual: `<code>${escapeHtml(trimmed)}</code>-ங்குற command-அ execute பண்ணுது.`,
+      formal: `<code>${escapeHtml(trimmed)}</code> என்ற கட்டளையை அல்லது கூற்றை இயக்குகிறது.`
     };
   }
 
@@ -6122,52 +6308,154 @@
     if ((c.includes('காரணியியல்') || c.includes('factorial')) && (c.includes('*') || c.includes('திருப்பு') || c.includes('return'))) {
       return {
         title: 'காரணியியல் கணக்கீடு (Factorial Program)',
-        desc: 'இந்த நிரல் கொடுக்கப்பட்ட ஓர் முழு எண்ணின் காரணியியலை (Factorial - n!) சுழல்முறை (Recursion) அல்லது மடக்கு வழியாகக் கணக்கிடுகிறது.',
-        category: 'கணிதம் & சுழல்முறை'
+        category: 'கணிதம் & சுழல்முறை (Math & Recursion)',
+        casualDesc: 'இந்த program ஒரு நம்பரோட factorial-அ (n!) recursion வழியா கணக்கு பண்ணி விடையைக் கொடுக்குது.',
+        formalDesc: 'இந்த நிரல் கொடுக்கப்பட்ட ஓர் முழு எண்ணின் காரணியியலை (Factorial - n!) சுழல்முறை (Recursion) அல்லது மடக்கு வழியாகக் கணக்கிடுகிறது.'
       };
     }
 
     if (c.includes('fibonacci') || c.includes('ஃபிபோனாச்சி') || (c.includes('அ + ஆ') || c.includes('a + b'))) {
       return {
         title: 'ஃபிபோனாச்சி எண் வரிசை (Fibonacci Series)',
-        desc: 'இந்த நிரல் முந்தைய இரு எண்களின் கூட்டுத்தொகையைக் கொண்டு அடுத்தடுத்த எண்களை உருவாக்கும் ஃபிபோனாச்சி வரிசையைக் கணக்கிட்டு அச்சிடுகிறது.',
-        category: 'எண் வரிசை & மடக்குகள்'
+        category: 'எண் வரிசை & மடக்குகள் (Series & Loops)',
+        casualDesc: 'இந்த program முந்தைய ரெண்டு நம்பர்களை கூட்டி அடுத்தடுத்த ஃபிபோனாச்சி எண்களை வரிசையா print பண்ணுது.',
+        formalDesc: 'இந்த நிரல் முந்தைய இரு எண்களின் கூட்டுத்தொகையைக் கொண்டு அடுத்தடுத்த எண்களை உருவாக்கும் ஃபிபோனாச்சி வரிசையைக் கணக்கிட்டு அச்சிடுகிறது.'
       };
     }
 
     if ((c.includes('% 2') || c.includes('இரட்டை') || c.includes('ஒற்றை')) && (c.includes('even') || c.includes('odd') || c.includes('ஒருவேளை') || c.includes('if'))) {
       return {
         title: 'இரட்டை / ஒற்றை எண் சரிபார்த்தல் (Even or Odd Check)',
-        desc: 'ஒரு குறிப்பிட்ட எண்ணை 2-ஆல் வகுத்து மீதி 0 வருகிறதா எனச் சரிபார்த்து, அது இரட்டை எண்ணா அல்லது ஒற்றை எண்ணா என வகைப்படுத்துகிறது.',
-        category: 'நிபந்தனைக் கட்டுப்பாடுகள்'
+        category: 'நிபந்தனைக் கட்டுப்பாடுகள் (Conditionals)',
+        casualDesc: 'ஒரு number இரட்டை எண்ணா (Even) இல்ல ஒற்றை எண்ணா (Odd)-னு check பண்ணி சொல்லுற program.',
+        formalDesc: 'ஒரு குறிப்பிட்ட எண்ணை 2-ஆல் வகுத்து மீதி 0 வருகிறதா எனச் சரிபார்த்து, அது இரட்டை எண்ணா அல்லது ஒற்றை எண்ணா என வகைப்படுத்துகிறது.'
       };
     }
 
     if (c.includes('கூட்டுத்தொகை') || (c.includes('sum') && (c.includes('+=') || c.includes('+')))) {
       return {
         title: 'எண்களின் கூட்டுத்தொகை (Sum Accumulator)',
-        desc: 'ஒரு தொடக்க மதிப்பிலிருந்து முடிவு மதிப்பு வரையிலான அனைத்து எண்களையும் ஒன்றன்பின் ஒன்றாகக் கூட்டி மொத்த மதிப்பைக் கணக்கிடுகிறது.',
-        category: 'கூட்டல் & மடக்குகள்'
+        category: 'கூட்டல் & மடக்குகள் (Loops & Accumulation)',
+        casualDesc: '1-ல இருந்து ஆரம்பிச்சு எண்களை ஒண்ணா கூட்டி மொத்த கூட்டுத்தொகையைக் கண்டுபிடிக்கிற program.',
+        formalDesc: 'ஒரு தொடக்க மதிப்பிலிருந்து முடிவு மதிப்பு வரையிலான அனைத்து எண்களையும் ஒன்றன்பின் ஒன்றாகக் கூட்டி மொத்த மதிப்பைக் கணக்கிடுகிறது.'
       };
     }
 
     if (c.includes('வணக்கம் உலகம்') || c.includes('hello world') || (code.trim().split('\n').length <= 3 && (c.includes('print') || c.includes('console.log') || c.includes('பதிப்பி')))) {
       return {
         title: 'தொடக்க நிரல் (Hello World Program)',
-        desc: 'நிரலாக்க மொழியின் அடிப்படைக் கட்டமைப்பைப் புரிந்து கொள்ள திரையில் ஒரு வாழ்த்துச் செய்தியை அச்சிடும் எளிய தொடக்க நிரல்.',
-        category: 'அடிப்படை வெளியீடு'
+        category: 'அடிப்படை வெளியீடு (Basic Output)',
+        casualDesc: 'திரையில வணக்கம் / வாழ்த்துச் செய்தியை print பண்ணிக் காட்டுற simple Hello World program.',
+        formalDesc: 'நிரலாக்க மொழியின் அடிப்படைக் கட்டமைப்பைப் புரிந்து கொள்ள திரையில் ஒரு வாழ்த்துச் செய்தியை அச்சிடும் எளிய தொடக்க நிரல்.'
       };
     }
 
     return {
       title: 'விருப்ப நிரல் / வழிமுறை (Custom Algorithm)',
-      desc: 'மாறிகள், கணக்கீடுகள் மற்றும் கட்டுப்பாட்டு அமைப்புகளைக் கொண்டு குறிப்பிட்ட ஒரு பணியை நிறைவேற்றும் நிரல்.',
-      category: 'பொது நிரலாக்கம்'
+      category: 'பொது நிரலாக்கம் (General Programming)',
+      casualDesc: 'மாறிகள், கணக்கீடுகள் மற்றும் நிபந்தனைகளைக் கொண்டு குறிப்பிட்ட வேலையை செய்யும் program.',
+      formalDesc: 'மாறிகள், கணக்கீடுகள் மற்றும் கட்டுப்பாட்டு அமைப்புகளைக் கொண்டு குறிப்பிட்ட ஒரு பணியை நிறைவேற்றும் நிரல்.'
     };
   }
 
   let currentExplainerData = null;
   let isExplainerSpeaking = false;
+  let currentExplainerTone = 'casual'; // 'casual' | 'formal'
+  let currentExplainerView = 'breakdown'; // 'breakdown' | 'fullcode'
+
+  function renderExplainerContent() {
+    if (!currentExplainerData) return;
+    const { purpose, stats, linesData, fullTamilCode } = currentExplainerData;
+
+    // 1. Render Summary Card
+    const summaryEl = document.getElementById('tamilExplainerSummary');
+    if (summaryEl) {
+      const activeDesc = currentExplainerTone === 'casual' ? purpose.casualDesc : purpose.formalDesc;
+      summaryEl.innerHTML = `
+        <div class="tamil-explainer-purpose-header">
+          <h4 class="tamil-explainer-title">
+            <span>🎯</span> ${purpose.title}
+          </h4>
+          <span class="tamil-explainer-category-badge">${purpose.category}</span>
+        </div>
+        <p class="tamil-explainer-desc">${activeDesc}</p>
+        <div class="tamil-explainer-stats-row">
+          <div class="tamil-explainer-stat-pill">வரிகள்: <b>${stats.totalLines}</b></div>
+          <div class="tamil-explainer-stat-pill">மாறிகள்: <b>${stats.varCount}</b></div>
+          <div class="tamil-explainer-stat-pill">செயல்பாடுகள்: <b>${stats.fnCount}</b></div>
+          <div class="tamil-explainer-stat-pill">மடக்குகள்: <b>${stats.loopCount}</b></div>
+          <div class="tamil-explainer-stat-pill">நிபந்தனைகள்: <b>${stats.condCount}</b></div>
+          <div class="tamil-explainer-stat-pill">வெளியீடுகள்: <b>${stats.printCount}</b></div>
+        </div>
+      `;
+    }
+
+    // 2. Render Line-by-Line List
+    const lineCountEl = document.getElementById('tamilExplainerLineCount');
+    if (lineCountEl) {
+      lineCountEl.textContent = `${linesData.length} செயல்பாட்டு வரிகள்`;
+    }
+
+    const linesListEl = document.getElementById('tamilExplainerLinesList');
+    if (linesListEl) {
+      if (linesData.length === 0) {
+        linesListEl.innerHTML = '<div style="padding:20px; text-align:center; color:var(--ink-faint);">பகுப்பாய்வு செய்ய வரிகள் ஏதுமில்லை.</div>';
+      } else {
+        linesListEl.innerHTML = linesData.map(item => {
+          const text = currentExplainerTone === 'casual' ? item.casual : item.formal;
+          return `
+            <div class="tamil-explainer-line-card">
+              <div class="tamil-explainer-line-top">
+                <span class="tamil-explainer-line-num">வரி ${item.lineNum}</span>
+                <span class="tamil-explainer-badge ${item.badgeClass}">${item.badge}</span>
+              </div>
+              <div class="tamil-explainer-line-content">
+                <div class="tamil-explainer-code-snippet">${escapeHtml(item.code)}</div>
+                <div class="tamil-explainer-tamilcode-box">
+                  <span class="tamil-code-label">தமிழ் நிரல்:</span>
+                  <code>${escapeHtml(item.tamilCode)}</code>
+                </div>
+                <div class="tamil-explainer-explanation-text">${text}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // 3. Render Full Tamil Code View Textarea
+    const fullCodeArea = document.getElementById('tamilExplainerFullCodeText');
+    if (fullCodeArea) {
+      fullCodeArea.value = fullTamilCode;
+    }
+
+    // 4. Update Tab Active Classes
+    const breakdownViewEl = document.getElementById('tamilExplainerBreakdownView');
+    const fullCodeViewEl = document.getElementById('tamilExplainerFullCodeView');
+    const breakdownTabBtn = document.getElementById('explainerViewBreakdownTab');
+    const fullCodeTabBtn = document.getElementById('explainerViewFullCodeTab');
+
+    if (breakdownViewEl && fullCodeViewEl) {
+      if (currentExplainerView === 'breakdown') {
+        breakdownViewEl.style.display = 'flex';
+        fullCodeViewEl.style.display = 'none';
+        if (breakdownTabBtn) breakdownTabBtn.classList.add('active');
+        if (fullCodeTabBtn) fullCodeTabBtn.classList.remove('active');
+      } else {
+        breakdownViewEl.style.display = 'none';
+        fullCodeViewEl.style.display = 'flex';
+        if (breakdownTabBtn) breakdownTabBtn.classList.remove('active');
+        if (fullCodeTabBtn) fullCodeTabBtn.classList.add('active');
+      }
+    }
+
+    const toneCasualBtn = document.getElementById('explainerToneCasualTab');
+    const toneFormalBtn = document.getElementById('explainerToneFormalTab');
+    if (toneCasualBtn && toneFormalBtn) {
+      toneCasualBtn.classList.toggle('active', currentExplainerTone === 'casual');
+      toneFormalBtn.classList.toggle('active', currentExplainerTone === 'formal');
+    }
+  }
 
   function openTamilExplainerModal(note, overrideCode) {
     const modal = document.getElementById('tamilExplainerModal');
@@ -6180,6 +6468,7 @@
 
     const language = (note && note.language) ? note.language : 'javascript';
     const purpose = detectProgramPurposeInTamil(code);
+    const fullTamilCode = translateCodeToTamil(code);
     const rawLines = code.split('\n');
 
     const linesData = [];
@@ -6207,6 +6496,7 @@
 
     currentExplainerData = {
       code,
+      fullTamilCode,
       language,
       purpose,
       linesData,
@@ -6221,54 +6511,8 @@
       }
     };
 
-    // Render Summary Card
-    const summaryEl = document.getElementById('tamilExplainerSummary');
-    if (summaryEl) {
-      summaryEl.innerHTML = `
-        <div class="tamil-explainer-purpose-header">
-          <h4 class="tamil-explainer-title">
-            <span>🎯</span> ${purpose.title}
-          </h4>
-          <span class="tamil-explainer-category-badge">${purpose.category}</span>
-        </div>
-        <p class="tamil-explainer-desc">${purpose.desc}</p>
-        <div class="tamil-explainer-stats-row">
-          <div class="tamil-explainer-stat-pill">வரிகள்: <b>${rawLines.length}</b></div>
-          <div class="tamil-explainer-stat-pill">மாறிகள்: <b>${varCount}</b></div>
-          <div class="tamil-explainer-stat-pill">செயல்பாடுகள்: <b>${fnCount}</b></div>
-          <div class="tamil-explainer-stat-pill">மடக்குகள்: <b>${loopCount}</b></div>
-          <div class="tamil-explainer-stat-pill">நிபந்தனைகள்: <b>${condCount}</b></div>
-          <div class="tamil-explainer-stat-pill">வெளியீடுகள்: <b>${printCount}</b></div>
-        </div>
-      `;
-    }
-
-    // Render Lines List
-    const lineCountEl = document.getElementById('tamilExplainerLineCount');
-    if (lineCountEl) {
-      lineCountEl.textContent = `${linesData.length} செயல்பாட்டு வரிகள் பகுப்பாய்வு செய்யப்பட்டன`;
-    }
-
-    const linesListEl = document.getElementById('tamilExplainerLinesList');
-    if (linesListEl) {
-      if (linesData.length === 0) {
-        linesListEl.innerHTML = '<div style="padding:20px; text-align:center; color:var(--ink-faint);">பகுப்பாய்வு செய்ய வரிகள் ஏதுமில்லை.</div>';
-      } else {
-        linesListEl.innerHTML = linesData.map(item => `
-          <div class="tamil-explainer-line-card">
-            <div class="tamil-explainer-line-top">
-              <span class="tamil-explainer-line-num">வரி ${item.lineNum}</span>
-              <span class="tamil-explainer-badge ${item.badgeClass}">${item.badge}</span>
-            </div>
-            <div class="tamil-explainer-line-content">
-              <div class="tamil-explainer-code-snippet">${escapeHtml(item.code)}</div>
-              <div class="tamil-explainer-explanation-text">${item.tamil}</div>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
+    currentExplainerView = 'breakdown';
+    renderExplainerContent();
     modal.style.display = 'flex';
   }
 
@@ -6301,9 +6545,11 @@
 
     if (!currentExplainerData) return;
 
-    let textToSpeak = `${currentExplainerData.purpose.title}. ${currentExplainerData.purpose.desc}. `;
+    const activeDesc = currentExplainerTone === 'casual' ? currentExplainerData.purpose.casualDesc : currentExplainerData.purpose.formalDesc;
+    let textToSpeak = `${currentExplainerData.purpose.title}. ${activeDesc}. `;
     currentExplainerData.linesData.slice(0, 15).forEach(item => {
-      const cleanTamil = item.tamil.replace(/<[^>]*>/g, '');
+      const explText = currentExplainerTone === 'casual' ? item.casual : item.formal;
+      const cleanTamil = explText.replace(/<[^>]*>/g, '');
       textToSpeak += `வரி ${item.lineNum}: ${cleanTamil}. `;
     });
 
@@ -6331,23 +6577,26 @@
 
   function copyTamilExplanation() {
     if (!currentExplainerData) return;
-    const { purpose, stats, linesData } = currentExplainerData;
+    const { purpose, stats, linesData, fullTamilCode } = currentExplainerData;
+    const activeDesc = currentExplainerTone === 'casual' ? purpose.casualDesc : purpose.formalDesc;
 
     let md = `# தமிழ் நிரல் விளக்கம்: ${purpose.title}\n\n`;
     md += `**வகை**: ${purpose.category}\n`;
-    md += `**நோக்கம்**: ${purpose.desc}\n\n`;
+    md += `**விளக்கம்**: ${activeDesc}\n\n`;
+    md += `### முழு தமிழ் நிரல் (Full Tamil Code):\n\`\`\`javascript\n${fullTamilCode}\n\`\`\`\n\n`;
     md += `### புள்ளிவிவரங்கள்:\n`;
     md += `- மொத்த வரிகள்: ${stats.totalLines}\n`;
     md += `- மாறிகள்: ${stats.varCount} | செயல்பாடுகள்: ${stats.fnCount} | மடக்குகள்: ${stats.loopCount} | நிபந்தனைகள்: ${stats.condCount}\n\n`;
-    md += `### வரிவரியான விளக்கம்:\n\n`;
+    md += `### வரிவரியான விளக்கம் & தமிழ் நிரல்:\n\n`;
 
     linesData.forEach(item => {
-      const cleanTamil = item.tamil.replace(/<[^>]*>/g, '');
-      md += `**வரி ${item.lineNum}** [${item.badge}]:\n\`\`\`\n${item.code}\n\`\`\`\n➔ ${cleanTamil}\n\n`;
+      const explText = currentExplainerTone === 'casual' ? item.casual : item.formal;
+      const cleanTamil = explText.replace(/<[^>]*>/g, '');
+      md += `**வரி ${item.lineNum}** [${item.badge}]:\n- மூல நிரல்: \`${item.code}\`\n- தமிழ் நிரல்: \`${item.tamilCode}\`\n➔ ${cleanTamil}\n\n`;
     });
 
     navigator.clipboard.writeText(md).then(() => {
-      showToast('விளக்கம் நகலெடுக்கப்பட்டது (Markdown copied)');
+      showToast('விளக்கம் & தமிழ் நிரல் நகலெடுக்கப்பட்டது (Markdown copied)');
     }).catch(() => {
       showToast('நகலெடுக்க இயலவில்லை');
     });
@@ -6355,15 +6604,21 @@
 
   function insertTamilExplanationAsNote() {
     if (!currentExplainerData) return;
-    const { purpose, linesData } = currentExplainerData;
+    const { purpose, linesData, fullTamilCode } = currentExplainerData;
+    const activeDesc = currentExplainerTone === 'casual' ? purpose.casualDesc : purpose.formalDesc;
 
     let html = `<h2>🎯 ${purpose.title}</h2>`;
     html += `<p><b>பிரிவு:</b> ${purpose.category}</p>`;
-    html += `<p>${purpose.desc}</p>`;
-    html += `<hr><h3>வரிவரியான விளக்கம் (Line-by-Line):</h3>`;
+    html += `<p>${activeDesc}</p>`;
+    html += `<hr><h3>🇮🇳 முழு தமிழ் நிரல் (Full Tamil Code):</h3><pre><code>${escapeHtml(fullTamilCode)}</code></pre>`;
+    html += `<hr><h3>வரிவரியான விளக்கம் & தமிழ் நிரல்:</h3>`;
 
     linesData.forEach(item => {
-      html += `<p><b>வரி ${item.lineNum} (${item.badge}):</b><br><code>${escapeHtml(item.code)}</code><br>➔ ${item.tamil}</p>`;
+      const explText = currentExplainerTone === 'casual' ? item.casual : item.formal;
+      html += `<p><b>வரி ${item.lineNum} (${item.badge}):</b><br>
+        மூல நிரல்: <code>${escapeHtml(item.code)}</code><br>
+        <span style="color:#ea580c;font-weight:600;">தமிழ் நிரல்:</span> <code>${escapeHtml(item.tamilCode)}</code><br>
+        ➔ ${explText}</p>`;
     });
 
     const newNote = {
@@ -6384,7 +6639,7 @@
     closeTamilExplainerModal();
     renderSidebar();
     renderEditor();
-    showToast('விளக்கம் புதிய குறிப்பாகச் சேர்க்கப்பட்டது! (Added as companion note)');
+    showToast('விளக்கம் & தமிழ் நிரல் புதிய குறிப்பாகச் சேர்க்கப்பட்டது!');
   }
 
   function bindTamilExplainerModal() {
@@ -6413,6 +6668,86 @@
 
     const insertBtn = document.getElementById('tamilExplainerInsertBtn');
     if (insertBtn) insertBtn.addEventListener('click', insertTamilExplanationAsNote);
+
+    // View tabs: Breakdown vs Full Tamil Code
+    const breakdownTabBtn = document.getElementById('explainerViewBreakdownTab');
+    if (breakdownTabBtn) {
+      breakdownTabBtn.addEventListener('click', () => {
+        currentExplainerView = 'breakdown';
+        renderExplainerContent();
+      });
+    }
+
+    const fullCodeTabBtn = document.getElementById('explainerViewFullCodeTab');
+    if (fullCodeTabBtn) {
+      fullCodeTabBtn.addEventListener('click', () => {
+        currentExplainerView = 'fullcode';
+        renderExplainerContent();
+      });
+    }
+
+    // Tone tabs: Casual vs Formal
+    const toneCasualBtn = document.getElementById('explainerToneCasualTab');
+    if (toneCasualBtn) {
+      toneCasualBtn.addEventListener('click', () => {
+        currentExplainerTone = 'casual';
+        renderExplainerContent();
+      });
+    }
+
+    const toneFormalBtn = document.getElementById('explainerToneFormalTab');
+    if (toneFormalBtn) {
+      toneFormalBtn.addEventListener('click', () => {
+        currentExplainerTone = 'formal';
+        renderExplainerContent();
+      });
+    }
+
+    // Full Tamil Code Action Buttons
+    const copyFullCodeBtn = document.getElementById('tamilExplainerCopyFullCodeBtn');
+    if (copyFullCodeBtn) {
+      copyFullCodeBtn.addEventListener('click', () => {
+        if (!currentExplainerData) return;
+        navigator.clipboard.writeText(currentExplainerData.fullTamilCode).then(() => {
+          showToast('முழு தமிழ் நிரல் நகலெடுக்கப்பட்டது (Tamil code copied)!');
+        });
+      });
+    }
+
+    const insertFullCodeBtn = document.getElementById('tamilExplainerInsertFullCodeBtn');
+    if (insertFullCodeBtn) {
+      insertFullCodeBtn.addEventListener('click', () => {
+        if (!currentExplainerData) return;
+        const note = getActive();
+        if (note) {
+          note.content = currentExplainerData.fullTamilCode;
+          note.language = 'tamil';
+          if (monacoEditorInstance) {
+            monacoEditorInstance.setValue(currentExplainerData.fullTamilCode);
+            if (window.monaco) {
+              window.monaco.editor.setModelLanguage(monacoEditorInstance.getModel(), 'tamil');
+            }
+          }
+          const langSelect = document.getElementById('ideLanguageSelect');
+          if (langSelect) langSelect.value = 'tamil';
+          queueSave(note);
+          closeTamilExplainerModal();
+          showToast('தமிழ் நிரல் எடிட்டரில் செருகப்பட்டது (Tamil code inserted)!');
+        }
+      });
+    }
+
+    const runFullCodeBtn = document.getElementById('tamilExplainerRunFullCodeBtn');
+    if (runFullCodeBtn) {
+      runFullCodeBtn.addEventListener('click', () => {
+        const insertBtnEl = document.getElementById('tamilExplainerInsertFullCodeBtn');
+        if (insertBtnEl) insertBtnEl.click();
+        setTimeout(() => {
+          const runBtn = document.getElementById('ideRunBtn');
+          if (runBtn) runBtn.click();
+        }, 150);
+      });
+    }
   }
 
   bindTamilTranslatorModal();
